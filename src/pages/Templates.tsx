@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { FileText, ArrowLeft, Check } from "lucide-react";
+import { FileText, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import Footer from "@/components/layout/Footer";
 
@@ -114,56 +114,7 @@ const Templates = () => {
           ))}
         </div>
 
-        {/* Payment Section */}
-        <div className="mt-24 max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Simple, Transparent Pricing
-            </h2>
-            <p className="text-lg text-gray-600">
-              Get access to all premium templates and advanced features
-            </p>
-          </div>
 
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <Card className="p-8 border-2 border-transparent shadow-lg hover:shadow-xl transition-all">
-              <div className="text-center">
-                <h3 className="text-xl font-bold mb-2 text-gray-900">Basic</h3>
-                <div className="text-4xl font-extrabold text-gray-900 mb-6">Free</div>
-                <ul className="text-sm text-gray-600 space-y-4 mb-8 text-left max-w-xs mx-auto">
-                  <li className="flex items-center"><Check className="w-4 h-4 text-green-500 mr-2" /> 3 basic templates</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-green-500 mr-2" /> PDF download</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-green-500 mr-2" /> Basic AI assistance</li>
-                </ul>
-                <Button variant="outline" className="w-full py-6 border-slate-200 text-slate-700 hover:border-slate-900 hover:text-slate-900 font-semibold text-lg">
-                  Current Plan
-                </Button>
-              </div>
-            </Card>
-
-            <Card className="p-8 border-2 border-blue-600 relative shadow-2xl scale-105">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 shadow-lg">
-                <span className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-wider">
-                  Most Popular
-                </span>
-              </div>
-              <div className="text-center pt-4">
-                <h3 className="text-xl font-bold mb-2 text-gray-900">Premium</h3>
-                <div className="text-4xl font-extrabold text-gray-900 mb-1">$9.99</div>
-                <div className="text-sm text-gray-500 mb-6">per month</div>
-                <ul className="text-sm text-gray-600 space-y-4 mb-8 text-left max-w-xs mx-auto">
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-600 mr-2" /> All premium templates</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-600 mr-2" /> Unlimited downloads</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-600 mr-2" /> Advanced AI features</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-600 mr-2" /> Priority support</li>
-                </ul>
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 font-bold text-lg shadow-lg hover:shadow-xl transition-all">
-                  Upgrade Now
-                </Button>
-              </div>
-            </Card>
-          </div>
-        </div>
       </div>
 
       <Footer />
