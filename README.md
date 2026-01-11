@@ -103,27 +103,36 @@ Think of urCV.ai as a **virtual career consultant**, not just a resume builder.
 ```bash
 git clone https://github.com/yourusername/urCV.ai.git
 cd urCV.ai
-2️⃣ Install dependencies
-bash
-Copy code
+```
+
+#### 2️⃣ Install dependencies
+```bash
 npm install
-3️⃣ Configure environment variables
+```
+
+#### 3️⃣ Configure environment variables
+
 Create a .env file in the root directory:
 
-env
-Copy code
+```bash
 VITE_GEMINI_API_KEY=your_gemini_api_key_here
-# Optional (production)
-# VITE_GROQ_API_KEY=your_groq_api_key_here
-4️⃣ Run the development server
-bash
-Copy code
-npm run dev
-🌐 Open http://localhost:8080 in your browser.
+// Optional (production)
+VITE_GROQ_API_KEY=your_groq_api_key_here
+```
 
-📂 Project Structure
-text
-Copy code
+4️⃣ Run the development server
+
+```bash
+npm run dev
+
+🌐 Open http://localhost:8080 in your browser.
+```
+
+---
+
+### 📂 Project Structure
+
+```text
 urCV.ai/
 ├── docs/
 │   └── images/                 # Screenshots
@@ -150,34 +159,45 @@ urCV.ai/
 ├── tailwind.config.ts
 ├── tsconfig.json
 └── vite.config.ts
+```
+
 🤝 Contributing
 ✨ Contributions are highly welcome and appreciated!
 
 Whether it's fixing bugs, improving UI, optimizing AI prompts, or enhancing documentation — every contribution matters 🚀
 
-🛠️ How to Contribute
-1️⃣ Fork the repository
+---
 
-2️⃣ Create a new feature branch
+## 🛠️ How to Contribute
 
-bash
-Copy code
+### 1️⃣ Fork the repository
+
+### 2️⃣ Create a new feature branch
+
+```bash
 git checkout -b feature/YourFeature
-3️⃣ Commit your changes
+```
 
-bash
-Copy code
+### 3️⃣ Commit your changes
+
+```bash
 git commit -m "Add YourFeature"
-4️⃣ Push to GitHub
+```
 
-bash
-Copy code
+### 4️⃣ Push to GitHub
+
+```bash
 git push origin feature/YourFeature
-5️⃣ Open a Pull Request 🚀
+```
 
+### 5️⃣ Open a Pull Request 🚀
+
+---
+
+```
 📄 License
 📜 This project is developed under the AcWoc 2026 Initiative.
-
 © 2026 N-PCs — All rights reserved.
+```
 
-<p align="center"> 🧠 Maintained by <b>Neel Pandey</b> </p> ```
+<p align="center"> 🧠 Maintained by <b>Neel Pandey</b> </p> 
