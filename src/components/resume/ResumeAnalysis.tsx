@@ -28,6 +28,7 @@ const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAna
   const { toast } = useToast();
 
   const handleAnalyze = async () => {
+    console.log('UI triggering analysis with data:', data);
     setIsAnalyzing(true);
     try {
       const result = await analyzeResume(data);
@@ -36,10 +37,11 @@ const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAna
         title: "Analysis Complete",
         description: "Your resume has been analyzed successfully!",
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('UI Error in handleAnalyze:', error);
       toast({
         title: "Analysis Failed",
-        description: "Failed to analyze resume. Please try again.",
+        description: error.message || "Failed to analyze resume. Please check your internet connection or API key.",
         variant: "destructive",
       });
     } finally {
@@ -83,10 +85,11 @@ const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAna
         title: "Resume Extracted",
         description: "Your resume data has been extracted successfully!",
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Extraction Error:', error);
       toast({
         title: "Extraction Failed",
-        description: "Failed to extract resume data. Please try again.",
+        description: error.message || "Failed to extract resume data. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -114,10 +117,11 @@ const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAna
         title: "Resume Extracted",
         description: "Your resume data has been extracted successfully!",
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Text Extraction Error:', error);
       toast({
         title: "Extraction Failed",
-        description: "Failed to extract resume data. Please try again.",
+        description: error.message || "Failed to extract resume data. Please try again.",
         variant: "destructive",
       });
     } finally {

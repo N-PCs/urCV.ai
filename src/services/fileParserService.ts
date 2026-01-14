@@ -39,16 +39,51 @@ export const parseResumeFile = async (file: File): Promise<string> => {
   const fileType = file.type;
   
   if (fileType === 'application/pdf') {
-    // For PDF files, we'll use a simple text extraction
-    // Note: This is a basic implementation, for production you might want to use pdf-parse
+    // For PDF files, we'll use pdfjs-dist from a CDN to extract text in the browser
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => {
-        // Simple text extraction - in production, use proper PDF parsing
-        resolve(reader.result as string);
+      reader.onload = async () => {
+        try {
+          const arrayBuffer = reader.result as ArrayBuffer;
+          
+          // Load pdfjs-dist dynamically from CDN
+          if (!(window as any).pdfjsLib) {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+            document.head.appendChild(script);
+            await new Promise((resolve) => {
+              script.onload = resolve;
+            });
+          }
+
+          const pdfjsLib = (window as any).pdfjsLib;
+          pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+          const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+          const pdf = await loadingTask.promise;
+          let fullText = '';
+
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            const pageText = textContent.items
+              .map((item: any) => item.str)
+              .join(' ');
+            fullText += pageText + '\n';
+          }
+
+          if (fullText.trim().length > 0) {
+            resolve(fullText);
+          } else {
+            reject(new Error('Could not extract text from this PDF. It might be an image-based PDF.'));
+          }
+        } catch (error) {
+          console.error('PDF parsing error:', error);
+          reject(new Error('Failed to parse PDF file. Please try copying and pasting the text instead.'));
+        }
       };
       reader.onerror = reject;
-      reader.readAsText(file);
+      reader.readAsArrayBuffer(file);
     });
   } else if (fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
     // Parse DOCX files
