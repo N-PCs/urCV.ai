@@ -12,14 +12,27 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import CurvedLoop from '@/components/CurvedLoop';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-slate-950 text-slate-200 border-t border-slate-800">
+    <footer className="bg-slate-950 text-slate-200 border-t border-slate-800 relative overflow-hidden">
+      {/* CurvedLoop as Background */}
+      <div className="absolute top-[-20%] left-0 right-0 bottom-0 z-0 opacity-10">
+        <CurvedLoop 
+          marqueeText="Be ✦ Creative ✦ With ✦ urCV.ai ✦"
+          speed={2}
+          curveAmount={-300}
+          direction="right"
+          interactive={true}
+          className="text-white"
+        />
+      </div>
+
       {/* Main Footer Content */}
-      <div className="container mx-auto px-4 pt-16 pb-8">
+      <div className="container mx-auto px-4 pt-16 pb-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Brand Section */}
           <div className="space-y-4">
@@ -28,7 +41,7 @@ const Footer = () => {
                 <img alt="logo" src="./websitelogo.png"></img>
               </div>
               <span className="text-2xl font-bold bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-                N-PCs
+                urCV.ai
               </span>
             </div>
             <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
@@ -37,7 +50,7 @@ const Footer = () => {
             </p>
             <div className="pt-2">
               <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-900/30 text-blue-400 text-xs font-medium border border-blue-800">
-                AcWoc 2026 Initiative
+                Open-Source 2026 Initiative
               </span>
             </div>
           </div>
