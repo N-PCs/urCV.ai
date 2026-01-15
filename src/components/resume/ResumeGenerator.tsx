@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ResumeData } from '@/pages/Builder';
-import { generateWordDocument, generatePDFFromElement, downloadFile } from '@/services/documentService';
+import { generateWordDocument, generatePDF, downloadFile } from '@/services/documentService';
 import { useToast } from '@/hooks/use-toast';
 import { Download, FileText, Image, Link as LinkIcon } from 'lucide-react';
 import html2canvas from 'html2canvas';
@@ -91,11 +91,13 @@ const ResumeGenerator = ({ data, templateName }: ResumeGeneratorProps) => {
       const pdfBlob = await generatePDFFromElement(prepared.element);
 
       downloadFile(pdfBlob, `${data.personalInfo.fullName || 'resume'}.pdf`);
+
       toast({
         title: "PDF Generated",
-        description: "Your resume has been downloaded as a PDF!",
+        description: `Your resume has been downloaded in the ${templateName} style!`,
       });
-    } catch (error) {
+    }catch (error) {
+      console.error(error);
       toast({
         title: "Generation Failed",
         description: "Failed to generate PDF. Please try again.",
