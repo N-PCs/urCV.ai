@@ -12,6 +12,7 @@ import ResumePreview from "@/components/resume/ResumePreview";
 import ResumeAnalysisComponent from "@/components/resume/ResumeAnalysis";
 import ResumeGenerator from "@/components/resume/ResumeGenerator";
 import FloatingChatBot from "@/components/FloatingChatBot";
+import CodingProfilesForm from "@/components/resume/CodingProfilesForm";
 
 export interface ResumeData {
   personalInfo: {
@@ -45,6 +46,15 @@ export interface ResumeData {
     languages: string[];
     certifications: string[];
   };
+  codingProfiles: {
+    github?: string;
+    leetcode?: string;
+    hackerrank?: string;
+    codeforces?: string;
+    kaggle?: string;
+    codechef?: string;
+  };
+  
 }
 
 const Builder = () => {
@@ -85,6 +95,11 @@ const Builder = () => {
       languages: ["English (Native)", "Spanish (Intermediate)"],
       certifications: ["AWS Certified Solutions Architect"],
     },
+
+    codingProfiles: {
+      github: "",
+      leetcode: ""
+    },
   });
 
   const [templateName, setTemplateName] = useState<'default' | 'modern' | 'professional' | 'creative'>('default');
@@ -94,6 +109,7 @@ const Builder = () => {
     { title: "Education", component: EducationForm },
     { title: "Experience", component: ExperienceForm },
     { title: "Skills", component: SkillsForm },
+    { title: "Coding Profiles", component: CodingProfilesForm },
   ];
 
   const CurrentStepComponent = steps[currentStep].component;

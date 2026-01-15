@@ -1,5 +1,5 @@
 
-import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, ExternalHyperlink } from 'docx';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { ResumeData } from '@/pages/Builder';
@@ -27,6 +27,7 @@ export const generateWordDocument = async (resumeData: ResumeData): Promise<Blob
         new Paragraph({
           text: "",
         }),
+        
 
         // Summary
         ...(resumeData.personalInfo.summary ? [
@@ -136,6 +137,37 @@ export const generateWordDocument = async (resumeData: ResumeData): Promise<Blob
             ],
           }),
         ] : []),
+        new Paragraph({
+          text: "Coding Profiles",
+          heading: HeadingLevel.HEADING_1,
+        }),
+        ...Object.entries(resumeData.codingProfiles || {}).flatMap(([platform, url]) => {
+            if (!url) return [];
+            const cleanUrl = url.startsWith('http') ? url : `https://${url}`;
+            
+            return [
+                new Paragraph({
+                    children: [
+                        new TextRun({
+                            text: `${platform.charAt(0).toUpperCase() + platform.slice(1)}: `,
+                            bold: true,
+                        }),
+                        new ExternalHyperlink({
+                            children: [
+                                new TextRun({
+                                    text: url,
+                                    style: "Hyperlink",
+                                }),
+                            ],
+                            link: cleanUrl,
+                        }),
+                    ],
+                    spacing: {
+                        after: 100,
+                    },
+                }),
+            ];
+        }),
       ],
     }],
   });
