@@ -164,7 +164,7 @@ const Builder = () => {
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-8 h-8  rounded-lg flex items-center justify-center">
-                <img src="./websitelogo.png"/>
+                <img alt="website" src="./websitelogo.png"/>
             </div>
             <span className="text-2xl font-bold text-gray-900">
               urCV.ai
