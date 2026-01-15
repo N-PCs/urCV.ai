@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ResumeData } from '@/pages/Builder';
-import { generateWordDocument, generatePDFFromElement, downloadFile } from '@/services/documentService';
+import { generateWordDocument, generatePDF, downloadFile } from '@/services/documentService';
 import { useToast } from '@/hooks/use-toast';
 import { Download, FileText, Image, Link as LinkIcon } from 'lucide-react';
 import html2canvas from 'html2canvas';
@@ -41,39 +41,17 @@ const ResumeGenerator = ({ data, templateName }: ResumeGeneratorProps) => {
   };
 
   const generatePDFResume = async () => {
-    if (!resumePreviewRef.current) return;
-
     setIsGenerating(true);
-    try {
-      const hiddenElement = resumePreviewRef.current;
-      const originalParent = hiddenElement.parentElement;
-      const originalStyle = hiddenElement.getAttribute('style');
-      
-      hiddenElement.style.position = 'fixed';
-      hiddenElement.style.top = '0';
-      hiddenElement.style.left = '0';
-      hiddenElement.style.width = '800px';
-      hiddenElement.style.height = 'auto';
-      hiddenElement.style.opacity = '1';
-      hiddenElement.style.pointerEvents = 'auto';
-      hiddenElement.style.zIndex = '9999';
-      
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const pdfBlob = await generatePDFFromElement(hiddenElement);
-      
-      if (originalStyle) {
-        hiddenElement.setAttribute('style', originalStyle);
-      } else {
-        hiddenElement.removeAttribute('style');
-      }
-      
+    try{
+      const pdfBlob = generatePDF(data);
       downloadFile(pdfBlob, `${data.personalInfo.fullName || 'resume'}.pdf`);
+
       toast({
         title: "PDF Generated",
-        description: "Your resume has been downloaded as a PDF!",
+        description: "Your resume has been downloaded as a text-based PDF!",
       });
-    } catch (error) {
+    }catch (error) {
+      console.error(error);
       toast({
         title: "Generation Failed",
         description: "Failed to generate PDF. Please try again.",

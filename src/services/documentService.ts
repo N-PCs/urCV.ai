@@ -175,43 +175,114 @@ export const generateWordDocument = async (resumeData: ResumeData): Promise<Blob
   return await Packer.toBlob(doc);
 };
 
-export const generatePDFFromElement = async (element: HTMLElement): Promise<Blob> => {
+export const generatePDF = (resumeData: ResumeData): Blob => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 20;
+  const maxLineWidth = pageWidth - margin*2;
+  let yPos = 20;
+  
+  const addText = (text: string, fontSize: number = 10, isBold: boolean = false) => {
+    if(!text) return;
 
-  await new Promise(resolve => setTimeout(resolve, 200));
-  
-  const rect = element.getBoundingClientRect();
-  const width = rect.width || element.scrollWidth || 800;
-  const height = rect.height || element.scrollHeight || 1000;
-  
-  const canvas = await html2canvas(element, {
-    scale: 2,
-    useCORS: true,
-    allowTaint: true,
-    background: '#ffffff',
-    width: width,
-    height: height
-  } as any);
+    doc.setFontSize(fontSize);
+    doc.setFont("helvetica", isBold ? "bold" : "normal");
 
-  const imgData = canvas.toDataURL('image/png');
-  const pdf = new jsPDF('p', 'mm', 'a4');
-  
-  // A4 size
-  const pdfWidth = 210;
-  const pdfHeight = 297;
-  const imgWidth = canvas.width;
-  const imgHeight = canvas.height;
-  
-  const ratio = Math.min(pdfWidth / (imgWidth * 0.264583), pdfHeight / (imgHeight * 0.264583));
-  const pdfImgWidth = imgWidth * 0.264583 * ratio;
-  const pdfImgHeight = imgHeight * 0.264583 * ratio;
-  
-  const x = (pdfWidth - pdfImgWidth) / 2;
-  const y = 10;
-  
-  pdf.addImage(imgData, 'PNG', x, y, pdfImgWidth, pdfImgHeight);
+    const splitText = doc.splitTextToSize(text, maxLineWidth);
+    const lineHeight = fontSize * 0.5;
+    
+    if(yPos + (splitText.length * lineHeight) > pageHeight - margin){
+      doc.addPage();
+      yPos = margin;
+    }
 
-  return pdf.output('blob');
-};
+    doc.text(splitText, margin,yPos);
+    yPos += (splitText.length * lineHeight) + 2;
+  }
+
+  const addSectionTitle = (title: string) => {
+    yPos += 5;
+    addText(title, 14, true);
+    doc.setLineWidth(0.5);
+    doc.line(margin, yPos - 5, pageWidth - margin, yPos - 5);
+    yPos += 1;
+  }
+
+  addText(resumeData.personalInfo.fullName, 22, true);
+
+  const contactParts = [
+    resumeData.personalInfo.email,
+    resumeData.personalInfo.phone,
+    resumeData.personalInfo.location,
+    resumeData.personalInfo.linkedin
+  ].filter(Boolean);
+
+  if (contactParts.length > 0) {
+    addText(contactParts.join(" | "), 10);
+  }
+  yPos += 5;
+
+  if (resumeData.personalInfo.summary) {
+    addSectionTitle("Professional Summary");
+    addText(resumeData.personalInfo.summary, 10);
+  }
+
+  if (resumeData.experience.length > 0) {
+    addSectionTitle("Experience");
+    resumeData.experience.forEach(exp => {
+      addText(`${exp.title} at ${exp.company}`, 11, true);
+      addText(`${exp.location} | ${exp.startDate} - ${exp.current ? 'Present' : exp.endDate}`, 9);
+      if (exp.description) {
+        addText(exp.description, 10);
+      }
+      yPos += 3;
+    });
+  }
+
+  if (resumeData.education.length > 0) {
+    addSectionTitle("Education");
+    resumeData.education.forEach(edu => {
+      addText(`${edu.degree} - ${edu.school}`, 11, true);
+      addText(`${edu.location} | ${edu.graduationDate}`, 9);
+      if (edu.gpa) {
+        addText(`GPA: ${edu.gpa}`, 10);
+      }
+      yPos += 3;
+    });
+  }
+
+  const hasSkills = resumeData.skills.technical.length > 0 || 
+                    resumeData.skills.languages.length > 0 || 
+                    resumeData.skills.certifications.length > 0;
+
+  if (hasSkills) {
+    addSectionTitle("Skills");
+    
+    if (resumeData.skills.technical.length > 0) {
+      addText("Technical Skills: " + resumeData.skills.technical.join(", "), 10);
+    }
+    if (resumeData.skills.languages.length > 0) {
+      addText("Languages: " + resumeData.skills.languages.join(", "), 10);
+    }
+    if (resumeData.skills.certifications.length > 0) {
+      addText("Certifications: " + resumeData.skills.certifications.join(", "), 10);
+    }
+  }
+  
+  if (resumeData.codingProfiles) {
+    const profiles = Object.entries(resumeData.codingProfiles).filter(([_, url]) => url);
+    if (profiles.length > 0) {
+      addSectionTitle("Coding Profiles");
+      profiles.forEach(([platform, url]) => {
+        addText(`${platform.charAt(0).toUpperCase() + platform.slice(1)}: ${url}`, 10);
+      });
+    }
+  }
+
+  return doc.output('blob')
+}
+
 
 export const downloadFile = (blob: Blob, filename: string) => {
   const url = URL.createObjectURL(blob);
