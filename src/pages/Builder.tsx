@@ -12,6 +12,7 @@ import ResumePreview from "@/components/resume/ResumePreview";
 import ResumeAnalysisComponent from "@/components/resume/ResumeAnalysis";
 import ResumeGenerator from "@/components/resume/ResumeGenerator";
 import FloatingChatBot from "@/components/FloatingChatBot";
+import CodingProfilesForm from "@/components/resume/CodingProfilesForm";
 
 export interface ResumeData {
   personalInfo: {
@@ -45,6 +46,15 @@ export interface ResumeData {
     languages: string[];
     certifications: string[];
   };
+  codingProfiles: {
+    github?: string;
+    leetcode?: string;
+    hackerrank?: string;
+    codeforces?: string;
+    kaggle?: string;
+    codechef?: string;
+  };
+  
 }
 
 const Builder = () => {
@@ -85,6 +95,11 @@ const Builder = () => {
       languages: ["English (Native)", "Spanish (Intermediate)"],
       certifications: ["AWS Certified Solutions Architect"],
     },
+
+    codingProfiles: {
+      github: "",
+      leetcode: ""
+    },
   });
 
   const [templateName, setTemplateName] = useState<'default' | 'modern' | 'professional' | 'creative'>('default');
@@ -94,6 +109,7 @@ const Builder = () => {
     { title: "Education", component: EducationForm },
     { title: "Experience", component: ExperienceForm },
     { title: "Skills", component: SkillsForm },
+    { title: "Coding Profiles", component: CodingProfilesForm },
   ];
 
   const CurrentStepComponent = steps[currentStep].component;
@@ -147,8 +163,8 @@ const Builder = () => {
       <nav className="container mx-auto px-4 py-6 animate-fade-in">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <FileText className="w-5 h-5 text-white" />
+            <div className="w-8 h-8  rounded-lg flex items-center justify-center">
+                <img src="./websitelogo.png"/>
             </div>
             <span className="text-2xl font-bold text-gray-900">
               urCV.ai

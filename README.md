@@ -130,6 +130,24 @@ npm run dev
 
 ---
 
+## 🌐 Deployment
+
+### 🚀 Deploying to Vercel
+
+The fastest way to get your resume builder live is with Vercel:
+
+1. Push your code to a GitHub repository.
+2. Go to [Vercel](https://vercel.com/new) and import your `urCV.ai` repo.
+3. In the **Configure Project** screen:
+   * **Framework Preset:** Vite
+   * **Environment Variables:** Open this dropdown and add:
+     * **Key:** `VITE_GEMINI_API_KEY`
+     * **Value:** `your_actual_api_key_here`
+4. Click **Deploy**.
+
+*Note: If you already deployed and the AI isn't working, go to **Settings > Environment Variables** in your Vercel dashboard, add the key, and trigger a new Redeploy.*
+
+
 ### 📂 Project Structure
 
 ```text

@@ -77,6 +77,31 @@ const ModernTemplate = ({ data }: TemplateProps) => {
                         </div>
                     </section>
 
+                    {(data.codingProfiles?.github || data.codingProfiles?.leetcode || data.codingProfiles?.hackerrank || data.codingProfiles?.codeforces || data.codingProfiles?.kaggle) && (
+                        <section>
+                            <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase">Coding Profiles</h2>
+                            <ul className="space-y-2">
+                                {Object.entries(data.codingProfiles || {}).map(([platform, url]) => {
+                                    if (!url) return null;
+                                    const link = url.startsWith('http') ? url : `https://${url}`;
+                                    return (
+                                        <li key={platform} className="text-gray-700 flex flex-col">
+                                            <span className="font-semibold text-sm capitalize">{platform}</span>
+                                            <a 
+                                                href={link}
+                                                target="_blank" 
+                                                rel="noreferrer"
+                                                className="text-blue-600 text-xs hover:underline break-all"
+                                            >
+                                                {url.replace(/^https?:\/\//, '')}
+                                            </a>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </section>
+                    )}
+
                     {data.skills.languages.length > 0 && (
                         <section>
                             <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase">Languages</h2>
