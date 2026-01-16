@@ -54,6 +54,17 @@ const CreativeTemplate = ({ data }: TemplateProps) => {
                             </ul>
                         </section>
                     )}
+
+                    {(data.hobbies && data.hobbies.length > 0) && (
+                        <section>
+                            <h3 className="text-slate-400 uppercase tracking-widest text-xs font-bold mb-4">Interests</h3>
+                            <ul className="space-y-1 text-sm text-slate-300">
+                                {data.hobbies.map((hobby, index) => (
+                                    <li key={index}>• {hobby}</li>
+                                ))}
+                            </ul>
+                        </section>
+                    )}
                 </div>
             </aside>
 

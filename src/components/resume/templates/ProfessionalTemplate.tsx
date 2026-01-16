@@ -86,6 +86,15 @@ const ProfessionalTemplate = ({ data }: TemplateProps) => {
                                     {data.skills.languages.join(", ")}
                                 </div>
                             )}
+
+                            {(data.hobbies && data.hobbies.length > 0) && (
+                                <section>
+                                    <h2 className="text-sm font-bold uppercase border-b border-gray-400 mb-4 pb-1">Interests</h2>
+                                    <p className="text-sm">
+                                        {data.hobbies.join(", ")}
+                                    </p>
+                                </section>
+                            )}
                         </div>
                     </section>
                 )}

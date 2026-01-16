@@ -74,6 +74,19 @@ const ModernTemplate = ({ data }: TemplateProps) => {
                                     {skill}
                                 </span>
                             ))}
+
+                            {(data.hobbies && data.hobbies.length > 0) && (
+                                <section>
+                                    <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase">Interests</h2>
+                                    <div className="flex flex-wrap gap-2">
+                                        {data.hobbies.map((hobby, index) => (
+                                            <span key={index} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+                                                {hobby}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
                         </div>
                     </section>
 

@@ -14,6 +14,7 @@ import ResumeAnalysisComponent from "@/components/resume/ResumeAnalysis";
 import ResumeGenerator from "@/components/resume/ResumeGenerator";
 import FloatingChatBot from "@/components/FloatingChatBot";
 import CodingProfilesForm from "@/components/resume/CodingProfilesForm";
+import HobbiesForm from "@/components/resume/HobbiesForm";
 
 export interface ResumeData {
   personalInfo: {
@@ -47,6 +48,7 @@ export interface ResumeData {
     languages: string[];
     certifications: string[];
   };
+  hobbies?: string[];
   codingProfiles: {
     github?: string;
     leetcode?: string;
@@ -96,6 +98,8 @@ const Builder = () => {
       languages: ["English (Native)", "Spanish (Intermediate)"],
       certifications: ["AWS Certified Solutions Architect"],
     },
+    
+    hobbies: [],
 
     codingProfiles: {
       github: "",
@@ -110,6 +114,7 @@ const Builder = () => {
     { title: "Education", component: EducationForm },
     { title: "Experience", component: ExperienceForm },
     { title: "Skills", component: SkillsForm },
+    { title: "Hobbies", component: HobbiesForm },
     { title: "Coding Profiles", component: CodingProfilesForm },
   ];
 

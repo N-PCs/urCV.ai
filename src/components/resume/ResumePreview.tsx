@@ -127,6 +127,14 @@ const ResumePreview = ({ data, templateName = 'default' }: ResumePreviewProps) =
         </div>
       )}
 
+      {/* Hobbies Section */}
+      {(data.hobbies && data.hobbies.length > 0) && (
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">Interests</h2>
+          <p className="text-sm text-gray-700">{data.hobbies.join(", ")}</p>
+        </div>
+      )}
+
       {(data.codingProfiles?.github || data.codingProfiles?.leetcode) && (
         <div className="mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-3">Coding Profiles</h2>
