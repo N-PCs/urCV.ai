@@ -15,6 +15,14 @@
     <meta property="og:title" content="urcv-ai-enhance" />
     <meta property="og:description" content="Powered by N-PCs" />
     <meta property="og:type" content="website" />
+    <script>
+      (function() {
+        const theme = localStorage.getItem('urcv-theme');
+        if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
   </head>
 
   <body>

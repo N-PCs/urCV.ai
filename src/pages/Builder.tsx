@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, ArrowLeft, ArrowRight, Bot } from "lucide-react";
 import { Link } from "react-router-dom";
+import ThemeToggle from "@/components/ThemeToggle";
 import PersonalInfoForm from "@/components/resume/PersonalInfoForm";
 import EducationForm from "@/components/resume/EducationForm";
 import ExperienceForm from "@/components/resume/ExperienceForm";
@@ -158,7 +159,7 @@ const Builder = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
       {/* Navigation */}
       <nav className="container mx-auto px-4 py-6 animate-fade-in">
         <div className="flex items-center justify-between">
@@ -166,19 +167,20 @@ const Builder = () => {
             <div className="w-8 h-8  rounded-lg flex items-center justify-center">
                 <img alt="website" src="./websitelogo.png"/>
             </div>
-            <span className="text-2xl font-bold text-gray-900">
+            <span className="text-2xl font-bold text-gray-900 dark:text-white">
               urCV.ai
             </span>
           </Link>
           <div className="flex items-center space-x-4">
-            <span className="text-gray-600">Step {currentStep + 1} of {steps.length}</span>
+            <span className="text-gray-600 dark:text-gray-400">Step {currentStep + 1} of {steps.length}</span>
+            <ThemeToggle />
           </div>
         </div>
       </nav>
 
       {/* Progress Bar */}
       <div className="container mx-auto px-4 mb-8 animate-fade-in">
-        <div className="bg-gray-200 rounded-full h-2 max-w-md mx-auto">
+        <div className="bg-gray-200 dark:bg-gray-800 rounded-full h-2 max-w-md mx-auto">
           <div
             className="bg-blue-600 h-2 rounded-full transition-all duration-500 ease-out"
             style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
@@ -190,15 +192,15 @@ const Builder = () => {
       <div className="container mx-auto px-4 pb-8">
         <div className="grid lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
           {/* Form Section */}
-          <Card className="lg:col-span-2 p-6 shadow-md border-0 animate-slide-in-left">
+          <Card className="lg:col-span-2 p-6 shadow-md border-0 dark:bg-gray-900 dark:border-gray-800 animate-slide-in-left">
             <Tabs defaultValue="form" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 transition-all duration-300">
-                <TabsTrigger value="form" className="transition-all duration-200 hover:scale-105">Resume Form</TabsTrigger>
-                <TabsTrigger value="analysis" className="transition-all duration-200 hover:scale-105">
+              <TabsList className="grid w-full grid-cols-3 transition-all duration-300 dark:bg-gray-800">
+                <TabsTrigger value="form" className="transition-all duration-200 hover:scale-105 dark:data-[state=active]:bg-gray-700">Resume Form</TabsTrigger>
+                <TabsTrigger value="analysis" className="transition-all duration-200 hover:scale-105 dark:data-[state=active]:bg-gray-700">
                   <Bot className="w-4 h-4 mr-2" />
                   AI Analysis
                 </TabsTrigger>
-                <TabsTrigger value="generate" className="transition-all duration-200 hover:scale-105">Generate</TabsTrigger>
+                <TabsTrigger value="generate" className="transition-all duration-200 hover:scale-105 dark:data-[state=active]:bg-gray-700">Generate</TabsTrigger>
               </TabsList>
 
               <TabsContent value="form" className="mt-6">
