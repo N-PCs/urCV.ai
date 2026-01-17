@@ -4,93 +4,110 @@ import { FileText, User, Edit } from "lucide-react";
 import { Link } from "react-router-dom";
 import ThemeToggle from "@/components/ThemeToggle";
 import Footer from "@/components/layout/Footer";
-import LogoLoop from '@/components/LogoLoop';
-import ResumeTipsSection from '@/components/resume/ResumeTipsSection';
-import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiVite, SiVercel, SiFigma, SiGithub, SiNodedotjs, SiExpress, SiMongodb, SiPostgresql, SiDocker, SiGooglecloud, SiFirebase } from 'react-icons/si';
+import LogoLoop from "@/components/LogoLoop";
+import ResumeTipsSection from "@/components/resume/ResumeTipsSection";
+import { GridScan } from "@/components/GridScan";
+import {
+  SiReact,
+  SiNextdotjs,
+  SiTypescript,
+  SiTailwindcss,
+  SiVite,
+  SiVercel,
+  SiFigma,
+  SiGithub,
+  SiNodedotjs,
+  SiExpress,
+  SiMongodb,
+  SiPostgresql,
+  SiDocker,
+  SiGooglecloud,
+  SiFirebase,
+} from "react-icons/si";
 
 // Create a larger array of logos for better animation
 const techLogos = [
   {
     node: <SiReact className="text-[#61DAFB]" size={48} />,
     title: "React",
-    href: "https://react.dev"
+    href: "https://react.dev",
   },
   {
     node: <SiNextdotjs className="text-white" size={48} />,
     title: "Next.js",
-    href: "https://nextjs.org"
+    href: "https://nextjs.org",
   },
   {
     node: <SiTypescript className="text-[#3178C6]" size={48} />,
     title: "TypeScript",
-    href: "https://www.typescriptlang.org"
+    href: "https://www.typescriptlang.org",
   },
   {
     node: <SiTailwindcss className="text-[#06B6D4]" size={48} />,
     title: "Tailwind CSS",
-    href: "https://tailwindcss.com"
+    href: "https://tailwindcss.com",
   },
   {
     node: <SiVite className="text-[#646CFF]" size={48} />,
     title: "Vite",
-    href: "https://vitejs.dev"
+    href: "https://vitejs.dev",
   },
   {
     node: <SiVercel className="text-white" size={48} />,
     title: "Vercel",
-    href: "https://vercel.com"
+    href: "https://vercel.com",
   },
   {
     node: <SiFigma className="text-[#F24E1E]" size={48} />,
     title: "Figma",
-    href: "https://figma.com"
+    href: "https://figma.com",
   },
   {
     node: <SiGithub className="text-white" size={48} />,
     title: "GitHub",
-    href: "https://github.com"
+    href: "https://github.com",
   },
   {
     node: <SiNodedotjs className="text-[#339933]" size={48} />,
     title: "Node.js",
-    href: "https://nodejs.org"
+    href: "https://nodejs.org",
   },
   {
     node: <SiExpress className="text-white" size={48} />,
     title: "Express",
-    href: "https://expressjs.com"
+    href: "https://expressjs.com",
   },
   {
     node: <SiMongodb className="text-[#47A248]" size={48} />,
     title: "MongoDB",
-    href: "https://mongodb.com"
+    href: "https://mongodb.com",
   },
   {
     node: <SiDocker className="text-[#2496ED]" size={48} />,
     title: "Docker",
-    href: "https://docker.com"
+    href: "https://docker.com",
   },
   {
     node: <SiGooglecloud className="text-white" size={48} />,
     title: "Google Cloud",
-    href: "https://cloud.google.com"
+    href: "https://cloud.google.com",
   },
   {
     node: <SiFirebase className="text-[#FFCA28]" size={48} />,
     title: "Firebase",
-    href: "https://firebase.google.com"
+    href: "https://firebase.google.com",
   },
 ];
 
-import { useState } from 'react';
-import TestimonialsSection from '@/components/TestimonialsSection';
-import ReviewForm from '@/components/ReviewForm';
+import { useState } from "react";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import ReviewForm from "@/components/ReviewForm";
 
 const Index = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const handleReviewSubmitted = () => {
-    setRefreshTrigger(prev => prev + 1);
+    setRefreshTrigger((prev) => prev + 1);
   };
 
   return (
@@ -119,32 +136,131 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <div className="container mx-auto px-4 py-24 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-        <div className="text-center max-w-4xl mx-auto">
-          <div className="inline-block px-4 py-2 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full text-sm font-semibold mb-6 animate-fade-in">
-            New: AI-Powered Resume Analysis
+      {/* Hero Section with GridScan Background */}
+      <div className="relative min-h-[85vh] bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 transition-colors duration-300 overflow-hidden ">
+        {/* GridScan Background */}
+        <div className="absolute inset-0 z-0 flex items-center justify-center">
+          <div className="w-full h-full max-w-[1400px] mx-auto">
+            <GridScan
+              sensitivity={0.55}
+              lineThickness={0}
+              linesColor="rgba(0, 0, 0, 0.15)"
+              gridScale={0.08}
+              scanColor="#87CEEB"
+              scanOpacity={0.25}
+              enablePost
+              bloomIntensity={0.4}
+              chromaticAberration={0.001}
+              noiseIntensity={1}
+            />
           </div>
-          <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight animate-fade-in">
-            Build Your
-            <span className="text-blue-600 dark:text-blue-400"> Professional CV </span>
-            in Minutes
-          </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-delayed">
-            Create stunning, ATS-friendly resumes with our intelligent builder.
-            Stand out from the crowd with professional templates designed by experts.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
-            <Link to="/builder">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-semibold text-lg">
-                Start Building Now
-              </Button>
-            </Link>
-            <Link to="/templates">
-              <Button size="lg" variant="outline" className="border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-blue-600 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 px-8 py-4 rounded-lg transition-all duration-300 font-semibold text-lg">
-                View Templates
-              </Button>
-            </Link>
+
+          {/* Dark mode GridScan overlay */}
+          <div className="absolute inset-0">
+            <GridScan
+              sensitivity={0.55}
+              lineThickness={0}
+              linesColor="rgba(0, 0, 0, 0.15)"
+              gridScale={0.08}
+              scanColor="#87CEEB"
+              scanOpacity={1}
+              enablePost
+              bloomIntensity={0.4}
+              chromaticAberration={0.001}
+              noiseIntensity={1}
+              enableGyro={true}
+            />
+          </div>
+
+          {/* Light mode GridScan overlay */}
+          <div className="absolute inset-0 hidden dark:block">
+            <GridScan
+              sensitivity={0.55}
+              lineThickness={0}
+              linesColor="rgba(99, 102, 241, 0.2)"
+              gridScale={0.08}
+              scanColor="#FF9FFC"
+              scanOpacity={0.4}
+              enablePost
+              bloomIntensity={0.7}
+              chromaticAberration={0.003}
+              noiseIntensity={1}
+              enableGyro={true}
+            />
+          </div>
+
+          {/* Overlay gradients for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-50/90 via-transparent to-gray-50/80 dark:from-gray-900/95 dark:via-gray-900/90 dark:to-gray-900/95" />
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 via-transparent to-purple-50/30 dark:from-blue-900/20 dark:via-transparent dark:to-purple-900/20" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-transparent to-gray-50/90 dark:to-gray-900/95" />
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 container mx-auto px-4 py-24 flex items-center min-h-[85vh] ">
+          <div className="text-center max-w-4xl mx-auto w-full">
+            <div className="inline-block px-4 py-2 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full text-sm font-semibold mb-6 animate-fade-in backdrop-blur-sm border border-blue-200/50 dark:border-blue-800/50">
+              New: AI-Powered Resume Analysis
+            </div>
+            <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight animate-fade-in">
+              Build Your
+              <span className="text-blue-600 dark:text-blue-400">
+                {" "}
+                Professional CV{" "}
+              </span>
+              in Minutes
+            </h1>
+            <p className="text-xl md:text-xl text-gray-700 dark:text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in-delayed backdrop-blur-sm bg-white/40 dark:bg-black/40 p-6 rounded-2xl border border-white/20 dark:border-gray-800/50 shadow-lg">
+              Create stunning, ATS-friendly resumes with our intelligent
+              builder. Stand out from the crowd with professional templates
+              designed by experts.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
+              <Link to="/builder">
+                <Button
+                  size="lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-semibold text-lg backdrop-blur-sm border border-blue-700/50 hover:border-blue-800"
+                >
+                  Start Building Now
+                  <svg
+                    className="w-5 h-5 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
+                  </svg>
+                </Button>
+              </Link>
+              <Link to="/templates">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-blue-600 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 px-8 py-6 rounded-xl transition-all duration-300 font-semibold text-lg backdrop-blur-sm bg-white/50 dark:bg-black/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/20"
+                >
+                  View Templates
+                  <svg
+                    className="w-5 h-5 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -156,38 +272,48 @@ const Index = () => {
             Why Choose urCV.ai?
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Experience the future of resume building with our AI-powered platform
+            Experience the future of resume building with our AI-powered
+            platform
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 dark:bg-gray-900 shadow-sm animate-slide-in-left group">
-            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 transition-colors duration-300">
+          <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 dark:bg-gray-900 shadow-sm animate-slide-in-left group hover:border-blue-200 dark:hover:border-blue-800">
+            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 transition-colors duration-300 group-hover:scale-110">
               <User className="w-8 h-8 text-blue-600 dark:text-blue-400 group-hover:text-white transition-colors duration-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Smart Input Forms</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              Smart Input Forms
+            </h3>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              Intuitive forms that guide you through every section, ensuring you don't miss any important details
+              Intuitive forms that guide you through every section, ensuring you
+              don't miss any important details
             </p>
           </Card>
 
-          <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 dark:bg-gray-900 shadow-sm animate-fade-in animation-delay-200 group">
-            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 transition-colors duration-300">
+          <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 dark:bg-gray-900 shadow-sm animate-fade-in animation-delay-200 group hover:border-blue-200 dark:hover:border-blue-800">
+            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 transition-colors duration-300 group-hover:scale-110">
               <Edit className="w-8 h-8 text-blue-600 dark:text-blue-400 group-hover:text-white transition-colors duration-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">AI Enhancement</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              AI Enhancement
+            </h3>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              Our AI analyzes your experience and provides intelligent suggestions to improve impact and readability
+              Our AI analyzes your experience and provides intelligent
+              suggestions to improve impact and readability
             </p>
           </Card>
 
-          <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 dark:bg-gray-900 shadow-sm animate-slide-in-right group">
-            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 transition-colors duration-300">
+          <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 dark:bg-gray-900 shadow-sm animate-slide-in-right group hover:border-blue-200 dark:hover:border-blue-800">
+            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 transition-colors duration-300 group-hover:scale-110">
               <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400 group-hover:text-white transition-colors duration-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Professional Templates</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              Professional Templates
+            </h3>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              Beautiful, ATS-friendly templates designed by professionals to help you make the best impression
+              Beautiful, ATS-friendly templates designed by professionals to
+              help you make the best impression
             </p>
           </Card>
         </div>
@@ -216,7 +342,8 @@ const Index = () => {
             Built with Modern Technology
           </h2>
           <p className="mt-4 text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            A carefully picked stack that keeps the app fast, responsive, and easy to maintain.
+            A carefully picked stack that keeps the app fast, responsive, and
+            easy to maintain.
           </p>
 
           <div className="mt-12 space-y-6">
@@ -265,4 +392,3 @@ const Index = () => {
 };
 
 export default Index;
-
