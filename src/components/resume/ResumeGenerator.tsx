@@ -2,16 +2,19 @@ import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ResumeData } from '@/pages/Builder';
-import { generateWordDocument, generatePDF, downloadFile } from '@/services/documentService';
+import { generateWordDocument, generatePDF } from '@/services/documentService';
 import { useToast } from '@/hooks/use-toast';
 import { Download, FileText, Image, Link as LinkIcon } from 'lucide-react';
 import html2canvas from 'html2canvas';
 
 import ResumePreview from './ResumePreview';
 
+// Updated to include all template types
+export type TemplateType = 'default' | 'modern' | 'professional' | 'creative' | 'minimalist' | 'bold';
+
 interface ResumeGeneratorProps {
   data: ResumeData;
-  templateName: 'default' | 'modern' | 'professional' | 'creative';
+  templateName: TemplateType;
 }
 
 interface ResumeDownloadOptionsProps extends ResumeGeneratorProps {
@@ -29,6 +32,17 @@ const ResumeDownloadOptions = ({ data, templateName, showHeading = true }: Resum
   const resumePreviewRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
+  const downloadFile = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const preparePreviewForCapture = async (): Promise<PreparedPreview | null> => {
     if (!resumePreviewRef.current) {
       return null;
@@ -37,7 +51,6 @@ const ResumeDownloadOptions = ({ data, templateName, showHeading = true }: Resum
     const element = resumePreviewRef.current;
     const originalStyle = element.getAttribute('style');
 
-    // Position the element visibly for capture
     Object.assign(element.style, {
       position: 'fixed',
       top: '0px',
@@ -55,7 +68,6 @@ const ResumeDownloadOptions = ({ data, templateName, showHeading = true }: Resum
       boxShadow: 'none',
     });
 
-    // Wait for DOM to render
     await new Promise(resolve => setTimeout(resolve, 500));
 
     return {
@@ -131,18 +143,15 @@ const ResumeDownloadOptions = ({ data, templateName, showHeading = true }: Resum
         throw new Error('Unable to access resume preview for image generation');
       }
 
-      // Get the actual inner content div
       const innerDiv = prepared.element.querySelector('div') as HTMLElement;
       const targetElement = innerDiv || prepared.element;
 
-      // Ensure the element has proper dimensions
       if (targetElement.style) {
         targetElement.style.width = '800px';
         targetElement.style.height = 'auto';
         targetElement.style.overflow = 'visible';
       }
 
-      // Wait for any pending renders
       await new Promise(resolve => setTimeout(resolve, 300));
 
       const canvas = await html2canvas(targetElement, {
@@ -151,7 +160,6 @@ const ResumeDownloadOptions = ({ data, templateName, showHeading = true }: Resum
         scale: 2,
         logging: false,
         ignoreElements: (element) => {
-          // Don't ignore any elements
           return false;
         },
       } as any);
@@ -202,7 +210,6 @@ const ResumeDownloadOptions = ({ data, templateName, showHeading = true }: Resum
         </div>
       )}
 
-      {/* Hidden Resume Preview for PDF/Image Generation */}
       <div 
         ref={resumePreviewRef} 
         className="fixed -top-[9999px] -left-[9999px] opacity-0 pointer-events-none"
@@ -228,7 +235,6 @@ const ResumeDownloadOptions = ({ data, templateName, showHeading = true }: Resum
         </div>
       </div>
 
-      {/* Download Options */}
       <div className="grid grid-cols-2 gap-4">
         <Button
           onClick={generateWordResume}
