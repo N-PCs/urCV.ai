@@ -147,9 +147,9 @@ const Index = () => {
               linesColor="rgba(0, 0, 0, 0.15)"
               gridScale={0.08}
               scanColor="#87CEEB"
-              scanOpacity={0.25}
+              scanOpacity={1}
               enablePost
-              bloomIntensity={0.4}
+              bloomIntensity={1}
               chromaticAberration={0.001}
               noiseIntensity={1}
             />
@@ -165,7 +165,7 @@ const Index = () => {
               scanColor="#87CEEB"
               scanOpacity={1}
               enablePost
-              bloomIntensity={0.4}
+              bloomIntensity={1}
               chromaticAberration={0.001}
               noiseIntensity={1}
               enableGyro={true}
@@ -177,12 +177,12 @@ const Index = () => {
             <GridScan
               sensitivity={0.55}
               lineThickness={0}
-              linesColor="rgba(99, 102, 241, 0.2)"
+              linesColor="rgba(0, 0, 0, 0.15)"
               gridScale={0.08}
-              scanColor="#FF9FFC"
-              scanOpacity={0.4}
+              scanColor="#87CEEB"
+              scanOpacity={20}
               enablePost
-              bloomIntensity={0.7}
+              bloomIntensity={1}
               chromaticAberration={0.003}
               noiseIntensity={1}
               enableGyro={true}
@@ -201,7 +201,7 @@ const Index = () => {
             <div className="inline-block px-4 py-2 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full text-sm font-semibold mb-6 animate-fade-in backdrop-blur-sm border border-blue-200/50 dark:border-blue-800/50">
               New: AI-Powered Resume Analysis
             </div>
-            <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight animate-fade-in">
+            <h1 className="text-4xl md:text-6xl font-extrabold text-gray-1100 dark:text-white mb-6 leading-tight animate-fade-in">
               Build Your
               <span className="text-blue-600 dark:text-blue-400">
                 {" "}
