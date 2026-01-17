@@ -11,7 +11,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Smooth progress animation
+    
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -22,11 +22,11 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
       });
     }, 30);
 
-    // Complete loading after progress reaches 100
+    
     const timer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(onComplete, 600); // Wait for fade out animation
-    }, 2500);
+      setTimeout(onComplete, 2000);
+    }, 3000);
 
     return () => {
       clearTimeout(timer);
@@ -43,12 +43,12 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
         !isVisible ? 'pointer-events-none' : ''
       }`}
     >
-      {/* Animated background gradient */}
+      
       <div className="absolute inset-0 opacity-30">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-blue-600/20 animate-gradient" />
       </div>
 
-      {/* Stars background with staggered animation */}
+      
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(60)].map((_, i) => (
           <motion.div
@@ -75,9 +75,9 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
         ))}
       </div>
 
-      {/* Main content */}
+      
       <div className="text-center z-10 px-4">
-        {/* Title with staggered letter animation */}
+      
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -102,7 +102,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
             </motion.span>
           </h1>
           
-          {/* Sparkles around text */}
+          
           <div className="relative inline-block">
             {[...Array(6)].map((_, i) => (
               <motion.div
@@ -131,7 +131,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
           </div>
         </motion.div>
 
-        {/* Rocket animation with trail */}
+        
         <div className="relative h-40 mb-8 overflow-visible">
           <motion.div
             initial={{ y: 150, opacity: 0, rotate: 45 }}
@@ -150,7 +150,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
           >
             <Rocket className="w-16 h-16 text-blue-400" />
             
-            {/* Animated rocket trail */}
+            
             <motion.div
               animate={{
                 scaleY: [1, 1.5, 1],
@@ -164,7 +164,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
               className="absolute top-12 left-1/2 transform -translate-x-1/2 w-3 h-24 bg-gradient-to-t from-orange-500 via-yellow-400 to-transparent rounded-full blur-sm"
             />
             
-            {/* Particles */}
+            
             {[...Array(8)].map((_, i) => (
               <motion.div
                 key={i}
@@ -186,7 +186,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
           </motion.div>
         </div>
 
-        {/* Loading text with typing effect */}
+        
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -203,7 +203,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
           </motion.span>
         </motion.div>
 
-        {/* Progress bar */}
+        
         <div className="max-w-md mx-auto">
           <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden">
             <motion.div
@@ -214,7 +214,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
               style={{ backgroundSize: "200% 100%" }}
             />
             
-            {/* Shimmer effect on progress bar */}
+            
             <motion.div
               animate={{ x: ["-100%", "200%"] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
@@ -222,7 +222,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
             />
           </div>
           
-          {/* Progress percentage */}
+          
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -233,7 +233,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
           </motion.div>
         </div>
 
-        {/* Floating dots indicator */}
+        
         <div className="flex justify-center space-x-2 mt-8">
           {[0, 1, 2].map((i) => (
             <motion.div
@@ -254,7 +254,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
         </div>
       </div>
 
-      {/* Vignette effect */}
+      
       <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/50 pointer-events-none" />
     </motion.div>
   );

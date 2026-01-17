@@ -6,7 +6,7 @@ interface TemplateProps {
 
 const CreativeTemplate = ({ data }: TemplateProps) => {
     return (
-        <div className="bg-white min-h-[1000px] flex flex-col md:flex-row">
+        <div className="bg-white min-h-[1200px] flex flex-col md:flex-row" style={{ overflow: 'visible' }}>
             {/* Sidebar */}
             <aside className="w-full md:w-1/3 bg-slate-900 text-white p-8">
                 <div className="mb-10 text-center">
@@ -24,10 +24,33 @@ const CreativeTemplate = ({ data }: TemplateProps) => {
                     <section>
                         <h3 className="text-slate-400 uppercase tracking-widest text-xs font-bold mb-4">Contact</h3>
                         <div className="space-y-3 text-sm text-slate-300">
-                            {data.personalInfo.email && <div className="break-words">{data.personalInfo.email}</div>}
+                            {data.personalInfo.email && (
+                                <a href={`mailto:${data.personalInfo.email}`} className="break-words block hover:text-blue-400 hover:underline transition-colors">
+                                    {data.personalInfo.email}
+                                </a>
+                            )}
                             {data.personalInfo.phone && <div>{data.personalInfo.phone}</div>}
                             {data.personalInfo.location && <div>{data.personalInfo.location}</div>}
-                            {data.personalInfo.linkedin && <div className="text-xs break-all">{data.personalInfo.linkedin}</div>}
+                            {data.personalInfo.linkedin && (
+                                <a
+                                    href={data.personalInfo.linkedin.startsWith('http') ? data.personalInfo.linkedin : `https://${data.personalInfo.linkedin}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-xs break-all block hover:text-blue-400 hover:underline transition-colors"
+                                >
+                                    {data.personalInfo.linkedin}
+                                </a>
+                            )}
+                            {data.personalInfo.portfolio && (
+                                <a
+                                    href={data.personalInfo.portfolio.startsWith('http') ? data.personalInfo.portfolio : `https://${data.personalInfo.portfolio}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-xs break-all block hover:text-blue-400 hover:underline transition-colors"
+                                >
+                                    {data.personalInfo.portfolio}
+                                </a>
+                            )}
                         </div>
                     </section>
 
@@ -50,6 +73,17 @@ const CreativeTemplate = ({ data }: TemplateProps) => {
                             <ul className="space-y-1 text-sm text-slate-300">
                                 {data.skills.languages.map((lang, index) => (
                                     <li key={index}>• {lang}</li>
+                                ))}
+                            </ul>
+                        </section>
+                    )}
+
+                    {(data.hobbies && data.hobbies.length > 0) && (
+                        <section>
+                            <h3 className="text-slate-400 uppercase tracking-widest text-xs font-bold mb-4">Interests</h3>
+                            <ul className="space-y-1 text-sm text-slate-300">
+                                {data.hobbies.map((hobby, index) => (
+                                    <li key={index}>• {hobby}</li>
                                 ))}
                             </ul>
                         </section>
@@ -102,6 +136,32 @@ const CreativeTemplate = ({ data }: TemplateProps) => {
                                     </div>
                                 </div>
                             ))}
+                        </div>
+                    </section>
+                )}
+
+                {/* Coding Profiles */}
+                {(Object.entries(data.codingProfiles || {}).filter(([_, url]) => url).length > 0) && (
+                    <section className="mb-10">
+                        <h2 className="text-2xl font-bold text-slate-800 mb-6 border-l-4 border-slate-800 pl-4">Coding Profiles</h2>
+                        <div className="space-y-3">
+                            {Object.entries(data.codingProfiles || {}).map(([platform, url]) => {
+                                if (!url) return null;
+                                const link = url.startsWith('http') ? url : `https://${url}`;
+                                return (
+                                    <div key={platform} className="flex items-center gap-4">
+                                        <span className="font-bold text-slate-700 w-24">{platform.charAt(0).toUpperCase() + platform.slice(1)}:</span>
+                                        <a
+                                            href={link}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="text-blue-600 hover:underline break-all"
+                                        >
+                                            {url}
+                                        </a>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </section>
                 )}

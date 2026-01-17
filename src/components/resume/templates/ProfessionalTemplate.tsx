@@ -6,16 +6,39 @@ interface TemplateProps {
 
 const ProfessionalTemplate = ({ data }: TemplateProps) => {
     return (
-        <div className="bg-white p-12 h-full min-h-[1000px] font-serif text-gray-900 max-w-[850px] mx-auto">
+        <div className="bg-white p-12 min-h-[1200px] font-serif text-gray-900 max-w-[850px] mx-auto" style={{ overflow: 'visible' }}>
             <div className="text-center border-b-2 border-gray-900 pb-6 mb-8">
                 <h1 className="text-3xl font-bold tracking-widest uppercase mb-4">
                     {data.personalInfo.fullName || "Your Name"}
                 </h1>
                 <div className="flex justify-center flex-wrap gap-6 text-sm">
-                    {data.personalInfo.email && <span>{data.personalInfo.email}</span>}
+                    {data.personalInfo.email && (
+                        <a href={`mailto:${data.personalInfo.email}`} className="hover:text-blue-600 hover:underline transition-colors">
+                            {data.personalInfo.email}
+                        </a>
+                    )}
                     {data.personalInfo.phone && <span>{data.personalInfo.phone}</span>}
                     {data.personalInfo.location && <span>{data.personalInfo.location}</span>}
-                    {data.personalInfo.linkedin && <span>{data.personalInfo.linkedin}</span>}
+                    {data.personalInfo.linkedin && (
+                        <a
+                            href={data.personalInfo.linkedin.startsWith('http') ? data.personalInfo.linkedin : `https://${data.personalInfo.linkedin}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="hover:text-blue-600 hover:underline transition-colors"
+                        >
+                            {data.personalInfo.linkedin}
+                        </a>
+                    )}
+                    {data.personalInfo.portfolio && (
+                        <a
+                            href={data.personalInfo.portfolio.startsWith('http') ? data.personalInfo.portfolio : `https://${data.personalInfo.portfolio}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="hover:text-blue-600 hover:underline transition-colors"
+                        >
+                            {data.personalInfo.portfolio}
+                        </a>
+                    )}
                 </div>
             </div>
 
@@ -86,6 +109,15 @@ const ProfessionalTemplate = ({ data }: TemplateProps) => {
                                     {data.skills.languages.join(", ")}
                                 </div>
                             )}
+
+                            {(data.hobbies && data.hobbies.length > 0) && (
+                                <section>
+                                    <h2 className="text-sm font-bold uppercase border-b border-gray-400 mb-4 pb-1">Interests</h2>
+                                    <p className="text-sm">
+                                        {data.hobbies.join(", ")}
+                                    </p>
+                                </section>
+                            )}
                         </div>
                     </section>
                 )}
@@ -101,6 +133,32 @@ const ProfessionalTemplate = ({ data }: TemplateProps) => {
                     </section>
                 )}
             </div>
+
+            {/* Coding Profiles */}
+            {(Object.entries(data.codingProfiles || {}).filter(([_, url]) => url).length > 0) && (
+                <section className="mt-8">
+                    <h2 className="text-sm font-bold uppercase border-b border-gray-400 mb-4 pb-1">Coding Profiles</h2>
+                    <div className="space-y-2 text-sm">
+                        {Object.entries(data.codingProfiles || {}).map(([platform, url]) => {
+                            if (!url) return null;
+                            const link = url.startsWith('http') ? url : `https://${url}`;
+                            return (
+                                <div key={platform} className="flex justify-between">
+                                    <span className="font-semibold">{platform.charAt(0).toUpperCase() + platform.slice(1)}:</span>
+                                    <a
+                                        href={link}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="text-blue-600 hover:underline break-all"
+                                    >
+                                        {url}
+                                    </a>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </section>
+            )}
         </div>
     );
 };

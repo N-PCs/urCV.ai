@@ -1,4 +1,3 @@
-
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -66,15 +65,27 @@ const PersonalInfoForm = ({ data, updateData }: PersonalInfoFormProps) => {
         </div>
       </div>
 
-      <div>
-        <Label htmlFor="linkedin">LinkedIn Profile</Label>
-        <Input
-          id="linkedin"
-          value={data.personalInfo.linkedin}
-          onChange={(e) => handleInputChange('linkedin', e.target.value)}
-          placeholder="linkedin.com/in/alexmorgan"
-          className="mt-1"
-        />
+      <div className="grid md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="linkedin">LinkedIn Profile</Label>
+          <Input
+            id="linkedin"
+            value={data.personalInfo.linkedin}
+            onChange={(e) => handleInputChange('linkedin', e.target.value)}
+            placeholder="linkedin.com/in/alexmorgan"
+            className="mt-1"
+          />
+        </div>
+        <div>
+          <Label htmlFor="portfolio">Personal Portfolio</Label>
+          <Input
+            id="portfolio"
+            value={data.personalInfo.portfolio || ''}
+            onChange={(e) => handleInputChange('portfolio', e.target.value)}
+            placeholder="yourportfolio.com"
+            className="mt-1"
+          />
+        </div>
       </div>
 
       <div>

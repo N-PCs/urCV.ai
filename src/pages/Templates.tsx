@@ -39,6 +39,22 @@ const Templates = () => {
       type: 'professional',
       color: "from-emerald-500 to-teal-500"
     },
+    {
+      id: 4,
+      name: "Minimalist Clean",
+      description: "Simple and elegant design focusing on content clarity",
+      image: "/professional.png", 
+      category: "Minimalist",
+      type: 'minimalist'
+    },
+    {
+      id: 5,
+      name: "Bold Impact",
+      description: "Eye-catching bold design that makes a strong statement",
+      image: "/designer.png", 
+      category: "Bold",
+      type: 'bold'
+    },
   ];
 
   const TemplateCard = ({ template, index }: { template: typeof templates[0], index: number }) => {
@@ -57,10 +73,10 @@ const Templates = () => {
         }}
       >
         <Card className="overflow-hidden transition-all duration-500 border-0 dark:border dark:border-gray-800 shadow-xl group flex flex-col h-full dark:bg-gray-900 hover:shadow-2xl relative">
-          {/* Gradient overlay on hover */}
+          
           <div className={`absolute inset-0 bg-gradient-to-br ${template.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500 z-10 pointer-events-none`} />
           
-          {/* Image Container */}
+          
           <div className="aspect-[3/4] bg-gray-200 dark:bg-gray-800 relative overflow-hidden">
             <motion.img
               src={template.image}
@@ -70,7 +86,7 @@ const Templates = () => {
               transition={{ duration: 0.6, ease: "easeOut" }}
             />
             
-            {/* Overlay on hover */}
+            
             <motion.div 
               initial={{ opacity: 0 }}
               whileHover={{ opacity: 1 }}
@@ -91,7 +107,7 @@ const Templates = () => {
               </Link>
             </motion.div>
 
-            {/* Trending badge for first template */}
+            
             {index === 0 && (
               <motion.div
                 initial={{ x: -100, opacity: 0 }}
@@ -105,7 +121,7 @@ const Templates = () => {
             )}
           </div>
 
-          {/* Content */}
+          
           <div className="p-6 flex-1 flex flex-col relative z-20">
             <div className="flex items-center justify-between mb-3">
               <motion.h3 
@@ -135,14 +151,14 @@ const Templates = () => {
                     Use This Template
                     <ArrowLeft className="w-4 h-4 rotate-180 group-hover:translate-x-1 transition-transform duration-300" />
                   </span>
-                  {/* Shine effect */}
+                  
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                 </Button>
               </motion.div>
             </Link>
           </div>
 
-          {/* Decorative corner */}
+          
           <div className="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-gray-100 dark:from-gray-800 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-tl-full" />
         </Card>
       </motion.div>
@@ -151,7 +167,7 @@ const Templates = () => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 font-sans transition-colors duration-300">
-      {/* Animated Navigation */}
+      
       <motion.nav 
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -211,9 +227,9 @@ const Templates = () => {
         </div>
       </motion.nav>
 
-      {/* Header with Parallax Effect */}
+      
       <div className="relative container mx-auto px-4 py-20 md:py-28 bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/20 dark:from-gray-900 dark:via-blue-950/20 dark:to-purple-950/10 transition-colors duration-300 overflow-hidden">
-        {/* Animated background elements */}
+        
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {[...Array(15)].map((_, i) => (
             <motion.div
@@ -287,39 +303,57 @@ const Templates = () => {
           </motion.p>
         </div>
 
-        {/* Templates Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-4 md:px-0 relative z-10">
-          {templates.map((template, index) => (
-            <TemplateCard key={template.id} template={template} index={index} />
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto px-4 md:px-0">
+          {templates.map((template) => (
+            <Card key={template.id} className="overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border-0 dark:border dark:border-gray-800 shadow-lg group flex flex-col h-full dark:bg-gray-900">
+              <div className="aspect-[3/4] bg-gray-200 dark:bg-gray-800 relative overflow-hidden group-hover:shadow-inner">
+                <img
+                  src={template.image}
+                  alt={template.name}
+                  className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
+                  <Link to="/builder">
+                    <Button className="bg-white text-gray-900 hover:bg-gray-100 font-bold px-8 py-3 rounded-full">
+                      Preview Template
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+              <div className="p-6 flex flex-col flex-grow">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-bold text-lg text-gray-900 dark:text-white">{template.name}</h3>
+                  <span className="text-xs px-2 py-1 bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full font-medium border border-blue-100 dark:border-blue-800">
+                    {template.category}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 leading-relaxed flex-grow">{template.description}</p>
+                <Link to="/builder">
+                  <Button className="w-full bg-slate-900 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium shadow-md hover:shadow-lg transition-all duration-300">
+                    Use This Template
+                  </Button>
+                </Link>
+              </div>
+            </Card>
           ))}
         </div>
 
-        {/* Floating decorative elements */}
-        <motion.div
-          animate={{
-            y: [0, -20, 0],
-            rotate: [0, 5, 0],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute top-20 right-10 w-20 h-20 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-3xl blur-2xl"
-        />
-        <motion.div
-          animate={{
-            y: [0, 20, 0],
-            rotate: [0, -5, 0],
-          }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
-          className="absolute bottom-20 left-10 w-32 h-32 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"
-        />
+        
+        <div className="mt-16 text-center max-w-3xl mx-auto">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            Can't Decide? No Problem!
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-8">
+            You can easily switch between templates at any time while building your resume. 
+            Start with any template and change it later with a single click!
+          </p>
+          <Link to="/builder">
+            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4">
+              Start Building Now
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <Footer />
