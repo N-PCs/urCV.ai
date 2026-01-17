@@ -1,153 +1,282 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { FileText, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import ThemeToggle from "@/components/ThemeToggle";
 import Footer from "@/components/layout/Footer";
 
+type JobRole =
+  | "all"
+  | "software"
+  | "designer"
+  | "data"
+  | "product"
+  | "executive";
+
+type Category =
+  | "All"
+  | "Professional"
+  | "Creative"
+  | "Executive"
+  | "Minimalist"
+  | "Bold";
+
 const Templates = () => {
+  const [selectedRole, setSelectedRole] = useState<JobRole>("all");
+  const [selectedCategory, setSelectedCategory] = useState<Category>("All");
+
   const templates = [
     {
       id: 1,
       name: "Modern Professional",
       description: "Clean and modern design perfect for tech professionals",
-      image: "/professional.png",
+      image: "/Resume1.webp",
       category: "Professional",
-      type: 'modern'
+      roles: ["software", "data", "product"],
+      type: "modern",
     },
     {
       id: 2,
       name: "Creative Designer",
       description: "Eye-catching design for creative professionals",
-      image: "/designer.png",
+      image: "Resume2.jpg",
       category: "Creative",
-      type: 'creative'
+      roles: ["designer"],
+      type: "creative",
     },
     {
       id: 3,
       name: "Executive Standard",
       description: "Sophisticated template for senior executives",
-      image: "/executive.png",
+      image: "/Resume3.jpg",
       category: "Executive",
-      type: 'professional'
+      roles: ["executive", "product"],
+      type: "professional",
     },
     {
       id: 4,
       name: "Minimalist Clean",
       description: "Simple and elegant design focusing on content clarity",
-      image: "/professional.png", // Placeholder - replace with actual image
+      image: "/Resume1.webp",
       category: "Minimalist",
-      type: 'minimalist'
+      roles: ["software", "data"],
+      type: "minimalist",
     },
     {
       id: 5,
       name: "Bold Impact",
-      description: "Eye-catching bold design that makes a strong statement",
-      image: "/designer.png", // Placeholder - replace with actual image
+      description: "Strong, bold design that grabs recruiter attention",
+      image: "/Resume2.jpg",
       category: "Bold",
-      type: 'bold'
+      roles: ["designer", "product"],
+      type: "bold",
     },
+    {
+  id: 6,
+  name: "Tech Minimal Pro",
+  description: "ATS-optimized minimal layout trusted by tech recruiters",
+  image: "/Resume3.jpg",
+  category: "Professional",
+  roles: ["software", "data"],
+  type: "modern",
+},
+{
+  id: 7,
+  name: "Startup Impact",
+  description: "Modern startup-style resume with strong visual hierarchy",
+  image: "/Resume4.jpg",
+  category: "Bold",
+  roles: ["product", "software"],
+  type: "bold",
+},
+{
+  id: 8,
+  name: "Elegant Executive",
+  description: "High-end executive resume with clean typography",
+  image: "/Resume5.jpg",
+  category: "Executive",
+  roles: ["executive"],
+  type: "professional",
+},
+{
+  id: 9,
+  name: "UX Portfolio Resume",
+  description: "Creative layout designed for UI/UX and visual designers",
+  image: "/Resume4.jpg",
+  category: "Creative",
+  roles: ["designer"],
+  type: "creative",
+},
+{
+  id: 10,
+  name: "Data Focused",
+  description: "Designed for data analysts with skills & metrics emphasis",
+  image: "/Resume5.jpg",
+  category: "Professional",
+  roles: ["data"],
+  type: "modern",
+},
+{
+  id: 11,
+  name: "FAANG Classic",
+  description: "Simple, recruiter-approved format for top tech companies",
+  image: "/Resume6.jpg",
+  category: "Minimalist",
+  roles: ["software", "data"],
+  type: "minimalist",
+},
+{
+  id: 12,
+  name: "Creative Bold Grid",
+  description: "Bold grid-based layout for modern creative professionals",
+  image: "/Resume1.webp",
+  category: "Bold",
+  roles: ["designer", "product"],
+  type: "bold",
+},
+{
+  id: 13,
+  name: "Consulting Elite",
+  description: "Structured layout ideal for consulting & strategy roles",
+  image: "/Resume3.jpg",
+  category: "Professional",
+  roles: ["product", "executive"],
+  type: "professional",
+},
+
   ];
 
+  const filteredTemplates = templates.filter((template) => {
+    const roleMatch =
+      selectedRole === "all" || template.roles.includes(selectedRole);
+    const categoryMatch =
+      selectedCategory === "All" || template.category === selectedCategory;
+    return roleMatch && categoryMatch;
+  });
+
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-gray-950 transition-colors duration-300">
       {/* Navigation */}
-      <nav className="border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                <img alt="img" src="./websitelogo.png"/>
-              </div>
-              <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                urCV.ai
-              </span>
+      <nav className="border-b bg-white/80 dark:bg-gray-950/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <Link to="/" className="flex items-center gap-2">
+            <img src="./websitelogo.png" alt="logo" className="w-8 h-8" />
+            <span className="text-2xl font-bold">urCV.ai</span>
+          </Link>
+          <div className="flex items-center gap-3">
+            <Link to="/">
+              <Button variant="ghost">
+                <ArrowLeft className="w-4 h-4 mr-1" />
+                Back
+              </Button>
             </Link>
-            <div className="flex items-center space-x-4">
-              <Link to="/">
-                <Button variant="ghost" className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800">
-                  <ArrowLeft className="w-4 h-4" />
-                  <span>Back to Home</span>
-                </Button>
-              </Link>
-              <ThemeToggle />
-              <Link to="/builder">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md transition-all duration-200">
-                  Create Resume
-                </Button>
-              </Link>
-            </div>
+            <ThemeToggle />
+            <Link to="/builder">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                Create Resume
+              </Button>
+            </Link>
           </div>
         </div>
       </nav>
 
       {/* Header */}
-      <div className="container mx-auto px-4 py-16 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-        <div className="text-center mb-12">
-          <div className="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full text-xs font-semibold mb-4 tracking-wider uppercase">
-            Premium Collection
-          </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-6">
-            Choose Your Perfect
-            <span className="text-blue-600 dark:text-blue-400"> Resume Template </span>
+      <section className="bg-gray-50 dark:bg-gray-900 py-16">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+            Choose Your Perfect{" "}
+            <span className="text-blue-600">Resume Template</span>
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            Select from our professionally designed templates and customize them to create your perfect resume
+          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Filter templates by job role and category to find the best match for
+            your career.
           </p>
-        </div>
 
-        {/* Templates Grid - Improved responsive layout */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto px-4 md:px-0">
-          {templates.map((template) => (
-            <Card key={template.id} className="overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border-0 dark:border dark:border-gray-800 shadow-lg group flex flex-col h-full dark:bg-gray-900">
-              <div className="aspect-[3/4] bg-gray-200 dark:bg-gray-800 relative overflow-hidden group-hover:shadow-inner">
-                <img
-                  src={template.image}
-                  alt={template.name}
-                  className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
+          {/* Job Role Filter */}
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            {[
+              ["all", "All Roles"],
+              ["software", "Software"],
+              ["designer", "Designer"],
+              ["data", "Data"],
+              ["product", "Product"],
+              ["executive", "Executive"],
+            ].map(([value, label]) => (
+              <Button
+                key={value}
+                variant={selectedRole === value ? "default" : "outline"}
+                onClick={() => setSelectedRole(value as JobRole)}
+              >
+                {label}
+              </Button>
+            ))}
+          </div>
+
+          {/* Category Filter */}
+          <div className="mt-4 flex flex-wrap justify-center gap-3">
+            {[
+              "All",
+              "Professional",
+              "Creative",
+              "Executive",
+              "Minimalist",
+              "Bold",
+            ].map((cat) => (
+              <Button
+                key={cat}
+                size="sm"
+                variant={selectedCategory === cat ? "default" : "ghost"}
+                onClick={() => setSelectedCategory(cat as Category)}
+              >
+                {cat}
+              </Button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Templates Grid */}
+      <section className="container mx-auto px-4 py-16">
+        {filteredTemplates.length === 0 ? (
+          <p className="text-center text-gray-500">
+            No templates match your selection.
+          </p>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredTemplates.map((template) => (
+              <Card
+                key={template.id}
+                className="overflow-hidden hover:shadow-2xl transition-all group"
+              >
+                <div className="aspect-[3/4] overflow-hidden">
+                  <img
+                    src={template.image}
+                    alt={template.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
+                <div className="p-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="font-bold text-lg">{template.name}</h3>
+                    <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700">
+                      {template.category}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-4">
+                    {template.description}
+                  </p>
                   <Link to="/builder">
-                    <Button className="bg-white text-gray-900 hover:bg-gray-100 font-bold px-8 py-3 rounded-full">
-                      Preview Template
+                    <Button className="w-full bg-slate-900 text-white hover:bg-blue-600">
+                      Use This Template
                     </Button>
                   </Link>
                 </div>
-              </div>
-              <div className="p-6 flex flex-col flex-grow">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-bold text-lg text-gray-900 dark:text-white">{template.name}</h3>
-                  <span className="text-xs px-2 py-1 bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full font-medium border border-blue-100 dark:border-blue-800">
-                    {template.category}
-                  </span>
-                </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 leading-relaxed flex-grow">{template.description}</p>
-                <Link to="/builder">
-                  <Button className="w-full bg-slate-900 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium shadow-md hover:shadow-lg transition-all duration-300">
-                    Use This Template
-                  </Button>
-                </Link>
-              </div>
-            </Card>
-          ))}
-        </div>
-
-        {/* Additional Info Section */}
-        <div className="mt-16 text-center max-w-3xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            Can't Decide? No Problem!
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-8">
-            You can easily switch between templates at any time while building your resume. 
-            Start with any template and change it later with a single click!
-          </p>
-          <Link to="/builder">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4">
-              Start Building Now
-            </Button>
-          </Link>
-        </div>
-      </div>
+              </Card>
+            ))}
+          </div>
+        )}
+      </section>
 
       <Footer />
     </div>
