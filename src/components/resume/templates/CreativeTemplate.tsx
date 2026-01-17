@@ -24,10 +24,33 @@ const CreativeTemplate = ({ data }: TemplateProps) => {
                     <section>
                         <h3 className="text-slate-400 uppercase tracking-widest text-xs font-bold mb-4">Contact</h3>
                         <div className="space-y-3 text-sm text-slate-300">
-                            {data.personalInfo.email && <div className="break-words">{data.personalInfo.email}</div>}
+                            {data.personalInfo.email && (
+                                <a href={`mailto:${data.personalInfo.email}`} className="break-words block hover:text-blue-400 hover:underline transition-colors">
+                                    {data.personalInfo.email}
+                                </a>
+                            )}
                             {data.personalInfo.phone && <div>{data.personalInfo.phone}</div>}
                             {data.personalInfo.location && <div>{data.personalInfo.location}</div>}
-                            {data.personalInfo.linkedin && <div className="text-xs break-all">{data.personalInfo.linkedin}</div>}
+                            {data.personalInfo.linkedin && (
+                                <a
+                                    href={data.personalInfo.linkedin.startsWith('http') ? data.personalInfo.linkedin : `https://${data.personalInfo.linkedin}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-xs break-all block hover:text-blue-400 hover:underline transition-colors"
+                                >
+                                    {data.personalInfo.linkedin}
+                                </a>
+                            )}
+                            {data.personalInfo.portfolio && (
+                                <a
+                                    href={data.personalInfo.portfolio.startsWith('http') ? data.personalInfo.portfolio : `https://${data.personalInfo.portfolio}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-xs break-all block hover:text-blue-400 hover:underline transition-colors"
+                                >
+                                    {data.personalInfo.portfolio}
+                                </a>
+                            )}
                         </div>
                     </section>
 
@@ -124,10 +147,18 @@ const CreativeTemplate = ({ data }: TemplateProps) => {
                         <div className="space-y-3">
                             {Object.entries(data.codingProfiles || {}).map(([platform, url]) => {
                                 if (!url) return null;
+                                const link = url.startsWith('http') ? url : `https://${url}`;
                                 return (
                                     <div key={platform} className="flex items-center gap-4">
                                         <span className="font-bold text-slate-700 w-24">{platform.charAt(0).toUpperCase() + platform.slice(1)}:</span>
-                                        <span className="text-slate-600">{url}</span>
+                                        <a
+                                            href={link}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="text-blue-600 hover:underline break-all"
+                                        >
+                                            {url}
+                                        </a>
                                     </div>
                                 );
                             })}

@@ -12,10 +12,33 @@ const ProfessionalTemplate = ({ data }: TemplateProps) => {
                     {data.personalInfo.fullName || "Your Name"}
                 </h1>
                 <div className="flex justify-center flex-wrap gap-6 text-sm">
-                    {data.personalInfo.email && <span>{data.personalInfo.email}</span>}
+                    {data.personalInfo.email && (
+                        <a href={`mailto:${data.personalInfo.email}`} className="hover:text-blue-600 hover:underline transition-colors">
+                            {data.personalInfo.email}
+                        </a>
+                    )}
                     {data.personalInfo.phone && <span>{data.personalInfo.phone}</span>}
                     {data.personalInfo.location && <span>{data.personalInfo.location}</span>}
-                    {data.personalInfo.linkedin && <span>{data.personalInfo.linkedin}</span>}
+                    {data.personalInfo.linkedin && (
+                        <a
+                            href={data.personalInfo.linkedin.startsWith('http') ? data.personalInfo.linkedin : `https://${data.personalInfo.linkedin}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="hover:text-blue-600 hover:underline transition-colors"
+                        >
+                            {data.personalInfo.linkedin}
+                        </a>
+                    )}
+                    {data.personalInfo.portfolio && (
+                        <a
+                            href={data.personalInfo.portfolio.startsWith('http') ? data.personalInfo.portfolio : `https://${data.personalInfo.portfolio}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="hover:text-blue-600 hover:underline transition-colors"
+                        >
+                            {data.personalInfo.portfolio}
+                        </a>
+                    )}
                 </div>
             </div>
 
@@ -118,10 +141,18 @@ const ProfessionalTemplate = ({ data }: TemplateProps) => {
                     <div className="space-y-2 text-sm">
                         {Object.entries(data.codingProfiles || {}).map(([platform, url]) => {
                             if (!url) return null;
+                            const link = url.startsWith('http') ? url : `https://${url}`;
                             return (
                                 <div key={platform} className="flex justify-between">
                                     <span className="font-semibold">{platform.charAt(0).toUpperCase() + platform.slice(1)}:</span>
-                                    <span>{url}</span>
+                                    <a
+                                        href={link}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="text-blue-600 hover:underline break-all"
+                                    >
+                                        {url}
+                                    </a>
                                 </div>
                             );
                         })}

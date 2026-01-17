@@ -89,6 +89,21 @@ export const generateWordDocument = async (resumeData: ResumeData, templateName:
               }),
             ],
             alignment: AlignmentType.CENTER,
+            spacing: { after: 50 },
+          }),
+        ] : []),
+
+        // Portfolio
+        ...(resumeData.personalInfo.portfolio ? [
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: resumeData.personalInfo.portfolio,
+                size: template.bodySize * 2,
+                color: template.accentColor,
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
             spacing: { after: 200 },
           }),
         ] : []),
@@ -293,6 +308,30 @@ export const generateWordDocument = async (resumeData: ResumeData, templateName:
           ] : []),
         ] : []),
 
+        // Hobbies/Interests
+        ...(resumeData.hobbies && resumeData.hobbies.length > 0 ? [
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: "INTERESTS",
+                bold: template.headingBold,
+                size: template.headingSize * 2,
+                color: template.titleColor,
+              }),
+            ],
+            spacing: { after: 100 },
+            border: templateName === 'modern' ? {
+              bottom: { color: '2563EB', space: 1, style: BorderStyle.SINGLE, size: 6 },
+            } : undefined,
+          }),
+          new Paragraph({
+            children: [
+              new TextRun(resumeData.hobbies.join(", ")),
+            ],
+            spacing: { after: 150 },
+          }),
+        ] : []),
+
         // Coding Profiles
         ...(Object.entries(resumeData.codingProfiles || {}).length > 0 ? [
           new Paragraph({
@@ -385,7 +424,8 @@ const renderDefaultTemplate = (doc: jsPDF, data: ResumeData) => {
     data.personalInfo.email, 
     data.personalInfo.phone, 
     data.personalInfo.location, 
-    data.personalInfo.linkedin]
+    data.personalInfo.linkedin,
+    data.personalInfo.portfolio]
     .filter(Boolean)
     .join(" | ");
 
@@ -436,6 +476,14 @@ const renderDefaultTemplate = (doc: jsPDF, data: ResumeData) => {
       if(data.skills.certifications.length) addText("Certifications: " + data.skills.certifications.join(", "), 10);
   }
 
+  // Hobbies/Interests
+  if (data.hobbies && data.hobbies.length > 0) {
+    yPos += 5;
+    addText("Interests", 14, true);
+    doc.line(margin, yPos - 6, pageWidth - margin, yPos - 6);
+    addText(data.hobbies.join(", "), 10);
+  }
+
   // Coding Profiles
   const codingProfilesEntries = Object.entries(data.codingProfiles || {}).filter(([_, url]) => url);
   if (codingProfilesEntries.length > 0) {
@@ -470,7 +518,15 @@ const renderModernTemplate = (doc: jsPDF, data: ResumeData) => {
   doc.setFontSize(10);
   const contact = [data.personalInfo.email, data.personalInfo.phone, data.personalInfo.location].filter(Boolean).join("  •  ");
   doc.text(contact, margin, yPos);
-  yPos += 10;
+  yPos += 5;
+
+  // LinkedIn and Portfolio
+  const links = [data.personalInfo.linkedin, data.personalInfo.portfolio].filter(Boolean).join("  •  ");
+  if (links) {
+    doc.text(links, margin, yPos);
+    yPos += 5;
+  }
+  yPos += 5;
 
   if (data.personalInfo.summary) {
     const lines = doc.splitTextToSize(data.personalInfo.summary, pageWidth - margin * 2);
@@ -571,6 +627,21 @@ const renderModernTemplate = (doc: jsPDF, data: ResumeData) => {
             rightY += 5;
         });
     }
+
+    // Hobbies/Interests
+    if (data.hobbies && data.hobbies.length > 0) {
+        rightY += 6;
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.text("INTERESTS", rightColX, rightY);
+        rightY += 6;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        data.hobbies.forEach(hobby => {
+            doc.text(`• ${hobby}`, rightColX, rightY);
+            rightY += 5;
+        });
+    }
   }
 
   // Check if we need a new page for coding profiles
@@ -614,6 +685,10 @@ const renderProfessionalTemplate = (doc: jsPDF, data: ResumeData) => {
     if(data.personalInfo.linkedin) {
         yPos += 5;
         doc.text(data.personalInfo.linkedin, pageWidth / 2, yPos, { align: "center" });
+    }
+    if(data.personalInfo.portfolio) {
+        yPos += 5;
+        doc.text(data.personalInfo.portfolio, pageWidth / 2, yPos, { align: "center" });
     }
     yPos += 10;
 

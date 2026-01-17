@@ -12,10 +12,33 @@ const ModernTemplate = ({ data }: TemplateProps) => {
                     {data.personalInfo.fullName || "Your Name"}
                 </h1>
                 <div className="flex flex-wrap gap-4 mt-4 text-sm font-medium text-gray-600">
-                    {data.personalInfo.email && <span>{data.personalInfo.email}</span>}
+                    {data.personalInfo.email && (
+                        <a href={`mailto:${data.personalInfo.email}`} className="hover:text-blue-600 hover:underline transition-colors">
+                            {data.personalInfo.email}
+                        </a>
+                    )}
                     {data.personalInfo.phone && <span>• {data.personalInfo.phone}</span>}
                     {data.personalInfo.location && <span>• {data.personalInfo.location}</span>}
-                    {data.personalInfo.linkedin && <span>• {data.personalInfo.linkedin}</span>}
+                    {data.personalInfo.linkedin && (
+                        <a
+                            href={data.personalInfo.linkedin.startsWith('http') ? data.personalInfo.linkedin : `https://${data.personalInfo.linkedin}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="hover:text-blue-600 hover:underline transition-colors"
+                        >
+                            • {data.personalInfo.linkedin}
+                        </a>
+                    )}
+                    {data.personalInfo.portfolio && (
+                        <a
+                            href={data.personalInfo.portfolio.startsWith('http') ? data.personalInfo.portfolio : `https://${data.personalInfo.portfolio}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="hover:text-blue-600 hover:underline transition-colors"
+                        >
+                            • {data.personalInfo.portfolio}
+                        </a>
+                    )}
                 </div>
             </header>
 
@@ -90,7 +113,7 @@ const ModernTemplate = ({ data }: TemplateProps) => {
                         </div>
                     </section>
 
-                    {(data.codingProfiles?.github || data.codingProfiles?.leetcode || data.codingProfiles?.hackerrank || data.codingProfiles?.codeforces || data.codingProfiles?.kaggle) && (
+                    {Object.entries(data.codingProfiles || {}).filter(([_, url]) => url).length > 0 && (
                         <section>
                             <h2 className="text-xl font-bold text-gray-900 mb-4 uppercase">Coding Profiles</h2>
                             <ul className="space-y-2">

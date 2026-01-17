@@ -43,6 +43,8 @@ const CodingProfilesForm = ({ data, updateData }: CodingProfilesFormProps) => {
         return `https://codeforces.com/profile/${cleanUsername}`;
       case 'kaggle':
         return `https://kaggle.com/${cleanUsername}`;
+      case 'codechef':
+        return `https://codechef.com/users/${cleanUsername}`;
       default:
         return `https://${cleanUsername}`;
     }
@@ -60,7 +62,8 @@ const CodingProfilesForm = ({ data, updateData }: CodingProfilesFormProps) => {
     { id: 'leetcode', label: 'LeetCode', placeholder: 'username or leetcode.com/username' },
     { id: 'hackerrank', label: 'HackerRank', placeholder: 'username or hackerrank.com/username' },
     { id: 'codeforces', label: 'CodeForces', placeholder: 'username or codeforces.com/profile/username' },
-    { id: 'kaggle', label: 'Kaggle', placeholder: 'username or kaggle.com/username' }
+    { id: 'kaggle', label: 'Kaggle', placeholder: 'username or kaggle.com/username' },
+    { id: 'codechef', label: 'CodeChef', placeholder: 'username or codechef.com/users/username' }
   ];
 
   return (

@@ -40,6 +40,16 @@ const ResumePreview = ({ data, templateName = 'default' }: ResumePreviewProps) =
               {data.personalInfo.linkedin}
             </a>
           )}
+          {data.personalInfo.portfolio && (
+            <a
+              href={data.personalInfo.portfolio.startsWith('http') ? data.personalInfo.portfolio : `https://${data.personalInfo.portfolio}`}
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-blue-600 hover:underline transition-colors"
+            >
+              {data.personalInfo.portfolio}
+            </a>
+          )}
         </div>
       </div>
 
@@ -135,15 +145,15 @@ const ResumePreview = ({ data, templateName = 'default' }: ResumePreviewProps) =
         </div>
       )}
 
-      {(data.codingProfiles?.github || data.codingProfiles?.leetcode) && (
+      {Object.entries(data.codingProfiles || {}).filter(([_, url]) => url).length > 0 && (
         <div className="mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-3">Coding Profiles</h2>
           <div className="grid grid-cols-2 gap-4">
-             {Object.entries(data.codingProfiles).map(([key, value]) => (
+             {Object.entries(data.codingProfiles || {}).map(([key, value]) => (
                value && (
                  <div key={key}>
                    <span className="font-medium text-gray-800 capitalize block">{key}</span>
-                   <a href={value.startsWith('http') ? value : `https://${value}`} target="_blank" rel="noreferrer" className="text-blue-600 text-sm hover:underline">
+                   <a href={value.startsWith('http') ? value : `https://${value}`} target="_blank" rel="noreferrer" className="text-blue-600 text-sm hover:underline break-all">
                      {value}
                    </a>
                  </div>
