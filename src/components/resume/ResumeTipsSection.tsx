@@ -162,19 +162,18 @@ export default function ResumeTipsSection() {
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-16">
-
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             Craft a Resume That
-            <span className="leading-tight animate-fade-in text-blue-600 dark:text-blue-400"> Gets Noticed</span>
+            <span className="text-blue-600 dark:text-blue-400"> Gets Noticed</span>
           </h2>
-          <p className="text-s text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Expert strategies and real examples to help you stand out from hundreds of applicants
           </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
           {/* Left Side - Interactive Tips */}
-          <div>
+          <div className="order-2 lg:order-1">
             <div className="flex items-center gap-2 mb-6">
               <Lightbulb className="w-6 h-6 text-yellow-500" />
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Pro Tips</h3>
@@ -269,10 +268,30 @@ export default function ResumeTipsSection() {
                 </Card>
               </motion.div>
             </AnimatePresence>
+
+            {/* CTA Button - Positioned within left column */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mt-8"
+            >
+              <Link to="/resume-guide">
+                <Button
+                  variant="outline"
+                  className="w-full py-6 text-base border border-white/10 dark:border-white/10 hover:border-white/20 dark:hover:border-white/20 bg-white/5 dark:bg-white/5 hover:bg-white/10 dark:hover:bg-white/10 text-gray-900 dark:text-white group transition-all duration-300 rounded-xl"
+                >
+                  <span className="flex items-center justify-center gap-2 font-medium">
+                    See Complete Resume Guide with Before/After Examples
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </Button>
+              </Link>
+            </motion.div>
           </div>
 
           {/* Right Side - Resume Examples */}
-          <div>
+          <div className="order-1 lg:order-2">
             <div className="flex items-center gap-2 mb-6">
               <BookOpen className="w-6 h-6 text-blue-500" />
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Winning Examples</h3>
@@ -314,30 +333,9 @@ export default function ResumeTipsSection() {
                 </motion.div>
               ))}
             </div>
-
-            {/* CTA to Full Guide */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mt-8"
-            >
-              <Link to="/resume-guide">
-                <Button
-                  variant="outline"
-                  className="w-full py-6 text-base border-2 border-dashed border-blue-300 dark:border-blue-700 hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30 group"
-                >
-                  <span className="flex items-center gap-2">
-                    See Complete Resume Guide with Before/After Examples
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                </Button>
-              </Link>
-            </motion.div>
           </div>
         </div>
       </div>
     </section>
   );
 }
-
