@@ -12,6 +12,7 @@ import SkillsForm from "@/components/resume/SkillsForm";
 import ResumePreview from "@/components/resume/ResumePreview";
 import ResumeAnalysisComponent from "@/components/resume/ResumeAnalysis";
 import ResumeGenerator from "@/components/resume/ResumeGenerator";
+import FullPreviewModal from "@/components/resume/FullPreviewModal";
 import FloatingChatBot from "@/components/FloatingChatBot";
 import CodingProfilesForm from "@/components/resume/CodingProfilesForm";
 import HobbiesForm from "@/components/resume/HobbiesForm";
@@ -119,6 +120,7 @@ const Builder = () => {
 
   const [templateName, setTemplateName] = useState<'default' | 'modern' | 'professional' | 'creative' | 'minimalist' | 'bold'>('default');
   const [showGenerateModal, setShowGenerateModal] = useState(false);
+  const [showFullPreview, setShowFullPreview] = useState(false);
   
   // Mobile state for preview visibility
   const [showMobilePreview, setShowMobilePreview] = useState(false);
@@ -589,6 +591,17 @@ const Builder = () => {
                     </Button>
                   </div>
                 </div>
+                <div className="mt-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowFullPreview(true)}
+                    className="w-full flex items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700 hover:text-blue-800"
+                  >
+                    <FileText className="w-4 h-4" />
+                    View Full Preview
+                  </Button>
+                </div>
               </div>
               <div className="flex-1 overflow-auto bg-gray-200 p-4 min-h-[600px] flex justify-center">
                 <div className={`w-full ${templateName === 'creative' ? 'max-w-full' : 'max-w-[800px]'} bg-white shadow-xl transition-all duration-300 ease-in-out`}>
@@ -603,6 +616,15 @@ const Builder = () => {
       {/* Floating Chat Bot */}
       <FloatingChatBot />
 
+      {/* Full Preview Modal */}
+      <FullPreviewModal
+        isOpen={showFullPreview}
+        onClose={() => setShowFullPreview(false)}
+        data={resumeData}
+        templateName={templateName}
+      />
+
+      {/* Generate Modal */}
       <Dialog open={showGenerateModal} onOpenChange={setShowGenerateModal}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
