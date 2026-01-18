@@ -353,20 +353,21 @@ export default function ResumeTipsSection() {
             </AnimatePresence>
 
             {/* CTA Button - Positioned within left column */}
+            {/* CTA to Full Guide */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="mt-8"
             >
-              <Link to="/resume-guide">
+              <Link to="/resume-guide" className="block w-full">
                 <Button
                   variant="outline"
-                  className="w-full py-6 text-base border border-white/10 dark:border-white/10 hover:border-white/20 dark:hover:border-white/20 bg-white/5 dark:bg-white/5 hover:bg-white/10 dark:hover:bg-white/10 text-gray-900 dark:text-white group transition-all duration-300 rounded-xl"
+                  className="w-full py-6 text-sm sm:text-base border-2 border-solid border-blue-300 dark:border-blue-700 hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30 group"
                 >
-                  <span className="flex items-center justify-center gap-2 font-medium">
+                  <span className="flex items-left justify-left gap-2 text-left leading-relaxed text-balance">
                     See Complete Resume Guide with Before/After Examples
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </Button>
               </Link>
@@ -422,25 +423,7 @@ export default function ResumeTipsSection() {
               ))}
             </div>
 
-            {/* CTA to Full Guide */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mt-8"
-            >
-              <Link to="/resume-guide" className="block w-full">
-                <Button
-                  variant="outline"
-                  className="w-full py-6 text-sm sm:text-base border-2 border-solid border-blue-300 dark:border-blue-700 hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30 group"
-                >
-                  <span className="flex items-left justify-left gap-2 text-left leading-relaxed text-balance">
-                    See Complete Resume Guide with Before/After Examples
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                </Button>
-              </Link>
-            </motion.div>
+            
           </div>
         </div>
       </div>
