@@ -6,81 +6,98 @@ import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useRef } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
 import Footer from "@/components/layout/Footer";
-import LogoLoop from '@/components/LogoLoop';
-import ResumeTipsSection from '@/components/resume/ResumeTipsSection';
-import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiVite, SiVercel, SiFigma, SiGithub, SiNodedotjs, SiExpress, SiMongodb, SiPostgresql, SiDocker, SiGooglecloud, SiFirebase } from 'react-icons/si';
+import LogoLoop from "@/components/LogoLoop";
+import ResumeTipsSection from "@/components/resume/ResumeTipsSection";
+import { GridScan } from "@/components/GridScan";
+import {
+  SiReact,
+  SiNextdotjs,
+  SiTypescript,
+  SiTailwindcss,
+  SiVite,
+  SiVercel,
+  SiFigma,
+  SiGithub,
+  SiNodedotjs,
+  SiExpress,
+  SiMongodb,
+  SiPostgresql,
+  SiDocker,
+  SiGooglecloud,
+  SiFirebase,
+} from "react-icons/si";
 
 // Create a larger array of logos for better animation
 const techLogos = [
-  { 
+  {
     node: <SiReact className="text-[#61DAFB]" size={48} />,
     title: "React",
-    href: "https://react.dev"
+    href: "https://react.dev",
   },
-  { 
+  {
     node: <SiNextdotjs className="text-white" size={48} />,
     title: "Next.js",
-    href: "https://nextjs.org"
+    href: "https://nextjs.org",
   },
-  { 
+  {
     node: <SiTypescript className="text-[#3178C6]" size={48} />,
     title: "TypeScript",
-    href: "https://www.typescriptlang.org"
+    href: "https://www.typescriptlang.org",
   },
-  { 
+  {
     node: <SiTailwindcss className="text-[#06B6D4]" size={48} />,
     title: "Tailwind CSS",
-    href: "https://tailwindcss.com"
+    href: "https://tailwindcss.com",
   },
-  { 
+  {
     node: <SiVite className="text-[#646CFF]" size={48} />,
     title: "Vite",
-    href: "https://vitejs.dev"
+    href: "https://vitejs.dev",
   },
-  { 
+  {
     node: <SiVercel className="text-white" size={48} />,
     title: "Vercel",
-    href: "https://vercel.com"
+    href: "https://vercel.com",
   },
-  { 
+  {
     node: <SiFigma className="text-[#F24E1E]" size={48} />,
     title: "Figma",
-    href: "https://figma.com"
+    href: "https://figma.com",
   },
-  { 
+  {
     node: <SiGithub className="text-white" size={48} />,
     title: "GitHub",
-    href: "https://github.com"
+    href: "https://github.com",
   },
-  { 
+  {
     node: <SiNodedotjs className="text-[#339933]" size={48} />,
     title: "Node.js",
-    href: "https://nodejs.org"
+    href: "https://nodejs.org",
   },
-  { 
+  {
     node: <SiExpress className="text-white" size={48} />,
     title: "Express",
-    href: "https://expressjs.com"
+    href: "https://expressjs.com",
   },
-  { 
+  {
     node: <SiMongodb className="text-[#47A248]" size={48} />,
     title: "MongoDB",
-    href: "https://mongodb.com"
+    href: "https://mongodb.com",
   },
-  { 
+  {
     node: <SiDocker className="text-[#2496ED]" size={48} />,
     title: "Docker",
-    href: "https://docker.com"
+    href: "https://docker.com",
   },
   {
     node: <SiGooglecloud className="text-white" size={48} />,
     title: "Google Cloud",
-    href: "https://cloud.google.com"
+    href: "https://cloud.google.com",
   },
-  { 
+  {
     node: <SiFirebase className="text-[#FFCA28]" size={48} />,
     title: "Firebase",
-    href: "https://firebase.google.com"
+    href: "https://firebase.google.com",
   },
 ];
 
@@ -398,6 +415,9 @@ const Index = () => {
       </div>
 
       <ResumeTipsSection />
+
+      <TestimonialsSection refreshTrigger={refreshTrigger} />
+      <ReviewForm onReviewSubmitted={handleReviewSubmitted} />
 
       {/* CTA Section with Logo Loop */}
       <motion.div 

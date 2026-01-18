@@ -122,7 +122,7 @@ const AnimatedRoutes = () => {
 };
 
 const App = () => {
-  const [showLoading, setShowLoading] = useState(true);
+  const [showLoading, setShowLoading] = useState(false);
 
   const handleLoadingComplete = () => {
     setShowLoading(false);

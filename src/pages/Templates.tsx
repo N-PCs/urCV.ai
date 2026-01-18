@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FileText, ArrowLeft, Sparkles, TrendingUp } from "lucide-react";
@@ -6,6 +7,26 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
 import Footer from "@/components/layout/Footer";
+import {
+  Sheet,
+  SheetContent
+} from "@/components/ui/sheet";
+
+type JobRole =
+  | "all"
+  | "software"
+  | "designer"
+  | "data"
+  | "product"
+  | "executive";
+
+type Category =
+  | "All"
+  | "Professional"
+  | "Creative"
+  | "Executive"
+  | "Minimalist"
+  | "Bold";
 
 const Templates = () => {
   const headerRef = useRef(null);
@@ -16,7 +37,7 @@ const Templates = () => {
       id: 1,
       name: "Modern Professional",
       description: "Clean and modern design perfect for tech professionals",
-      image: "/professional.png",
+      image: "/Resume1.webp",
       category: "Professional",
       type: 'modern',
       color: "from-blue-500 to-cyan-500"
@@ -25,7 +46,7 @@ const Templates = () => {
       id: 2,
       name: "Creative Designer",
       description: "Eye-catching design for creative professionals",
-      image: "/designer.png",
+      image: "Resume2.jpg",
       category: "Creative",
       type: 'creative',
       color: "from-purple-500 to-pink-500"
@@ -34,7 +55,52 @@ const Templates = () => {
       id: 3,
       name: "Executive Standard",
       description: "Sophisticated template for senior executives",
-      image: "/executive.png",
+      image: "/Resume3.jpg",
+      category: "Executive",
+      roles: ["executive", "product"],
+      type: "professional",
+    },
+    {
+      id: 4,
+      name: "Minimalist Clean",
+      description: "Simple and elegant design focusing on content clarity",
+      image: "/Resume1.webp",
+      category: "Minimalist",
+      roles: ["software", "data"],
+      type: "minimalist",
+    },
+    {
+      id: 5,
+      name: "Bold Impact",
+      description: "Strong, bold design that grabs recruiter attention",
+      image: "/Resume2.jpg",
+      category: "Bold",
+      roles: ["designer", "product"],
+      type: "bold",
+    },
+    {
+      id: 6,
+      name: "Tech Minimal Pro",
+      description: "ATS-optimized minimal layout trusted by tech recruiters",
+      image: "/Resume3.jpg",
+      category: "Professional",
+      roles: ["software", "data"],
+      type: "modern",
+    },
+    {
+      id: 7,
+      name: "Startup Impact",
+      description: "Modern startup-style resume with strong visual hierarchy",
+      image: "/Resume4.jpg",
+      category: "Bold",
+      roles: ["product", "software"],
+      type: "bold",
+    },
+    {
+      id: 8,
+      name: "Elegant Executive",
+      description: "High-end executive resume with clean typography",
+      image: "/Resume5.jpg",
       category: "Executive",
       type: 'professional',
       color: "from-emerald-500 to-teal-500"
@@ -171,6 +237,59 @@ const Templates = () => {
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 urCV.ai
               </span>
+            )}
+            {selectedCategory !== "All" && (
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-green-100 text-green-700">
+                {selectedCategory}
+              </span>
+            )}
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+
+  return (
+    <div className="min-h-screen bg-white dark:bg-gray-950 transition-colors duration-300">
+      {/* Navigation */}
+      <nav className="border-b bg-white/80 dark:bg-gray-950/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-3 md:py-4 flex justify-between items-center">
+          <Link to="/" className="flex items-center gap-2">
+            <img
+              src="./websitelogo.png"
+              alt="logo"
+              className="w-7 h-7 md:w-8 md:h-8"
+            />
+            <span className="text-xl md:text-2xl font-bold">urCV.ai</span>
+          </Link>
+          <div className="flex items-center gap-2 md:gap-3">
+            <Link to="/">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hidden md:flex md:gap-1"
+              >
+                <ArrowLeft className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                <span className="hidden md:inline">Back</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden p-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </Button>
+            </Link>
+            <ThemeToggle />
+            <MobileFilterButton />
+            <Link to="/builder">
+              <Button
+                className="bg-blue-600 hover:bg-blue-700 text-white text-sm md:text-base"
+                size="sm"
+              >
+                <span className="hidden sm:inline">Create Resume</span>
+                <span className="sm:hidden">Create</span>
+              </Button>
             </Link>
             <div className="flex items-center space-x-4">
               <Link to="/">

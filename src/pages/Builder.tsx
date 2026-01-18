@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Added useEffect
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,6 +15,9 @@ import ResumeAnalysisComponent from "@/components/resume/ResumeAnalysis";
 import ResumeGenerator from "@/components/resume/ResumeGenerator";
 import FloatingChatBot from "@/components/FloatingChatBot";
 import CodingProfilesForm from "@/components/resume/CodingProfilesForm";
+import HobbiesForm from "@/components/resume/HobbiesForm";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ResumeDownloadOptions } from "@/components/resume/ResumeGenerator";
 
 export interface ResumeData {
   personalInfo: {
@@ -23,7 +26,9 @@ export interface ResumeData {
     phone: string;
     location: string;
     linkedin: string;
+    portfolio: string; 
     summary: string;
+    photoUrl: string
   };
   education: Array<{
     id: string;
@@ -48,6 +53,7 @@ export interface ResumeData {
     languages: string[];
     certifications: string[];
   };
+  hobbies?: string[];
   codingProfiles: {
     github?: string;
     leetcode?: string;
@@ -67,7 +73,9 @@ const Builder = () => {
       phone: "+1 (555) 012-3456",
       location: "San Francisco, CA",
       linkedin: "linkedin.com/in/alexmorgan",
+      portfolio: "alexmorgan.com",
       summary: "Innovative and results-oriented professional with a strong background in technology and design. Skilled in project management, team leadership, and creative problem-solving. Committed to delivering high-quality solutions and driving business growth.",
+      photoUrl: ""
     },
     education: [
       {
@@ -98,17 +106,63 @@ const Builder = () => {
     },
     codingProfiles: {
       github: "",
-      leetcode: ""
+      leetcode: "",
+      hackerrank: "",
+      codeforces: "",
+      kaggle: "",
+      codechef: ""
     },
   });
 
-  const [templateName, setTemplateName] = useState<'default' | 'modern' | 'professional' | 'creative'>('default');
+  const [templateName, setTemplateName] = useState<'default' | 'modern' | 'professional' | 'creative' | 'minimalist' | 'bold'>('default');
+  const [showGenerateModal, setShowGenerateModal] = useState(false);
+  
+  // Mobile state for preview visibility
+  const [showMobilePreview, setShowMobilePreview] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Desktop sliding window state - only used on desktop
+  const [leftWidth, setLeftWidth] = useState(60); // percentage
+  const [isResizing, setIsResizing] = useState(false);
+
+  const startResize = () => setIsResizing(true);
+  const stopResize = () => setIsResizing(false);
+
+  const handleResize = (e: MouseEvent) => {
+    if (!isResizing || e.buttons !== 1) return;
+
+    const newWidth = (e.clientX / window.innerWidth) * 100;
+    if (newWidth > 30 && newWidth < 75) {
+      setLeftWidth(newWidth);
+    }
+  };
+
+  if (isResizing) {
+    window.addEventListener("mousemove", handleResize);
+    window.addEventListener("mouseup", stopResize);
+  } else {
+    window.removeEventListener("mousemove", handleResize);
+    window.removeEventListener("mouseup", stopResize);
+  }
 
   const steps = [
     { title: "Personal Info", component: PersonalInfoForm },
     { title: "Education", component: EducationForm },
     { title: "Experience", component: ExperienceForm },
     { title: "Skills", component: SkillsForm },
+    { title: "Hobbies", component: HobbiesForm },
     { title: "Coding Profiles", component: CodingProfilesForm },
   ];
 
@@ -249,6 +303,21 @@ const Builder = () => {
           </div>
         </div>
       </motion.div>
+
+      {/* Mobile Preview Toggle Button - Only on mobile */}
+      {isMobile && (
+        <div className="container mx-auto px-4 mb-4">
+          <Button
+            variant="outline"
+            className="w-full flex items-center justify-center gap-2"
+            onClick={() => setShowMobilePreview(!showMobilePreview)}
+          >
+            <FileText className="w-4 h-4" />
+            {showMobilePreview ? "Hide Preview" : "Show Preview"}
+            <ArrowRight className={`w-4 h-4 transition-transform ${showMobilePreview ? 'rotate-90' : ''}`} />
+          </Button>
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="container mx-auto px-4 pb-8">
@@ -451,8 +520,17 @@ const Builder = () => {
 
       {/* Floating Chat Bot */}
       <FloatingChatBot />
+
+      <Dialog open={showGenerateModal} onOpenChange={setShowGenerateModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Export your resume</DialogTitle>
+          </DialogHeader>
+          <ResumeDownloadOptions data={resumeData} templateName={templateName} showHeading={false} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
-};
+}
 
 export default Builder;
