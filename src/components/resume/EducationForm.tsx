@@ -26,7 +26,7 @@ const EducationForm = ({ data, updateData }: EducationFormProps) => {
         id: Date.now().toString(),
         ...newEducation,
       };
-      updateData('education', [...data.education, education]);
+      updateData("education", [...data.education, education]);
       setNewEducation({
         degree: "",
         school: "",
@@ -38,7 +38,10 @@ const EducationForm = ({ data, updateData }: EducationFormProps) => {
   };
 
   const removeEducation = (id: string) => {
-    updateData('education', data.education.filter(edu => edu.id !== id));
+    updateData(
+      "education",
+      data.education.filter((edu) => edu.id !== id),
+    );
   };
 
   return (
@@ -50,8 +53,12 @@ const EducationForm = ({ data, updateData }: EducationFormProps) => {
             <div>
               <h4 className="font-semibold text-gray-900">{edu.degree}</h4>
               <p className="text-gray-600">{edu.school}</p>
-              <p className="text-sm text-gray-500">{edu.location} • {edu.graduationDate}</p>
-              {edu.gpa && <p className="text-sm text-gray-500">GPA: {edu.gpa}</p>}
+              <p className="text-sm text-gray-500">
+                {edu.location} • {edu.graduationDate}
+              </p>
+              {edu.gpa && (
+                <p className="text-sm text-gray-500">GPA: {edu.gpa}</p>
+              )}
             </div>
             <Button
               variant="outline"
@@ -79,7 +86,9 @@ const EducationForm = ({ data, updateData }: EducationFormProps) => {
               <Input
                 id="degree"
                 value={newEducation.degree}
-                onChange={(e) => setNewEducation({...newEducation, degree: e.target.value})}
+                onChange={(e) =>
+                  setNewEducation({ ...newEducation, degree: e.target.value })
+                }
                 placeholder="Bachelor of Science in Computer Science"
                 className="mt-1"
               />
@@ -89,7 +98,9 @@ const EducationForm = ({ data, updateData }: EducationFormProps) => {
               <Input
                 id="school"
                 value={newEducation.school}
-                onChange={(e) => setNewEducation({...newEducation, school: e.target.value})}
+                onChange={(e) =>
+                  setNewEducation({ ...newEducation, school: e.target.value })
+                }
                 placeholder="University of Technology"
                 className="mt-1"
               />
@@ -102,7 +113,9 @@ const EducationForm = ({ data, updateData }: EducationFormProps) => {
               <Input
                 id="location"
                 value={newEducation.location}
-                onChange={(e) => setNewEducation({...newEducation, location: e.target.value})}
+                onChange={(e) =>
+                  setNewEducation({ ...newEducation, location: e.target.value })
+                }
                 placeholder="Boston, MA"
                 className="mt-1"
               />
@@ -112,7 +125,12 @@ const EducationForm = ({ data, updateData }: EducationFormProps) => {
               <Input
                 id="graduationDate"
                 value={newEducation.graduationDate}
-                onChange={(e) => setNewEducation({...newEducation, graduationDate: e.target.value})}
+                onChange={(e) =>
+                  setNewEducation({
+                    ...newEducation,
+                    graduationDate: e.target.value,
+                  })
+                }
                 placeholder="May 2024"
                 className="mt-1"
               />
@@ -122,14 +140,16 @@ const EducationForm = ({ data, updateData }: EducationFormProps) => {
               <Input
                 id="gpa"
                 value={newEducation.gpa}
-                onChange={(e) => setNewEducation({...newEducation, gpa: e.target.value})}
+                onChange={(e) =>
+                  setNewEducation({ ...newEducation, gpa: e.target.value })
+                }
                 placeholder="3.8"
                 className="mt-1"
               />
             </div>
           </div>
 
-          <Button 
+          <Button
             onClick={addEducation}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white"
           >

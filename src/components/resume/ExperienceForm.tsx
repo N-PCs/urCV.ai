@@ -30,7 +30,7 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
         id: Date.now().toString(),
         ...newExperience,
       };
-      updateData('experience', [...data.experience, experience]);
+      updateData("experience", [...data.experience, experience]);
       setNewExperience({
         title: "",
         company: "",
@@ -44,7 +44,10 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
   };
 
   const removeExperience = (id: string) => {
-    updateData('experience', data.experience.filter(exp => exp.id !== id));
+    updateData(
+      "experience",
+      data.experience.filter((exp) => exp.id !== id),
+    );
   };
 
   return (
@@ -57,7 +60,8 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
               <h4 className="font-semibold text-gray-900">{exp.title}</h4>
               <p className="text-gray-600">{exp.company}</p>
               <p className="text-sm text-gray-500">
-                {exp.location} • {exp.startDate} - {exp.current ? "Present" : exp.endDate}
+                {exp.location} • {exp.startDate} -{" "}
+                {exp.current ? "Present" : exp.endDate}
               </p>
               {exp.description && (
                 <p className="text-sm text-gray-700 mt-2">{exp.description}</p>
@@ -79,7 +83,9 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
       <Card className="p-6 border-2 border-dashed border-gray-300">
         <div className="flex items-center space-x-2 mb-4">
           <User className="w-5 h-5 text-purple-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Add Experience</h3>
+          <h3 className="text-lg font-semibold text-gray-900">
+            Add Experience
+          </h3>
         </div>
 
         <div className="space-y-4">
@@ -89,7 +95,9 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
               <Input
                 id="title"
                 value={newExperience.title}
-                onChange={(e) => setNewExperience({...newExperience, title: e.target.value})}
+                onChange={(e) =>
+                  setNewExperience({ ...newExperience, title: e.target.value })
+                }
                 placeholder="Software Engineer"
                 className="mt-1"
               />
@@ -99,7 +107,12 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
               <Input
                 id="company"
                 value={newExperience.company}
-                onChange={(e) => setNewExperience({...newExperience, company: e.target.value})}
+                onChange={(e) =>
+                  setNewExperience({
+                    ...newExperience,
+                    company: e.target.value,
+                  })
+                }
                 placeholder="Tech Corp"
                 className="mt-1"
               />
@@ -111,7 +124,9 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
             <Input
               id="location"
               value={newExperience.location}
-              onChange={(e) => setNewExperience({...newExperience, location: e.target.value})}
+              onChange={(e) =>
+                setNewExperience({ ...newExperience, location: e.target.value })
+              }
               placeholder="San Francisco, CA"
               className="mt-1"
             />
@@ -123,7 +138,12 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
               <Input
                 id="startDate"
                 value={newExperience.startDate}
-                onChange={(e) => setNewExperience({...newExperience, startDate: e.target.value})}
+                onChange={(e) =>
+                  setNewExperience({
+                    ...newExperience,
+                    startDate: e.target.value,
+                  })
+                }
                 placeholder="January 2023"
                 className="mt-1"
               />
@@ -133,7 +153,12 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
               <Input
                 id="endDate"
                 value={newExperience.endDate}
-                onChange={(e) => setNewExperience({...newExperience, endDate: e.target.value})}
+                onChange={(e) =>
+                  setNewExperience({
+                    ...newExperience,
+                    endDate: e.target.value,
+                  })
+                }
                 placeholder="December 2023"
                 disabled={newExperience.current}
                 className="mt-1"
@@ -145,7 +170,12 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
             <Checkbox
               id="current"
               checked={newExperience.current}
-              onCheckedChange={(checked) => setNewExperience({...newExperience, current: checked as boolean})}
+              onCheckedChange={(checked) =>
+                setNewExperience({
+                  ...newExperience,
+                  current: checked as boolean,
+                })
+              }
             />
             <Label htmlFor="current" className="text-sm">
               I currently work here
@@ -157,13 +187,18 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
             <Textarea
               id="description"
               value={newExperience.description}
-              onChange={(e) => setNewExperience({...newExperience, description: e.target.value})}
+              onChange={(e) =>
+                setNewExperience({
+                  ...newExperience,
+                  description: e.target.value,
+                })
+              }
               placeholder="Describe your responsibilities and achievements..."
               className="mt-1 min-h-[100px]"
             />
           </div>
 
-          <Button 
+          <Button
             onClick={addExperience}
             className="w-full bg-purple-600 hover:bg-purple-700 text-white"
           >

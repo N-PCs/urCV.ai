@@ -4,85 +4,111 @@ import { FileText, User, Edit } from "lucide-react";
 import { Link } from "react-router-dom";
 import ThemeToggle from "@/components/ThemeToggle";
 import Footer from "@/components/layout/Footer";
-import LogoLoop from '@/components/LogoLoop';
-import ResumeTipsSection from '@/components/resume/ResumeTipsSection';
-import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiVite, SiVercel, SiFigma, SiGithub, SiNodedotjs, SiExpress, SiMongodb, SiPostgresql, SiDocker, SiGooglecloud, SiFirebase } from 'react-icons/si';
+import LogoLoop from "@/components/LogoLoop";
+import ResumeTipsSection from "@/components/resume/ResumeTipsSection";
+import {
+  SiReact,
+  SiNextdotjs,
+  SiTypescript,
+  SiTailwindcss,
+  SiVite,
+  SiVercel,
+  SiFigma,
+  SiGithub,
+  SiNodedotjs,
+  SiExpress,
+  SiMongodb,
+  SiPostgresql,
+  SiDocker,
+  SiGooglecloud,
+  SiFirebase,
+} from "react-icons/si";
 
 // Create a larger array of logos for better animation
 const techLogos = [
-  { 
+  {
     node: <SiReact className="text-[#61DAFB]" size={48} />,
     title: "React",
-    href: "https://react.dev"
+    href: "https://react.dev",
   },
-  { 
+  {
     node: <SiNextdotjs className="text-white" size={48} />,
     title: "Next.js",
-    href: "https://nextjs.org"
+    href: "https://nextjs.org",
   },
-  { 
+  {
     node: <SiTypescript className="text-[#3178C6]" size={48} />,
     title: "TypeScript",
-    href: "https://www.typescriptlang.org"
+    href: "https://www.typescriptlang.org",
   },
-  { 
+  {
     node: <SiTailwindcss className="text-[#06B6D4]" size={48} />,
     title: "Tailwind CSS",
-    href: "https://tailwindcss.com"
+    href: "https://tailwindcss.com",
   },
-  { 
+  {
     node: <SiVite className="text-[#646CFF]" size={48} />,
     title: "Vite",
-    href: "https://vitejs.dev"
+    href: "https://vitejs.dev",
   },
-  { 
+  {
     node: <SiVercel className="text-white" size={48} />,
     title: "Vercel",
-    href: "https://vercel.com"
+    href: "https://vercel.com",
   },
-  { 
+  {
     node: <SiFigma className="text-[#F24E1E]" size={48} />,
     title: "Figma",
-    href: "https://figma.com"
+    href: "https://figma.com",
   },
-  { 
+  {
     node: <SiGithub className="text-white" size={48} />,
     title: "GitHub",
-    href: "https://github.com"
+    href: "https://github.com",
   },
-  { 
+  {
     node: <SiNodedotjs className="text-[#339933]" size={48} />,
     title: "Node.js",
-    href: "https://nodejs.org"
+    href: "https://nodejs.org",
   },
-  { 
+  {
     node: <SiExpress className="text-white" size={48} />,
     title: "Express",
-    href: "https://expressjs.com"
+    href: "https://expressjs.com",
   },
-  { 
+  {
     node: <SiMongodb className="text-[#47A248]" size={48} />,
     title: "MongoDB",
-    href: "https://mongodb.com"
+    href: "https://mongodb.com",
   },
-  { 
+  {
     node: <SiDocker className="text-[#2496ED]" size={48} />,
     title: "Docker",
-    href: "https://docker.com"
+    href: "https://docker.com",
   },
   {
     node: <SiGooglecloud className="text-white" size={48} />,
     title: "Google Cloud",
-    href: "https://cloud.google.com"
+    href: "https://cloud.google.com",
   },
-  { 
+  {
     node: <SiFirebase className="text-[#FFCA28]" size={48} />,
     title: "Firebase",
-    href: "https://firebase.google.com"
+    href: "https://firebase.google.com",
   },
 ];
 
+import { useState } from "react";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import ReviewForm from "@/components/ReviewForm";
+
 const Index = () => {
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  const handleReviewSubmitted = () => {
+    setRefreshTrigger((prev) => prev + 1);
+  };
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 overflow-hidden font-sans transition-colors duration-300">
       {/* Navigation */}
@@ -109,30 +135,69 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero Section - FIXED: Clean Radial Gradient (No Dirty Grid) */}
       <div className="container mx-auto px-4 py-24 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-200/50 via-slate-50 to-white dark:from-blue-950/50 dark:via-gray-950 dark:to-gray-950 transition-colors duration-300">
         <div className="text-center max-w-4xl mx-auto">
           <div className="inline-block px-4 py-2 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full text-sm font-semibold mb-6 animate-fade-in">
             New: AI-Powered Resume Analysis
           </div>
-          <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight animate-fade-in">
+          <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight animate-fade-in">
             Build Your
-            <span className="text-blue-600 dark:text-blue-400"> Professional CV </span>
+            <span className="text-blue-600 dark:text-blue-400">
+              {" "}
+              Professional CV{" "}
+            </span>
             in Minutes
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-delayed">
+          <p className="text-xl md:text-xl text-gray-700 dark:text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in-delayed">
             Create stunning, ATS-friendly resumes with our intelligent builder.
-            Stand out from the crowd with professional templates designed by experts.
+            Stand out from the crowd with professional templates designed by
+            experts.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
             <Link to="/builder">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-semibold text-lg">
+              <Button
+                size="lg"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-semibold text-lg"
+              >
                 Start Building Now
+                <svg
+                  className="w-5 h-5 ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
               </Button>
             </Link>
             <Link to="/templates">
-              <Button size="lg" variant="outline" className="border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-blue-600 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 px-8 py-4 rounded-lg transition-all duration-300 font-semibold text-lg">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-blue-600 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 px-8 py-6 rounded-xl transition-all duration-300 font-semibold text-lg"
+              >
                 View Templates
+                <svg
+                  className="w-5 h-5 ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
               </Button>
             </Link>
           </div>
@@ -146,38 +211,48 @@ const Index = () => {
             Why Choose urCV.ai?
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Experience the future of resume building with our AI-powered platform
+            Experience the future of resume building with our AI-powered
+            platform
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 dark:bg-gray-900 shadow-sm animate-slide-in-left group">
-            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 transition-colors duration-300">
+          <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 dark:bg-gray-900 shadow-sm animate-slide-in-left group hover:border-blue-200 dark:hover:border-blue-800">
+            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 transition-colors duration-300 group-hover:scale-110">
               <User className="w-8 h-8 text-blue-600 dark:text-blue-400 group-hover:text-white transition-colors duration-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Smart Input Forms</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              Smart Input Forms
+            </h3>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              Intuitive forms that guide you through every section, ensuring you don't miss any important details
+              Intuitive forms that guide you through every section, ensuring you
+              don't miss any important details
             </p>
           </Card>
 
-          <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 dark:bg-gray-900 shadow-sm animate-fade-in animation-delay-200 group">
-            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 transition-colors duration-300">
+          <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 dark:bg-gray-900 shadow-sm animate-fade-in animation-delay-200 group hover:border-blue-200 dark:hover:border-blue-800">
+            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 transition-colors duration-300 group-hover:scale-110">
               <Edit className="w-8 h-8 text-blue-600 dark:text-blue-400 group-hover:text-white transition-colors duration-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">AI Enhancement</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              AI Enhancement
+            </h3>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              Our AI analyzes your experience and provides intelligent suggestions to improve impact and readability
+              Our AI analyzes your experience and provides intelligent
+              suggestions to improve impact and readability
             </p>
           </Card>
 
-          <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 dark:bg-gray-900 shadow-sm animate-slide-in-right group">
-            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 transition-colors duration-300">
+          <Card className="p-8 text-center hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 dark:bg-gray-900 shadow-sm animate-slide-in-right group hover:border-blue-200 dark:hover:border-blue-800">
+            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 transition-colors duration-300 group-hover:scale-110">
               <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400 group-hover:text-white transition-colors duration-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Professional Templates</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              Professional Templates
+            </h3>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              Beautiful, ATS-friendly templates designed by professionals to help you make the best impression
+              Beautiful, ATS-friendly templates designed by professionals to
+              help you make the best impression
             </p>
           </Card>
         </div>
@@ -185,55 +260,70 @@ const Index = () => {
 
       <ResumeTipsSection />
 
+      <TestimonialsSection refreshTrigger={refreshTrigger} />
+      <ReviewForm onReviewSubmitted={handleReviewSubmitted} />
+
       {/* CTA Section with Logo Loop */}
-      <div className="bg-gradient-to-br from-slate-900 to-blue-900 py-20 animate-fade-in">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+      <section className="relative overflow-hidden py-20 sm:py-24 animate-fade-in">
+        {/* Layered background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950" />
+        <div className="absolute -top-24 left-1/2 h-72 w-[42rem] -translate-x-1/2 rounded-full bg-blue-600/20 blur-3xl" />
+        <div className="absolute -bottom-28 left-8 h-72 w-72 rounded-full bg-fuchsia-500/10 blur-3xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(59,130,246,0.18),transparent_45%),radial-gradient(circle_at_80%_70%,rgba(168,85,247,0.14),transparent_55%)]" />
+
+        <div className="relative container mx-auto px-4 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold tracking-wide text-slate-200 backdrop-blur-md">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_0_4px_rgba(16,185,129,0.12)]" />
+            Built for speed, accessibility, and great UX
+          </div>
+
+          <h2 className="mt-5 text-3xl sm:text-4xl md:text-5xl font-extrabold text-white">
             Built with Modern Technology
           </h2>
-          <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto">
-            Our platform leverages cutting-edge tools to deliver the best resume building experience
+          <p className="mt-4 text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            A carefully picked stack that keeps the app fast, responsive, and
+            easy to maintain.
           </p>
-          
-          {/* Main Horizontal Logo Loop */}
-          <div className="mb-16">
-            <div>
+
+          <div className="mt-12 space-y-6">
+            {/* Main Horizontal Logo Loop */}
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-6 backdrop-blur-md shadow-[0_20px_80px_-40px_rgba(0,0,0,0.9)]">
               <LogoLoop
                 logos={techLogos}
-                speed={100} // Increased speed for better visibility
+                speed={95}
                 direction="left"
                 width="100%"
-                logoHeight={60}
-                gap={80}
+                logoHeight={46}
+                gap={52}
                 fadeOut={true}
-                fadeOutColor="#0f172a"
+                fadeOutColor="#020617"
                 scaleOnHover={true}
                 pauseOnHover={true}
+                pauseOnFocus={true}
                 ariaLabel="Technology logos carousel"
               />
             </div>
-          </div>
 
-          {/* Optional: Reverse Direction Loop */}
-          <div className="mb-16">
-            <div>
+            {/* Reverse Direction Loop */}
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-6 backdrop-blur-md">
               <LogoLoop
-                logos={[...techLogos].reverse()} // Reverse order for variety
-                speed={80}
+                logos={[...techLogos].reverse()}
+                speed={75}
                 direction="right"
                 width="100%"
-                logoHeight={50}
-                gap={60}
+                logoHeight={40}
+                gap={44}
                 fadeOut={true}
-                fadeOutColor="#0f172a"
+                fadeOutColor="#020617"
                 scaleOnHover={true}
                 pauseOnHover={false}
+                pauseOnFocus={true}
                 ariaLabel="Technology logos carousel reverse"
               />
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <Footer />
     </div>

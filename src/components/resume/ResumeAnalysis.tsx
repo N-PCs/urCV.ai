@@ -1,14 +1,19 @@
-import { useState, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { analyzeResume, enhanceResume, extractResumeDataWithAI, ResumeAnalysis } from '@/services/groqService';
-import { parseResumeFile } from '@/services/fileParserService';
-import { ResumeData } from '@/pages/Builder';
-import { useToast } from '@/hooks/use-toast';
-import { Bot, Upload, FileText, Type } from 'lucide-react';
+import { useState, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  analyzeResume,
+  enhanceResume,
+  extractResumeDataWithAI,
+  ResumeAnalysis,
+} from "@/services/groqService";
+import { parseResumeFile } from "@/services/fileParserService";
+import { ResumeData } from "@/pages/Builder";
+import { useToast } from "@/hooks/use-toast";
+import { Bot, Upload, FileText, Type } from "lucide-react";
 
 interface ResumeAnalysisProps {
   data: ResumeData;
@@ -16,14 +21,20 @@ interface ResumeAnalysisProps {
   onExtractedData: (extractedData: ResumeData) => void;
 }
 
-const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAnalysisProps) => {
+const ResumeAnalysisComponent = ({
+  data,
+  onEnhance,
+  onExtractedData,
+}: ResumeAnalysisProps) => {
   const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [isExtracting, setIsExtracting] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [resumeText, setResumeText] = useState('');
-  const [extractionMethod, setExtractionMethod] = useState<'file' | 'text'>('file');
+  const [resumeText, setResumeText] = useState("");
+  const [extractionMethod, setExtractionMethod] = useState<"file" | "text">(
+    "file",
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -67,7 +78,9 @@ const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAna
     }
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -78,7 +91,7 @@ const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAna
       const fileText = await parseResumeFile(file);
       const extractedData = await extractResumeDataWithAI(fileText);
       onExtractedData(extractedData);
-      
+
       toast({
         title: "Resume Extracted",
         description: "Your resume data has been extracted successfully!",
@@ -109,7 +122,7 @@ const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAna
     try {
       const extractedData = await extractResumeDataWithAI(resumeText);
       onExtractedData(extractedData);
-      
+
       toast({
         title: "Resume Extracted",
         description: "Your resume data has been extracted successfully!",
@@ -130,9 +143,9 @@ const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAna
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'bg-green-500';
-    if (score >= 60) return 'bg-yellow-500';
-    return 'bg-red-500';
+    if (score >= 80) return "bg-green-500";
+    if (score >= 60) return "bg-yellow-500";
+    return "bg-red-500";
   };
 
   return (
@@ -147,16 +160,16 @@ const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAna
         <div className="mb-4">
           <div className="flex space-x-2">
             <Button
-              variant={extractionMethod === 'file' ? 'default' : 'outline'}
-              onClick={() => setExtractionMethod('file')}
+              variant={extractionMethod === "file" ? "default" : "outline"}
+              onClick={() => setExtractionMethod("file")}
               className="flex items-center space-x-2"
             >
               <Upload className="w-4 h-4" />
               <span>Upload File</span>
             </Button>
             <Button
-              variant={extractionMethod === 'text' ? 'default' : 'outline'}
-              onClick={() => setExtractionMethod('text')}
+              variant={extractionMethod === "text" ? "default" : "outline"}
+              onClick={() => setExtractionMethod("text")}
               className="flex items-center space-x-2"
             >
               <Type className="w-4 h-4" />
@@ -166,7 +179,7 @@ const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAna
         </div>
 
         {/* File Upload Section */}
-        {extractionMethod === 'file' && (
+        {extractionMethod === "file" && (
           <div className="mb-6 p-4 border-2 border-dashed border-gray-300 rounded-lg">
             <div className="text-center">
               <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
@@ -186,7 +199,7 @@ const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAna
                 variant="outline"
                 className="border-blue-600 text-blue-600 hover:bg-blue-50 mb-2"
               >
-                {isExtracting ? 'Extracting...' : 'Upload Resume'}
+                {isExtracting ? "Extracting..." : "Upload Resume"}
               </Button>
               {uploadedFile && (
                 <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
@@ -199,7 +212,7 @@ const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAna
         )}
 
         {/* Text Input Section */}
-        {extractionMethod === 'text' && (
+        {extractionMethod === "text" && (
           <div className="mb-6 p-4 border-2 border-dashed border-gray-300 rounded-lg">
             <div className="space-y-4">
               <div className="text-center">
@@ -222,29 +235,29 @@ const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAna
                   variant="outline"
                   className="border-blue-600 text-blue-600 hover:bg-blue-50"
                 >
-                  {isExtracting ? 'Extracting...' : 'Extract Resume Data'}
+                  {isExtracting ? "Extracting..." : "Extract Resume Data"}
                 </Button>
               </div>
             </div>
           </div>
         )}
-        
+
         <div className="flex space-x-4">
           <Button
             onClick={handleAnalyze}
             disabled={isAnalyzing}
             className="bg-blue-600 hover:bg-blue-700"
           >
-            {isAnalyzing ? 'Analyzing...' : 'Analyze Resume'}
+            {isAnalyzing ? "Analyzing..." : "Analyze Resume"}
           </Button>
-          
+
           <Button
             onClick={handleEnhance}
             disabled={isEnhancing}
             variant="outline"
             className="border-purple-600 text-purple-600 hover:bg-purple-50"
           >
-            {isEnhancing ? 'Enhancing...' : 'Enhance with AI'}
+            {isEnhancing ? "Enhancing..." : "Enhance with AI"}
           </Button>
         </div>
       </div>
@@ -253,8 +266,12 @@ const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAna
         <div className="space-y-6">
           {/* Score */}
           <div className="text-center">
-            <div className={`w-20 h-20 rounded-full ${getScoreColor(analysis.score)} flex items-center justify-center mx-auto mb-2`}>
-              <span className="text-white text-xl font-bold">{analysis.score}</span>
+            <div
+              className={`w-20 h-20 rounded-full ${getScoreColor(analysis.score)} flex items-center justify-center mx-auto mb-2`}
+            >
+              <span className="text-white text-xl font-bold">
+                {analysis.score}
+              </span>
             </div>
             <p className="text-gray-600">Resume Score</p>
           </div>
@@ -264,7 +281,11 @@ const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAna
             <h4 className="font-semibold text-green-700 mb-2">Strengths</h4>
             <div className="space-y-2">
               {analysis.strengths.map((strength, index) => (
-                <Badge key={index} variant="secondary" className="bg-green-100 text-green-800">
+                <Badge
+                  key={index}
+                  variant="secondary"
+                  className="bg-green-100 text-green-800"
+                >
                   {strength}
                 </Badge>
               ))}
@@ -273,10 +294,16 @@ const ResumeAnalysisComponent = ({ data, onEnhance, onExtractedData }: ResumeAna
 
           {/* Improvements */}
           <div>
-            <h4 className="font-semibold text-orange-700 mb-2">Areas for Improvement</h4>
+            <h4 className="font-semibold text-orange-700 mb-2">
+              Areas for Improvement
+            </h4>
             <div className="space-y-2">
               {analysis.improvements.map((improvement, index) => (
-                <Badge key={index} variant="secondary" className="bg-orange-100 text-orange-800">
+                <Badge
+                  key={index}
+                  variant="secondary"
+                  className="bg-orange-100 text-orange-800"
+                >
                   {improvement}
                 </Badge>
               ))}

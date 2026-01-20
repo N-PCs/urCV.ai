@@ -14,8 +14,9 @@
 **urCV.ai** is a state-of-the-art, AI-powered resume builder designed to help job seekers create **professional, ATS-optimized resumes** effortlessly.
 
 It leverages a **dual-engine AI architecture**:
-- ⚡ **Groq (Llama 3)** → ultra-fast resume analysis & scoring  
-- 🧠 **Google Gemini 2.5** → intelligent rewriting & career guidance  
+
+- ⚡ **Groq (Llama 3)** → ultra-fast resume analysis & scoring
+- 🧠 **Google Gemini 2.5** → intelligent rewriting & career guidance
 
 Think of urCV.ai as a **virtual career consultant**, not just a resume builder.
 
@@ -24,50 +25,61 @@ Think of urCV.ai as a **virtual career consultant**, not just a resume builder.
 ## 🚀 Key Features
 
 ### 🤖 AI-Powered Resume Intelligence
+
 - Instant resume scoring & keyword analysis
 - Actionable improvement suggestions
 - Smart bullet-point rewriting
 
 ### 🎨 Professional Resume Templates
-- 🧩 Modern  
-- 🧾 Professional  
-- 🎭 Creative  
-- 👔 Executive  
+
+- 🧩 Modern
+- 🧾 Professional
+- 🎭 Creative
+- 👔 Executive
 
 ### 💬 Intelligent Career Assistant
+
 - Context-aware AI chatbot
 - Resume optimization tips
 - Career & interview guidance
 
 ### 📄 Live Resume Preview
+
 - Split-screen editing
 - Real-time updates as you type
 
 ### 📱 Fully Responsive Design
+
 - Optimized for desktop, tablet & mobile
 
 ### ⬇️ Multiple Export Formats
-- 📄 High-quality PDF  
-- 📝 Editable DOCX (Word)  
-- ✅ ATS-friendly output  
+
+- 📄 High-quality PDF
+- 📝 Editable DOCX (Word)
+- ✅ ATS-friendly output
 
 ---
 
 ## 📸 Screenshots
 
 ### 🌟 Application Hero
+
 ![Hero View](docs/images/screenshot1.png)
 
 ### 🛠️ Intelligent Builder
+
 ![Builder Interface](docs/images/screenshot2.png)
 
 ### 🧩 Professional Templates
+
 ![Templates Page](docs/images/screenshot3.png)
 
 ### 👔 Executive Design
+
 ![Executive Template](docs/images/screenshot4.png)
 
 ### 🎯 Template Selection
+
 ![Template Selection](docs/images/screenshot5.png)
 
 ---
@@ -75,6 +87,7 @@ Think of urCV.ai as a **virtual career consultant**, not just a resume builder.
 ## 🛠️ Tech Stack
 
 ### 🎨 Frontend
+
 - ⚛️ **React + Vite**
 - 🟦 **TypeScript**
 - 💨 **Tailwind CSS**
@@ -82,6 +95,7 @@ Think of urCV.ai as a **virtual career consultant**, not just a resume builder.
 - 🎯 **Lucide Icons**
 
 ### 🧠 AI & Services
+
 - ⚡ **Groq SDK** (Llama 3)
 - 🤖 **Google Generative AI SDK** (Gemini 2.5)
 - 📂 **mammoth** – Resume file parsing
@@ -92,6 +106,7 @@ Think of urCV.ai as a **virtual career consultant**, not just a resume builder.
 ## 🏁 Getting Started
 
 ### 🔧 Prerequisites
+
 - Node.js **v18+**
 - npm or yarn
 
@@ -100,12 +115,14 @@ Think of urCV.ai as a **virtual career consultant**, not just a resume builder.
 ### 📦 Installation
 
 #### 1️⃣ Clone the repository
+
 ```bash
 git clone https://github.com/yourusername/urCV.ai.git
 cd urCV.ai
 ```
 
 #### 2️⃣ Install dependencies
+
 ```bash
 npm install
 ```
@@ -139,14 +156,13 @@ The fastest way to get your resume builder live is with Vercel:
 1. Push your code to a GitHub repository.
 2. Go to [Vercel](https://vercel.com/new) and import your `urCV.ai` repo.
 3. In the **Configure Project** screen:
-   * **Framework Preset:** Vite
-   * **Environment Variables:** Open this dropdown and add:
-     * **Key:** `VITE_GEMINI_API_KEY`
-     * **Value:** `your_actual_api_key_here`
+   - **Framework Preset:** Vite
+   - **Environment Variables:** Open this dropdown and add:
+     - **Key:** `VITE_GEMINI_API_KEY`
+     - **Value:** `your_actual_api_key_here`
 4. Click **Deploy**.
 
-*Note: If you already deployed and the AI isn't working, go to **Settings > Environment Variables** in your Vercel dashboard, add the key, and trigger a new Redeploy.*
-
+_Note: If you already deployed and the AI isn't working, go to **Settings > Environment Variables** in your Vercel dashboard, add the key, and trigger a new Redeploy._
 
 ### 📂 Project Structure
 
@@ -213,9 +229,9 @@ git push origin feature/YourFeature
 ---
 
 ```
-📄 License
+📄 MIT License
 📜 This project is developed under the AcWoc 2026 Initiative.
 © 2026 N-PCs — All rights reserved.
 ```
 
-<p align="center"> 🧠 Maintained by <b>Neel Pandey</b> </p> 
+<p align="center"> 🧠 Maintained by <b>Neel Pandey</b> </p>

@@ -1,5 +1,4 @@
-
-import mammoth from 'mammoth';
+import mammoth from "mammoth";
 
 export interface ParsedResumeData {
   personalInfo: {
@@ -37,8 +36,8 @@ export interface ParsedResumeData {
 
 export const parseResumeFile = async (file: File): Promise<string> => {
   const fileType = file.type;
-  
-  if (fileType === 'application/pdf') {
+
+  if (fileType === "application/pdf") {
     // For PDF files, we'll use a simple text extraction
     // Note: This is a basic implementation, for production you might want to use pdf-parse
     return new Promise((resolve, reject) => {
@@ -50,12 +49,15 @@ export const parseResumeFile = async (file: File): Promise<string> => {
       reader.onerror = reject;
       reader.readAsText(file);
     });
-  } else if (fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+  } else if (
+    fileType ===
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  ) {
     // Parse DOCX files
     const arrayBuffer = await file.arrayBuffer();
     const result = await mammoth.extractRawText({ arrayBuffer });
     return result.value;
-  } else if (fileType === 'text/plain') {
+  } else if (fileType === "text/plain") {
     // Parse text files
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -63,35 +65,37 @@ export const parseResumeFile = async (file: File): Promise<string> => {
       reader.onerror = reject;
       reader.readAsText(file);
     });
-  } else if (file.type.startsWith('image/')) {
+  } else if (file.type.startsWith("image/")) {
     // For images, return a placeholder - in production, use OCR
     return "Image file detected. OCR functionality would be implemented here.";
   } else {
-    throw new Error('Unsupported file type');
+    throw new Error("Unsupported file type");
   }
 };
 
-export const extractResumeDataFromText = async (text: string): Promise<ParsedResumeData> => {
+export const extractResumeDataFromText = async (
+  text: string,
+): Promise<ParsedResumeData> => {
   // This is a simplified extraction - in production, you'd use more sophisticated NLP
   // For now, we'll return a basic structure
-  const lines = text.split('\n').filter(line => line.trim());
-  
+  const lines = text.split("\n").filter((line) => line.trim());
+
   return {
     personalInfo: {
-      fullName: lines[0] || '',
-      email: extractEmail(text) || '',
-      phone: extractPhone(text) || '',
-      location: '',
-      linkedin: extractLinkedIn(text) || '',
-      summary: ''
+      fullName: lines[0] || "",
+      email: extractEmail(text) || "",
+      phone: extractPhone(text) || "",
+      location: "",
+      linkedin: extractLinkedIn(text) || "",
+      summary: "",
     },
     experience: [],
     education: [],
     skills: {
       technical: [],
       languages: [],
-      certifications: []
-    }
+      certifications: [],
+    },
   };
 };
 
