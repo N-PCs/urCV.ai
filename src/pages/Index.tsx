@@ -6,6 +6,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import Footer from "@/components/layout/Footer";
 import LogoLoop from "@/components/LogoLoop";
 import ResumeTipsSection from "@/components/resume/ResumeTipsSection";
+import { GridScan } from "@/components/GridScan";
 import {
   SiReact,
   SiNextdotjs,
@@ -135,71 +136,114 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Section - FIXED: Clean Radial Gradient (No Dirty Grid) */}
-      <div className="container mx-auto px-4 py-24 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-200/50 via-slate-50 to-white dark:from-blue-950/50 dark:via-gray-950 dark:to-gray-950 transition-colors duration-300">
-        <div className="text-center max-w-4xl mx-auto">
-          <div className="inline-block px-4 py-2 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full text-sm font-semibold mb-6 animate-fade-in">
-            New: AI-Powered Resume Analysis
+      {/* Hero Section */}
+      <div className="relative min-h-[85vh] bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 transition-colors duration-300 overflow-hidden">
+        
+        {/* GridScan Background (Restored) */}
+        <div className="absolute inset-0 z-0 flex items-center justify-center">
+          <div className="w-full h-full max-w-[1400px] mx-auto opacity-60 dark:opacity-100">
+            <GridScan
+              sensitivity={0.55}
+              lineThickness={0}
+              linesColor="rgba(0, 0, 0, 0.08)" // UPDATED: Lower opacity so it's not "dirty"
+              gridScale={0.08}
+              scanColor="#87CEEB"
+              scanOpacity={1}
+              enablePost
+              bloomIntensity={1}
+              chromaticAberration={0.001}
+              noiseIntensity={1}
+            />
           </div>
-          <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight animate-fade-in">
-            Build Your
-            <span className="text-blue-600 dark:text-blue-400">
-              {" "}
-              Professional CV{" "}
-            </span>
-            in Minutes
-          </h1>
-          <p className="text-xl md:text-xl text-gray-700 dark:text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in-delayed">
-            Create stunning, ATS-friendly resumes with our intelligent builder.
-            Stand out from the crowd with professional templates designed by
-            experts.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
-            <Link to="/builder">
-              <Button
-                size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-semibold text-lg"
-              >
-                Start Building Now
-                <svg
-                  className="w-5 h-5 ml-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
+
+          {/* Dark mode GridScan overlay */}
+          <div className="absolute inset-0 hidden dark:block">
+            <GridScan
+              sensitivity={0.55}
+              lineThickness={0}
+              linesColor="rgba(255, 255, 255, 0.1)"
+              gridScale={0.08}
+              scanColor="#87CEEB"
+              scanOpacity={1}
+              enablePost
+              bloomIntensity={1}
+              chromaticAberration={0.001}
+              noiseIntensity={1}
+              enableGyro={true}
+            />
+          </div>
+        </div>
+
+        {/* GLASS EFFECT OVERLAY (New Feature) */}
+        {/* This creates the "Glass" look the owner asked for + your Cool Glow */}
+        <div className="absolute inset-0 z-0 backdrop-blur-[1px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-200/40 via-white/80 to-white/95 dark:from-blue-950/30 dark:via-transparent dark:to-transparent pointer-events-none" />
+
+        {/* Hero Content */}
+        <div className="relative z-10 container mx-auto px-4 py-24 flex items-center min-h-[85vh]">
+          <div className="text-center max-w-4xl mx-auto w-full">
+            <div className="inline-block px-4 py-2 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full text-sm font-semibold mb-6 animate-fade-in backdrop-blur-sm border border-blue-200/50 dark:border-blue-800/50">
+              New: AI-Powered Resume Analysis
+            </div>
+            <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight animate-fade-in">
+              Build Your
+              <span className="text-blue-600 dark:text-blue-400">
+                {" "}
+                Professional CV{" "}
+              </span>
+              in Minutes
+            </h1>
+            <p className="text-xl md:text-xl text-gray-700 dark:text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in-delayed backdrop-blur-sm bg-white/40 dark:bg-black/40 p-6 rounded-2xl border border-white/20 dark:border-gray-800/50 shadow-lg">
+              Create stunning, ATS-friendly resumes with our intelligent
+              builder. Stand out from the crowd with professional templates
+              designed by experts.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
+              <Link to="/builder">
+                <Button
+                  size="lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-semibold text-lg backdrop-blur-sm border border-blue-700/50 hover:border-blue-800"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
-                </svg>
-              </Button>
-            </Link>
-            <Link to="/templates">
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-blue-600 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 px-8 py-6 rounded-xl transition-all duration-300 font-semibold text-lg"
-              >
-                View Templates
-                <svg
-                  className="w-5 h-5 ml-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
+                  Start Building Now
+                  <svg
+                    className="w-5 h-5 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
+                  </svg>
+                </Button>
+              </Link>
+              <Link to="/templates">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-blue-600 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 px-8 py-6 rounded-xl transition-all duration-300 font-semibold text-lg backdrop-blur-sm bg-white/50 dark:bg-black/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/20"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </Button>
-            </Link>
+                  View Templates
+                  <svg
+                    className="w-5 h-5 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
