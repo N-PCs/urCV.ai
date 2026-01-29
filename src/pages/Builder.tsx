@@ -55,11 +55,12 @@ export interface ResumeData {
     kaggle?: string;
     codechef?: string;
   };
-  
+
 }
 
 const Builder = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [isStepValid, setIsStepValid] = useState(true);
   const [resumeData, setResumeData] = useState<ResumeData>({
     personalInfo: {
       fullName: "Alex Morgan",
@@ -116,14 +117,21 @@ const Builder = () => {
   const CurrentStepComponent = steps[currentStep].component;
 
   const handleNext = () => {
+    if (!isStepValid) {
+      // You could add a toast here if you want to be more explicit
+      return;
+    }
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
+      // Reset validity for next step or calculate it
+      setIsStepValid(true);
     }
   };
 
   const handlePrevious = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
+      setIsStepValid(true); // Usually previous steps were valid
     }
   };
 
@@ -165,7 +173,7 @@ const Builder = () => {
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-8 h-8  rounded-lg flex items-center justify-center">
-                <img alt="website" src="./websitelogo.png"/>
+              <img alt="website" src="./websitelogo.png" />
             </div>
             <span className="text-2xl font-bold text-gray-900 dark:text-white">
               urCV.ai
@@ -217,6 +225,7 @@ const Builder = () => {
                   <CurrentStepComponent
                     data={resumeData}
                     updateData={updateResumeData}
+                    setValid={currentStep === 0 ? setIsStepValid : undefined}
                   />
                 </div>
 
@@ -233,13 +242,17 @@ const Builder = () => {
                   </Button>
 
                   {currentStep === steps.length - 1 ? (
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2 transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                    <Button
+                      className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2 transition-all duration-200 hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:hover:scale-100"
+                      disabled={!isStepValid}
+                    >
                       <span>Generate Resume</span>
                     </Button>
                   ) : (
                     <Button
                       onClick={handleNext}
-                      className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2 transition-all duration-200 hover:scale-105 hover:shadow-lg"
+                      disabled={!isStepValid}
+                      className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2 transition-all duration-200 hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:hover:scale-100"
                     >
                       <span>Next</span>
                       <ArrowRight className="w-4 h-4" />

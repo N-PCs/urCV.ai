@@ -6,7 +6,26 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { ResumeData } from "@/pages/Builder";
-import { User } from "lucide-react";
+import { User, Trash2, Plus } from "lucide-react";
+import { z } from "zod";
+
+const experienceSchema = z.object({
+  title: z.string().min(2, "Job title is required"),
+  company: z.string().min(2, "Company name is required"),
+  location: z.string().min(2, "Location is required"),
+  startDate: z.string().min(4, "Start date is required"),
+  current: z.boolean(),
+  endDate: z.string().optional(),
+  description: z.string().min(20, "Description should be more detailed for better ATS results"),
+}).refine((data) => {
+  if (!data.current && !data.endDate) {
+    return false;
+  }
+  return true;
+}, {
+  message: "End date is required if this is not your current job",
+  path: ["endDate"],
+});
 
 interface ExperienceFormProps {
   data: ResumeData;
@@ -23,9 +42,38 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
     current: false,
     description: "",
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validateField = (field: string, value: any) => {
+    try {
+      const fieldSchema = (experienceSchema as any).shape[field];
+      if (fieldSchema) {
+        fieldSchema.parse(value);
+        setErrors(prev => {
+          const newErrors = { ...prev };
+          delete newErrors[field];
+          return newErrors;
+        });
+      }
+    } catch (err: unknown) {
+      if (err instanceof z.ZodError) {
+        setErrors(prev => ({
+          ...prev,
+          [field]: err.errors[0].message
+        }));
+      }
+    }
+  };
+
+  const handleInputChange = (field: string, value: any) => {
+    const updated = { ...newExperience, [field]: value };
+    setNewExperience(updated);
+    validateField(field, value);
+  };
 
   const addExperience = () => {
-    if (newExperience.title && newExperience.company) {
+    const result = experienceSchema.safeParse(newExperience);
+    if (result.success) {
       const experience = {
         id: Date.now().toString(),
         ...newExperience,
@@ -40,6 +88,15 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
         current: false,
         description: "",
       });
+      setErrors({});
+    } else {
+      const newErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          newErrors[err.path[0].toString()] = err.message;
+        }
+      });
+      setErrors(newErrors);
     }
   };
 
@@ -64,11 +121,12 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
               )}
             </div>
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => removeExperience(exp.id)}
-              className="text-red-600 hover:text-red-700"
+              className="text-red-600 hover:text-red-700 hover:bg-red-50"
             >
+              <Trash2 className="w-4 h-4 mr-1" />
               Remove
             </Button>
           </div>
@@ -85,59 +143,64 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
         <div className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="title">Job Title</Label>
+              <Label htmlFor="title" className={errors.title ? "text-red-500" : ""}>Job Title</Label>
               <Input
                 id="title"
                 value={newExperience.title}
-                onChange={(e) => setNewExperience({...newExperience, title: e.target.value})}
+                onChange={(e) => handleInputChange('title', e.target.value)}
                 placeholder="Software Engineer"
-                className="mt-1"
+                className={`mt-1 ${errors.title ? "border-red-500 focus-visible:ring-red-500" : ""}`}
               />
+              {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title}</p>}
             </div>
             <div>
-              <Label htmlFor="company">Company</Label>
+              <Label htmlFor="company" className={errors.company ? "text-red-500" : ""}>Company</Label>
               <Input
                 id="company"
                 value={newExperience.company}
-                onChange={(e) => setNewExperience({...newExperience, company: e.target.value})}
+                onChange={(e) => handleInputChange('company', e.target.value)}
                 placeholder="Tech Corp"
-                className="mt-1"
+                className={`mt-1 ${errors.company ? "border-red-500 focus-visible:ring-red-500" : ""}`}
               />
+              {errors.company && <p className="text-xs text-red-500 mt-1">{errors.company}</p>}
             </div>
           </div>
 
           <div>
-            <Label htmlFor="location">Location</Label>
+            <Label htmlFor="location" className={errors.location ? "text-red-500" : ""}>Location</Label>
             <Input
               id="location"
               value={newExperience.location}
-              onChange={(e) => setNewExperience({...newExperience, location: e.target.value})}
+              onChange={(e) => handleInputChange('location', e.target.value)}
               placeholder="San Francisco, CA"
-              className="mt-1"
+              className={`mt-1 ${errors.location ? "border-red-500 focus-visible:ring-red-500" : ""}`}
             />
+            {errors.location && <p className="text-xs text-red-500 mt-1">{errors.location}</p>}
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="startDate">Start Date</Label>
+              <Label htmlFor="startDate" className={errors.startDate ? "text-red-500" : ""}>Start Date</Label>
               <Input
                 id="startDate"
                 value={newExperience.startDate}
-                onChange={(e) => setNewExperience({...newExperience, startDate: e.target.value})}
+                onChange={(e) => handleInputChange('startDate', e.target.value)}
                 placeholder="January 2023"
-                className="mt-1"
+                className={`mt-1 ${errors.startDate ? "border-red-500 focus-visible:ring-red-500" : ""}`}
               />
+              {errors.startDate && <p className="text-xs text-red-500 mt-1">{errors.startDate}</p>}
             </div>
             <div>
-              <Label htmlFor="endDate">End Date</Label>
+              <Label htmlFor="endDate" className={errors.endDate ? "text-red-500" : ""}>End Date</Label>
               <Input
                 id="endDate"
                 value={newExperience.endDate}
-                onChange={(e) => setNewExperience({...newExperience, endDate: e.target.value})}
+                onChange={(e) => handleInputChange('endDate', e.target.value)}
                 placeholder="December 2023"
                 disabled={newExperience.current}
-                className="mt-1"
+                className={`mt-1 ${errors.endDate ? "border-red-500 focus-visible:ring-red-500" : ""}`}
               />
+              {errors.endDate && <p className="text-xs text-red-500 mt-1">{errors.endDate}</p>}
             </div>
           </div>
 
@@ -145,7 +208,7 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
             <Checkbox
               id="current"
               checked={newExperience.current}
-              onCheckedChange={(checked) => setNewExperience({...newExperience, current: checked as boolean})}
+              onCheckedChange={(checked) => handleInputChange('current', checked as boolean)}
             />
             <Label htmlFor="current" className="text-sm">
               I currently work here
@@ -153,20 +216,22 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
           </div>
 
           <div>
-            <Label htmlFor="description">Job Description</Label>
+            <Label htmlFor="description" className={errors.description ? "text-red-500" : ""}>Job Description</Label>
             <Textarea
               id="description"
               value={newExperience.description}
-              onChange={(e) => setNewExperience({...newExperience, description: e.target.value})}
+              onChange={(e) => handleInputChange('description', e.target.value)}
               placeholder="Describe your responsibilities and achievements..."
-              className="mt-1 min-h-[100px]"
+              className={`mt-1 min-h-[100px] ${errors.description ? "border-red-500 focus-visible:ring-red-500" : ""}`}
             />
+            {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description}</p>}
           </div>
 
-          <Button 
+          <Button
             onClick={addExperience}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center gap-2"
           >
+            <Plus className="w-4 h-4" />
             Add Experience
           </Button>
         </div>

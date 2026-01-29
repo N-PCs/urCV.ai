@@ -6,6 +6,8 @@ const groq = new Groq({
   dangerouslyAllowBrowser: true
 });
 
+import { ResumeData } from '@/pages/Builder';
+
 export interface ResumeAnalysis {
   score: number;
   strengths: string[];
@@ -13,39 +15,8 @@ export interface ResumeAnalysis {
   suggestions: string[];
 }
 
-export interface EnhancedResumeData {
-  personalInfo: {
-    fullName: string;
-    email: string;
-    phone: string;
-    location: string;
-    linkedin: string;
-    summary: string;
-  };
-  experience: Array<{
-    id: string;
-    title: string;
-    company: string;
-    location: string;
-    startDate: string;
-    endDate: string;
-    current: boolean;
-    description: string;
-  }>;
-  education: Array<{
-    id: string;
-    degree: string;
-    school: string;
-    location: string;
-    graduationDate: string;
-    gpa?: string;
-  }>;
-  skills: {
-    technical: string[];
-    languages: string[];
-    certifications: string[];
-  };
-}
+export type EnhancedResumeData = ResumeData;
+
 
 export const analyzeResume = async (resumeData: any): Promise<ResumeAnalysis> => {
   try {
@@ -125,7 +96,7 @@ export const enhanceResume = async (resumeData: any): Promise<EnhancedResumeData
 
 export const chatWithAI = async (message: string, context?: string): Promise<string> => {
   try {
-    const systemMessage = context 
+    const systemMessage = context
       ? `You are a professional resume and career advisor AI assistant. Context: ${context}`
       : 'You are a professional resume and career advisor AI assistant. Help users with resume building, career advice, and job search tips.';
 
@@ -206,33 +177,33 @@ export const extractResumeDataWithAI = async (resumeText: string): Promise<Enhan
     try {
       // Clean the response by removing markdown code blocks and extra whitespace
       let cleanResponse = response.trim();
-      
+
       // Remove any explanatory text before JSON
       const jsonStartIndex = cleanResponse.indexOf('{');
       if (jsonStartIndex > 0) {
         cleanResponse = cleanResponse.substring(jsonStartIndex);
       }
-      
+
       // Find the last closing brace to remove any text after JSON
       const jsonEndIndex = cleanResponse.lastIndexOf('}');
       if (jsonEndIndex > 0) {
         cleanResponse = cleanResponse.substring(0, jsonEndIndex + 1);
       }
-      
+
       // Remove markdown code blocks if present
       if (cleanResponse.startsWith('```json')) {
         cleanResponse = cleanResponse.replace(/^```json\s*/, '').replace(/\s*```$/, '');
       } else if (cleanResponse.startsWith('```')) {
         cleanResponse = cleanResponse.replace(/^```\s*/, '').replace(/\s*```$/, '');
       }
-      
+
       // Remove any remaining backticks or formatting
       cleanResponse = cleanResponse.replace(/^`+|`+$/g, '').trim();
-      
+
       console.log('Cleaned response:', cleanResponse);
-      
+
       const parsedData = JSON.parse(cleanResponse);
-      
+
       // Generate IDs for experience and education if missing
       if (parsedData.experience && Array.isArray(parsedData.experience)) {
         parsedData.experience = parsedData.experience.map((exp: any, index: number) => ({
@@ -240,14 +211,14 @@ export const extractResumeDataWithAI = async (resumeText: string): Promise<Enhan
           id: exp.id || `exp-${index + 1}`
         }));
       }
-      
+
       if (parsedData.education && Array.isArray(parsedData.education)) {
         parsedData.education = parsedData.education.map((edu: any, index: number) => ({
           ...edu,
           id: edu.id || `edu-${index + 1}`
         }));
       }
-      
+
       console.log('Successfully parsed data:', parsedData);
       return parsedData;
     } catch (parseError) {
