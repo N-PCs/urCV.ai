@@ -181,6 +181,14 @@ const Index = () => {
           {mobileMenuOpen && (
             <div className="md:hidden mt-4 pb-4 animate-fade-in">
               <div className="flex flex-col space-y-3">
+                <Link to="/builder" onClick={() => setMobileMenuOpen(false)}>
+                  <Button 
+                    className="w-full justify-start bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg transition-all duration-300 font-medium"
+                  >
+                    <FileText className="w-5 h-5 mr-3" />
+                    Create Resume
+                  </Button>
+                </Link>
                 <Link to="/interview-questions" onClick={() => setMobileMenuOpen(false)}>
                   <Button 
                     variant="outline" 
@@ -188,14 +196,6 @@ const Index = () => {
                   >
                     <MessageSquare className="w-5 h-5 mr-3" />
                     Interview Prep
-                  </Button>
-                </Link>
-                <Link to="/builder" onClick={() => setMobileMenuOpen(false)}>
-                  <Button 
-                    className="w-full justify-start bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg transition-all duration-300 font-medium"
-                  >
-                    <FileText className="w-5 h-5 mr-3" />
-                    Create Resume
                   </Button>
                 </Link>
               </div>
