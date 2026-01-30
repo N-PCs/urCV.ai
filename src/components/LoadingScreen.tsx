@@ -1,6 +1,5 @@
-
-import { useState, useEffect } from 'react';
-import { Rocket } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { Rocket } from "lucide-react";
 
 interface LoadingScreenProps {
   onComplete: () => void;
@@ -12,16 +11,18 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(onComplete, 500); // Wait for fade out animation
+      setTimeout(onComplete, 2000); // Wait for fade out animation
     }, 3000);
 
     return () => clearTimeout(timer);
   }, [onComplete]);
 
   return (
-    <div className={`fixed inset-0 bg-black z-50 flex items-center justify-center transition-opacity duration-500 ${
-      isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
-    }`}>
+    <div
+      className={`fixed inset-0 bg-black z-50 flex items-center justify-center transition-opacity duration-500 ${
+        isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+      }`}
+    >
       {/* Stars background */}
       <div className="absolute inset-0">
         {[...Array(50)].map((_, i) => (
@@ -41,7 +42,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
       <div className="text-center z-10">
         <div className="mb-8">
           <h1 className="text-6xl font-bold text-white mb-4 animate-fade-in">
-            You are the{' '}
+            You are the{" "}
             <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               chosen one!
             </span>
