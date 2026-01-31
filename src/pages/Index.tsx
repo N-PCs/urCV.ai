@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { FileText, User, Edit, MessageSquare, Menu, X } from "lucide-react";
+import { FileText, User, Edit, MessageSquare, Menu, X, Code } from "lucide-react";
 import { Link } from "react-router-dom";
 import ThemeToggle from "@/components/ThemeToggle";
 import Footer from "@/components/layout/Footer";
@@ -129,10 +129,16 @@ const Index = () => {
                 urCV.ai
               </span>
             </div>
-            
+
             {/* Desktop Navigation Buttons - Hidden on mobile */}
             <div className="hidden md:flex items-center space-x-4">
               <ThemeToggle />
+              <Link to="/coding-prep">
+                <Button variant="outline" className="border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-purple-600 dark:hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 px-4 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md font-medium">
+                  <Code className="w-4 h-4 mr-2" />
+                  Coding Prep
+                </Button>
+              </Link>
               <Link to="/interview-questions">
                 <Button variant="outline" className="border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-green-600 dark:hover:border-green-400 hover:text-green-600 dark:hover:text-green-400 px-4 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md font-medium">
                   <MessageSquare className="w-4 h-4 mr-2" />
@@ -145,7 +151,7 @@ const Index = () => {
                 </Button>
               </Link>
             </div>
-            
+
             {/* Mobile Menu Button - Visible only on mobile */}
             <div className="flex items-center space-x-4 md:hidden">
               <ThemeToggle />
@@ -158,31 +164,29 @@ const Index = () => {
               >
                 {/* Menu Icon with rotation */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <Menu 
-                    className={`w-6 h-6 transition-all duration-300 ease-out ${
-                      mobileMenuOpen 
-                        ? 'opacity-0 rotate-90 scale-0' 
-                        : 'opacity-100 rotate-0 scale-100'
-                    }`}
+                  <Menu
+                    className={`w-6 h-6 transition-all duration-300 ease-out ${mobileMenuOpen
+                      ? 'opacity-0 rotate-90 scale-0'
+                      : 'opacity-100 rotate-0 scale-100'
+                      }`}
                   />
-                  <X 
-                    className={`w-6 h-6 absolute transition-all duration-300 ease-out ${
-                      mobileMenuOpen 
-                        ? 'opacity-100 rotate-0 scale-100' 
-                        : 'opacity-0 -rotate-90 scale-0'
-                    }`}
+                  <X
+                    className={`w-6 h-6 absolute transition-all duration-300 ease-out ${mobileMenuOpen
+                      ? 'opacity-100 rotate-0 scale-100'
+                      : 'opacity-0 -rotate-90 scale-0'
+                      }`}
                   />
                 </div>
               </Button>
             </div>
           </div>
-          
+
           {/* Mobile Menu Dropdown - Only visible when mobileMenuOpen is true */}
           {mobileMenuOpen && (
             <div className="md:hidden mt-4 pb-4 animate-fade-in">
               <div className="flex flex-col space-y-3">
                 <Link to="/builder" onClick={() => setMobileMenuOpen(false)}>
-                  <Button 
+                  <Button
                     className="w-full justify-start bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg transition-all duration-300 font-medium"
                   >
                     <FileText className="w-5 h-5 mr-3" />
@@ -190,12 +194,21 @@ const Index = () => {
                   </Button>
                 </Link>
                 <Link to="/interview-questions" onClick={() => setMobileMenuOpen(false)}>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="w-full justify-start border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-green-600 dark:hover:border-green-400 hover:text-green-600 dark:hover:text-green-400 px-4 py-3 rounded-lg transition-all duration-300 font-medium"
                   >
                     <MessageSquare className="w-5 h-5 mr-3" />
                     Interview Prep
+                  </Button>
+                </Link>
+                <Link to="/coding-prep" onClick={() => setMobileMenuOpen(false)}>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-purple-600 dark:hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 px-4 py-3 rounded-lg transition-all duration-300 font-medium"
+                  >
+                    <Code className="w-5 h-5 mr-3" />
+                    Coding Prep
                   </Button>
                 </Link>
               </div>

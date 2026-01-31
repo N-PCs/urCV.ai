@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound";
 import Templates from "./pages/Templates";
 import ResumeGuide from "./pages/ResumeGuide";
 import InterviewQuestions from "./pages/InterviewQuestions";
+import CodingPrep from "./pages/CodingPrep";
 import LoadingScreen from "./components/LoadingScreen";
 
 const queryClient = new QueryClient();
@@ -113,6 +114,20 @@ const AnimatedRoutes = () => {
               transition={pageTransition}
             >
               <InterviewQuestions />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/coding-prep"
+          element={
+            <motion.div
+              initial="initial"
+              animate="in"
+              exit="out"
+              variants={pageVariants}
+              transition={pageTransition}
+            >
+              <CodingPrep />
             </motion.div>
           }
         />
