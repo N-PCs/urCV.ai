@@ -9,9 +9,10 @@ import { ResumeData } from "@/pages/Builder";
 interface SkillsFormProps {
   data: ResumeData;
   updateData: (section: keyof ResumeData, data: any) => void;
+  setIsValid?: (isValid: boolean) => void;
 }
 
-const SkillsForm = ({ data, updateData }: SkillsFormProps) => {
+const SkillsForm = ({ data, updateData, setIsValid }: SkillsFormProps) => {
   const [newSkill, setNewSkill] = useState("");
   const [newLanguage, setNewLanguage] = useState("");
   const [newCertification, setNewCertification] = useState("");

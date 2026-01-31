@@ -80,6 +80,7 @@ export interface ResumeData {
 
 const Builder = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [isStepValid, setIsStepValid] = useState(true);
   const [resumeData, setResumeData] = useState<ResumeData>({
     personalInfo: {
       fullName: "Alex Morgan",
@@ -191,12 +192,14 @@ const Builder = () => {
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
+      setIsStepValid(true); // Reset to true for next step
     }
   };
 
   const handlePrevious = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
+      setIsStepValid(true); // Reset to true for previous step
     }
   };
 
