@@ -367,7 +367,7 @@ export const codingProblems: CodingProblem[] = [
     {
         id: "two-sum",
         title: "Two Sum",
-        description: "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution, and you may not use the same element twice.",
+        description: "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
         difficulty: "easy",
         category: "Arrays",
         topics: ["Arrays", "Hash Table"],
@@ -381,47 +381,51 @@ export const codingProblems: CodingProblem[] = [
             {
                 input: "nums = [2,7,11,15], target = 9",
                 output: "[0,1]",
-                explanation: "nums[0] + nums[1] = 2 + 7 = 9"
+                explanation: "Because nums[0] + nums[1] == 9, we return [0, 1]"
             },
             {
                 input: "nums = [3,2,4], target = 6",
                 output: "[1,2]"
             }
         ],
-        approach: "Use a hash map to store each number's complement (target - num) and its index. For each number, check if it exists in the map.",
+        approach: "Use a hash map to store the complement of each number (target - num) and its index. Return indices if complement exists.",
         solutions: [
             {
-                language: "javascript",
-                code: `function twoSum(nums, target) {
-  const map = new Map();
-  
-  for (let i = 0; i < nums.length; i++) {
-    const complement = target - nums[i];
-    
-    if (map.has(complement)) {
-      return [map.get(complement), i];
+                language: "java",
+                code: `class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+            if (map.containsKey(complement)) {
+                return new int[] { map.get(complement), i };
+            }
+            map.put(nums[i], i);
+        }
+        
+        throw new IllegalArgumentException("No two sum solution");
     }
-    
-    map.set(nums[i], i);
-  }
-  
-  return [];
 }`
             },
             {
-                language: "python",
-                code: `def twoSum(nums, target):
-    seen = {}
-    
-    for i, num in enumerate(nums):
-        complement = target - num
+                language: "cpp",
+                code: `class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> map;
         
-        if complement in seen:
-            return [seen[complement], i]
+        for (int i = 0; i < nums.size(); i++) {
+            int complement = target - nums[i];
+            if (map.count(complement)) {
+                return {map[complement], i};
+            }
+            map[nums[i]] = i;
+        }
         
-        seen[num] = i
-    
-    return []`
+        return {};
+    }
+};`
             }
         ],
         timeComplexity: "O(n)",
@@ -430,13 +434,13 @@ export const codingProblems: CodingProblem[] = [
     {
         id: "valid-parentheses",
         title: "Valid Parentheses",
-        description: "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid. An input string is valid if: Open brackets must be closed by the same type of brackets, and open brackets must be closed in the correct order.",
+        description: "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.",
         difficulty: "easy",
         category: "Stacks",
         topics: ["Stack", "String"],
         constraints: [
             "1 <= s.length <= 10^4",
-            "s consists of parentheses only '(){}[]'"
+            "s consists of parentheses only"
         ],
         examples: [
             {
@@ -452,45 +456,57 @@ export const codingProblems: CodingProblem[] = [
                 output: "false"
             }
         ],
-        approach: "Use a stack. Push opening brackets onto the stack. When encountering a closing bracket, check if the top of the stack is the matching opening bracket.",
+        approach: "Use a stack to keep track of opening brackets. When a closing bracket is encountered, check if it matches the top of the stack.",
         solutions: [
             {
-                language: "javascript",
-                code: `function isValid(s) {
-  const stack = [];
-  const pairs = {
-    ')': '(',
-    '}': '{',
-    ']': '['
-  };
-  
-  for (const char of s) {
-    if (char in pairs) {
-      if (stack.pop() !== pairs[char]) {
-        return false;
-      }
-    } else {
-      stack.push(char);
+                language: "java",
+                code: `class Solution {
+    public boolean isValid(String s) {
+        Stack<Character> stack = new Stack<>();
+        
+        for (char c : s.toCharArray()) {
+            if (c == '(' || c == '{' || c == '[') {
+                stack.push(c);
+            } else {
+                if (stack.isEmpty()) return false;
+                char top = stack.pop();
+                if ((c == ')' && top != '(') ||
+                    (c == '}' && top != '{') ||
+                    (c == ']' && top != '[')) {
+                    return false;
+                }
+            }
+        }
+        
+        return stack.isEmpty();
     }
-  }
-  
-  return stack.length === 0;
 }`
             },
             {
-                language: "python",
-                code: `def isValid(s):
-    stack = []
-    pairs = {')': '(', '}': '{', ']': '['}
-    
-    for char in s:
-        if char in pairs:
-            if not stack or stack.pop() != pairs[char]:
-                return False
-        else:
-            stack.append(char)
-    
-    return len(stack) == 0`
+                language: "cpp",
+                code: `class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> st;
+        
+        for (char c : s) {
+            if (c == '(' || c == '{' || c == '[') {
+                st.push(c);
+            } else {
+                if (st.empty()) return false;
+                char top = st.top();
+                st.pop();
+                if ((c == ')' && top != '(') ||
+                    (c == '}' && top != '{') ||
+                    (c == ']' && top != '[')) {
+                    return false;
+                }
+            }
+        }
+        
+        return st.empty();
+    }
+};`
             }
         ],
         timeComplexity: "O(n)",
@@ -504,50 +520,63 @@ export const codingProblems: CodingProblem[] = [
         category: "Linked Lists",
         topics: ["Linked List", "Recursion"],
         constraints: [
-            "The number of nodes in the list is in range [0, 5000]",
+            "The number of nodes is in [0, 5000]",
             "-5000 <= Node.val <= 5000"
         ],
         examples: [
             {
                 input: "head = [1,2,3,4,5]",
                 output: "[5,4,3,2,1]"
-            },
-            {
-                input: "head = [1,2]",
-                output: "[2,1]"
             }
         ],
-        approach: "Iterate through the list, reversing pointers as you go. Keep track of previous, current, and next nodes.",
+        approach: "Iteratively change the next pointer of each node to point to the previous node.",
         solutions: [
             {
-                language: "javascript",
-                code: `function reverseList(head) {
-  let prev = null;
-  let current = head;
-  
-  while (current) {
-    const next = current.next;
-    current.next = prev;
-    prev = current;
-    current = next;
-  }
-  
-  return prev;
+                language: "java",
+                code: `class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        ListNode curr = head;
+        
+        while (curr != null) {
+            ListNode nextTemp = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = nextTemp;
+        }
+        
+        return prev;
+    }
 }`
             },
             {
-                language: "python",
-                code: `def reverseList(head):
-    prev = None
-    current = head
-    
-    while current:
-        next_node = current.next
-        current.next = prev
-        prev = current
-        current = next_node
-    
-    return prev`
+                language: "cpp",
+                code: `/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* prev = nullptr;
+        ListNode* curr = head;
+        
+        while (curr) {
+            ListNode* nextTemp = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = nextTemp;
+        }
+        
+        return prev;
+    }
+};`
             }
         ],
         timeComplexity: "O(n)",
@@ -556,70 +585,66 @@ export const codingProblems: CodingProblem[] = [
     {
         id: "merge-two-sorted-lists",
         title: "Merge Two Sorted Lists",
-        description: "Merge two sorted linked lists and return it as a sorted list. The list should be made by splicing together the nodes of the first two lists.",
+        description: "You are given the heads of two sorted linked lists list1 and list2. Merge the two lists in a one sorted list.",
         difficulty: "easy",
         category: "Linked Lists",
         topics: ["Linked List", "Recursion"],
         constraints: [
-            "The number of nodes in both lists is in range [0, 50]",
+            "The number of nodes in both lists is in [0, 50]",
             "-100 <= Node.val <= 100",
             "Both lists are sorted in non-decreasing order"
         ],
         examples: [
             {
-                input: "l1 = [1,2,4], l2 = [1,3,4]",
+                input: "list1 = [1,2,4], list2 = [1,3,4]",
                 output: "[1,1,2,3,4,4]"
             }
         ],
-        approach: "Use a dummy head and compare nodes from both lists, appending the smaller one. Handle remaining nodes at the end.",
+        approach: "Compare the heads of both lists and attach the smaller one to the result. Continue until one list is empty.",
         solutions: [
             {
-                language: "javascript",
-                code: `function mergeTwoLists(l1, l2) {
-  const dummy = { next: null };
-  let current = dummy;
-  
-  while (l1 && l2) {
-    if (l1.val <= l2.val) {
-      current.next = l1;
-      l1 = l1.next;
-    } else {
-      current.next = l2;
-      l2 = l2.next;
+                language: "java",
+                code: `class Solution {
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        if (list1 == null) return list2;
+        if (list2 == null) return list1;
+        
+        if (list1.val < list2.val) {
+            list1.next = mergeTwoLists(list1.next, list2);
+            return list1;
+        } else {
+            list2.next = mergeTwoLists(list1, list2.next);
+            return list2;
+        }
     }
-    current = current.next;
-  }
-  
-  current.next = l1 || l2;
-  return dummy.next;
 }`
             },
             {
-                language: "python",
-                code: `def mergeTwoLists(l1, l2):
-    dummy = ListNode(0)
-    current = dummy
-    
-    while l1 and l2:
-        if l1.val <= l2.val:
-            current.next = l1
-            l1 = l1.next
-        else:
-            current.next = l2
-            l2 = l2.next
-        current = current.next
-    
-    current.next = l1 or l2
-    return dummy.next`
+                language: "cpp",
+                code: `class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        if (!list1) return list2;
+        if (!list2) return list1;
+        
+        if (list1->val < list2->val) {
+            list1->next = mergeTwoLists(list1->next, list2);
+            return list1;
+        } else {
+            list2->next = mergeTwoLists(list1, list2->next);
+            return list2;
+        }
+    }
+};`
             }
         ],
         timeComplexity: "O(n + m)",
-        spaceComplexity: "O(1)"
+        spaceComplexity: "O(n + m) recursive stack or O(1) iterative"
     },
     {
         id: "best-time-to-buy-sell-stock",
         title: "Best Time to Buy and Sell Stock",
-        description: "You are given an array prices where prices[i] is the price of a given stock on the ith day. You want to maximize your profit by choosing a single day to buy and a single day to sell in the future. Return the maximum profit.",
+        description: "You are given an array prices where prices[i] is the price of a given stock on the ith day. You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.",
         difficulty: "easy",
         category: "Arrays",
         topics: ["Arrays", "Dynamic Programming"],
@@ -631,46 +656,49 @@ export const codingProblems: CodingProblem[] = [
             {
                 input: "prices = [7,1,5,3,6,4]",
                 output: "5",
-                explanation: "Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5"
-            },
-            {
-                input: "prices = [7,6,4,3,1]",
-                output: "0",
-                explanation: "No transaction is done, max profit = 0"
+                explanation: "Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5."
             }
         ],
-        approach: "Keep track of the minimum price seen so far. For each day, calculate potential profit and update max profit.",
+        approach: "Track the minimum price seen so far and calculate the potential profit if sold today. Update max profit if current profit is higher.",
         solutions: [
             {
-                language: "javascript",
-                code: `function maxProfit(prices) {
-  let minPrice = Infinity;
-  let maxProfit = 0;
-  
-  for (const price of prices) {
-    if (price < minPrice) {
-      minPrice = price;
-    } else {
-      maxProfit = Math.max(maxProfit, price - minPrice);
+                language: "java",
+                code: `class Solution {
+    public int maxProfit(int[] prices) {
+        int minPrice = Integer.MAX_VALUE;
+        int maxProfit = 0;
+        
+        for (int price : prices) {
+            if (price < minPrice) {
+                minPrice = price;
+            } else if (price - minPrice > maxProfit) {
+                maxProfit = price - minPrice;
+            }
+        }
+        
+        return maxProfit;
     }
-  }
-  
-  return maxProfit;
 }`
             },
             {
-                language: "python",
-                code: `def maxProfit(prices):
-    min_price = float('inf')
-    max_profit = 0
-    
-    for price in prices:
-        if price < min_price:
-            min_price = price
-        else:
-            max_profit = max(max_profit, price - min_price)
-    
-    return max_profit`
+                language: "cpp",
+                code: `class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int minPrice = INT_MAX;
+        int maxProfit = 0;
+        
+        for (int price : prices) {
+            if (price < minPrice) {
+                minPrice = price;
+            } else if (price - minPrice > maxProfit) {
+                maxProfit = price - minPrice;
+            }
+        }
+        
+        return maxProfit;
+    }
+};`
             }
         ],
         timeComplexity: "O(n)",
@@ -697,30 +725,37 @@ export const codingProblems: CodingProblem[] = [
         approach: "Kadane's Algorithm: Keep track of current sum and max sum. Reset current sum to 0 when it becomes negative.",
         solutions: [
             {
-                language: "javascript",
-                code: `function maxSubArray(nums) {
-  let maxSum = nums[0];
-  let currentSum = nums[0];
-  
-  for (let i = 1; i < nums.length; i++) {
-    currentSum = Math.max(nums[i], currentSum + nums[i]);
-    maxSum = Math.max(maxSum, currentSum);
-  }
-  
-  return maxSum;
+                language: "java",
+                code: `class Solution {
+    public int maxSubArray(int[] nums) {
+        int maxSum = nums[0];
+        int currentSum = nums[0];
+        
+        for (int i = 1; i < nums.length; i++) {
+            currentSum = Math.max(nums[i], currentSum + nums[i]);
+            maxSum = Math.max(maxSum, currentSum);
+        }
+        
+        return maxSum;
+    }
 }`
             },
             {
-                language: "python",
-                code: `def maxSubArray(nums):
-    max_sum = nums[0]
-    current_sum = nums[0]
-    
-    for i in range(1, len(nums)):
-        current_sum = max(nums[i], current_sum + nums[i])
-        max_sum = max(max_sum, current_sum)
-    
-    return max_sum`
+                language: "cpp",
+                code: `class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int maxSum = nums[0];
+        int currentSum = nums[0];
+        
+        for (int i = 1; i < nums.size(); i++) {
+            currentSum = max(nums[i], currentSum + nums[i]);
+            maxSum = max(maxSum, currentSum);
+        }
+        
+        return maxSum;
+    }
+};`
             }
         ],
         timeComplexity: "O(n)",
@@ -751,35 +786,41 @@ export const codingProblems: CodingProblem[] = [
         approach: "This is a Fibonacci problem. ways(n) = ways(n-1) + ways(n-2). Use iterative approach for O(1) space.",
         solutions: [
             {
-                language: "javascript",
-                code: `function climbStairs(n) {
-  if (n <= 2) return n;
-  
-  let prev1 = 2, prev2 = 1;
-  
-  for (let i = 3; i <= n; i++) {
-    const current = prev1 + prev2;
-    prev2 = prev1;
-    prev1 = current;
-  }
-  
-  return prev1;
+                language: "java",
+                code: `class Solution {
+    public int climbStairs(int n) {
+        if (n <= 2) return n;
+        
+        int prev1 = 2, prev2 = 1;
+        
+        for (int i = 3; i <= n; i++) {
+            int current = prev1 + prev2;
+            prev2 = prev1;
+            prev1 = current;
+        }
+        
+        return prev1;
+    }
 }`
             },
             {
-                language: "python",
-                code: `def climbStairs(n):
-    if n <= 2:
-        return n
-    
-    prev1, prev2 = 2, 1
-    
-    for i in range(3, n + 1):
-        current = prev1 + prev2
-        prev2 = prev1
-        prev1 = current
-    
-    return prev1`
+                language: "cpp",
+                code: `class Solution {
+public:
+    int climbStairs(int n) {
+        if (n <= 2) return n;
+        
+        int prev1 = 2, prev2 = 1;
+        
+        for (int i = 3; i <= n; i++) {
+            int current = prev1 + prev2;
+            prev2 = prev1;
+            prev1 = current;
+        }
+        
+        return prev1;
+    }
+};`
             }
         ],
         timeComplexity: "O(n)",
@@ -805,55 +846,51 @@ export const codingProblems: CodingProblem[] = [
         approach: "Recursively visit left subtree, root, then right subtree. Or use a stack for iterative approach.",
         solutions: [
             {
-                language: "javascript",
-                code: `// Recursive
-function inorderTraversal(root) {
-  const result = [];
-  
-  function inorder(node) {
-    if (!node) return;
-    inorder(node.left);
-    result.push(node.val);
-    inorder(node.right);
-  }
-  
-  inorder(root);
-  return result;
-}
-
-// Iterative
-function inorderTraversalIterative(root) {
-  const result = [];
-  const stack = [];
-  let current = root;
-  
-  while (current || stack.length) {
-    while (current) {
-      stack.push(current);
-      current = current.left;
+                language: "java",
+                code: `class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        helper(root, result);
+        return result;
     }
-    current = stack.pop();
-    result.push(current.val);
-    current = current.right;
-  }
-  
-  return result;
+    
+    private void helper(TreeNode root, List<Integer> result) {
+        if (root != null) {
+            helper(root.left, result);
+            result.add(root.val);
+            helper(root.right, result);
+        }
+    }
 }`
             },
             {
-                language: "python",
-                code: `def inorderTraversal(root):
-    result = []
+                language: "cpp",
+                code: `/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> result;
+        inorder(root, result);
+        return result;
+    }
     
-    def inorder(node):
-        if not node:
-            return
-        inorder(node.left)
-        result.append(node.val)
-        inorder(node.right)
-    
-    inorder(root)
-    return result`
+    void inorder(TreeNode* root, vector<int>& result) {
+        if (!root) return;
+        inorder(root->left, result);
+        result.push_back(root->val);
+        inorder(root->right, result);
+    }
+};`
             }
         ],
         timeComplexity: "O(n)",
@@ -884,36 +921,43 @@ function inorderTraversalIterative(root) {
         approach: "Use recursion with min/max bounds. Each node must be within valid range based on its ancestors.",
         solutions: [
             {
-                language: "javascript",
-                code: `function isValidBST(root) {
-  function validate(node, min, max) {
-    if (!node) return true;
-    
-    if (node.val <= min || node.val >= max) {
-      return false;
+                language: "java",
+                code: `class Solution {
+    public boolean isValidBST(TreeNode root) {
+        return validate(root, null, null);
     }
     
-    return validate(node.left, min, node.val) && 
-           validate(node.right, node.val, max);
-  }
-  
-  return validate(root, -Infinity, Infinity);
+    private boolean validate(TreeNode node, Integer min, Integer max) {
+        if (node == null) return true;
+        
+        if ((min != null && node.val <= min) || (max != null && node.val >= max)) {
+            return false;
+        }
+        
+        return validate(node.left, min, node.val) && validate(node.right, node.val, max);
+    }
 }`
             },
             {
-                language: "python",
-                code: `def isValidBST(root):
-    def validate(node, min_val, max_val):
-        if not node:
-            return True
-        
-        if node.val <= min_val or node.val >= max_val:
-            return False
-        
-        return (validate(node.left, min_val, node.val) and 
-                validate(node.right, node.val, max_val))
+                language: "cpp",
+                code: `class Solution {
+public:
+    bool isValidBST(TreeNode* root) {
+        return validate(root, nullptr, nullptr);
+    }
     
-    return validate(root, float('-inf'), float('inf'))`
+    bool validate(TreeNode* node, TreeNode* minNode, TreeNode* maxNode) {
+        if (!node) return true;
+        
+        if ((minNode && node->val <= minNode->val) || 
+            (maxNode && node->val >= maxNode->val)) {
+            return false;
+        }
+        
+        return validate(node->left, minNode, node) && 
+               validate(node->right, node, maxNode);
+    }
+};`
             }
         ],
         timeComplexity: "O(n)",
@@ -945,34 +989,44 @@ function inorderTraversalIterative(root) {
         approach: "DP: dp[i] = minimum coins for amount i. For each amount, try all coins and take minimum.",
         solutions: [
             {
-                language: "javascript",
-                code: `function coinChange(coins, amount) {
-  const dp = new Array(amount + 1).fill(Infinity);
-  dp[0] = 0;
-  
-  for (let i = 1; i <= amount; i++) {
-    for (const coin of coins) {
-      if (coin <= i) {
-        dp[i] = Math.min(dp[i], dp[i - coin] + 1);
-      }
+                language: "java",
+                code: `class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, amount + 1);
+        dp[0] = 0;
+        
+        for (int i = 1; i <= amount; i++) {
+            for (int coin : coins) {
+                if (coin <= i) {
+                    dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+                }
+            }
+        }
+        
+        return dp[amount] > amount ? -1 : dp[amount];
     }
-  }
-  
-  return dp[amount] === Infinity ? -1 : dp[amount];
 }`
             },
             {
-                language: "python",
-                code: `def coinChange(coins, amount):
-    dp = [float('inf')] * (amount + 1)
-    dp[0] = 0
-    
-    for i in range(1, amount + 1):
-        for coin in coins:
-            if coin <= i:
-                dp[i] = min(dp[i], dp[i - coin] + 1)
-    
-    return dp[amount] if dp[amount] != float('inf') else -1`
+                language: "cpp",
+                code: `class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        vector<int> dp(amount + 1, amount + 1);
+        dp[0] = 0;
+        
+        for (int i = 1; i <= amount; i++) {
+            for (int coin : coins) {
+                if (coin <= i) {
+                    dp[i] = min(dp[i], dp[i - coin] + 1);
+                }
+            }
+        }
+        
+        return dp[amount] > amount ? -1 : dp[amount];
+    }
+};`
             }
         ],
         timeComplexity: "O(amount * coins)",
@@ -999,39 +1053,49 @@ function inorderTraversalIterative(root) {
         approach: "2D DP: dp[i][j] = LCS length for text1[0:i] and text2[0:j]. If chars match, add 1 to diagonal; else take max of left/top.",
         solutions: [
             {
-                language: "javascript",
-                code: `function longestCommonSubsequence(text1, text2) {
-  const m = text1.length, n = text2.length;
-  const dp = Array(m + 1).fill(null)
-    .map(() => Array(n + 1).fill(0));
-  
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (text1[i-1] === text2[j-1]) {
-        dp[i][j] = dp[i-1][j-1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
-      }
+                language: "java",
+                code: `class Solution {
+    public int longestCommonSubsequence(String text1, String text2) {
+        int m = text1.length();
+        int n = text2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (text1.charAt(i - 1) == text2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        
+        return dp[m][n];
     }
-  }
-  
-  return dp[m][n];
 }`
             },
             {
-                language: "python",
-                code: `def longestCommonSubsequence(text1, text2):
-    m, n = len(text1), len(text2)
-    dp = [[0] * (n + 1) for _ in range(m + 1)]
-    
-    for i in range(1, m + 1):
-        for j in range(1, n + 1):
-            if text1[i-1] == text2[j-1]:
-                dp[i][j] = dp[i-1][j-1] + 1
-            else:
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
-    
-    return dp[m][n]`
+                language: "cpp",
+                code: `class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int m = text1.length();
+        int n = text2.length();
+        vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
+        
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (text1[i - 1] == text2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        
+        return dp[m][n];
+    }
+};`
             }
         ],
         timeComplexity: "O(m * n)",
@@ -1059,66 +1123,83 @@ function inorderTraversalIterative(root) {
         approach: "DFS/BFS: For each unvisited '1', increment count and mark all connected '1's as visited.",
         solutions: [
             {
-                language: "javascript",
-                code: `function numIslands(grid) {
-  if (!grid.length) return 0;
-  
-  const rows = grid.length;
-  const cols = grid[0].length;
-  let count = 0;
-  
-  function dfs(r, c) {
-    if (r < 0 || r >= rows || c < 0 || c >= cols || 
-        grid[r][c] === '0') {
-      return;
+                language: "java",
+                code: `class Solution {
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) return 0;
+        
+        int rows = grid.length;
+        int cols = grid[0].length;
+        int count = 0;
+        
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (grid[r][c] == '1') {
+                    count++;
+                    dfs(grid, r, c);
+                }
+            }
+        }
+        
+        return count;
     }
     
-    grid[r][c] = '0'; // Mark as visited
-    dfs(r + 1, c);
-    dfs(r - 1, c);
-    dfs(r, c + 1);
-    dfs(r, c - 1);
-  }
-  
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      if (grid[r][c] === '1') {
-        count++;
-        dfs(r, c);
-      }
+    private void dfs(char[][] grid, int r, int c) {
+        int rows = grid.length;
+        int cols = grid[0].length;
+        
+        if (r < 0 || c < 0 || r >= rows || c >= cols || grid[r][c] == '0') {
+            return;
+        }
+        
+        grid[r][c] = '0'; // Mark as visited
+        
+        dfs(grid, r + 1, c);
+        dfs(grid, r - 1, c);
+        dfs(grid, r, c + 1);
+        dfs(grid, r, c - 1);
     }
-  }
-  
-  return count;
 }`
             },
             {
-                language: "python",
-                code: `def numIslands(grid):
-    if not grid:
-        return 0
-    
-    rows, cols = len(grid), len(grid[0])
-    count = 0
-    
-    def dfs(r, c):
-        if (r < 0 or r >= rows or c < 0 or c >= cols or 
-            grid[r][c] == '0'):
-            return
+                language: "cpp",
+                code: `class Solution {
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        if (grid.empty()) return 0;
         
-        grid[r][c] = '0'  # Mark visited
-        dfs(r + 1, c)
-        dfs(r - 1, c)
-        dfs(r, c + 1)
-        dfs(r, c - 1)
+        int rows = grid.size();
+        int cols = grid[0].size();
+        int count = 0;
+        
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (grid[r][c] == '1') {
+                    count++;
+                    dfs(grid, r, c);
+                }
+            }
+        }
+        
+        return count;
+    }
     
-    for r in range(rows):
-        for c in range(cols):
-            if grid[r][c] == '1':
-                count += 1
-                dfs(r, c)
-    
-    return count`
+    void dfs(vector<vector<char>>& grid, int r, int c) {
+        int rows = grid.size();
+        int cols = grid[0].size();
+        
+        if (r < 0 || c < 0 || r >= rows || c >= cols || grid[r][c] == '0') {
+            return;
+        }
+        
+        grid[r][c] = '0'; // Mark as visited
+        
+        dfs(grid, r + 1, c);
+        dfs(grid, r - 1, c);
+        dfs(grid, r, c + 1);
+        dfs(grid, r, c - 1);
+    }
+};`
             }
         ],
         timeComplexity: "O(m * n)",
@@ -1146,43 +1227,53 @@ function inorderTraversalIterative(root) {
         approach: "Two pointers from both ends. Move the pointer with smaller height inward, as that might find a taller line.",
         solutions: [
             {
-                language: "javascript",
-                code: `function maxArea(height) {
-  let left = 0, right = height.length - 1;
-  let maxWater = 0;
-  
-  while (left < right) {
-    const width = right - left;
-    const h = Math.min(height[left], height[right]);
-    maxWater = Math.max(maxWater, width * h);
-    
-    if (height[left] < height[right]) {
-      left++;
-    } else {
-      right--;
+                language: "java",
+                code: `class Solution {
+    public int maxArea(int[] height) {
+        int left = 0;
+        int right = height.length - 1;
+        int maxWater = 0;
+        
+        while (left < right) {
+            int width = right - left;
+            int h = Math.min(height[left], height[right]);
+            maxWater = Math.max(maxWater, width * h);
+            
+            if (height[left] < height[right]) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+        
+        return maxWater;
     }
-  }
-  
-  return maxWater;
 }`
             },
             {
-                language: "python",
-                code: `def maxArea(height):
-    left, right = 0, len(height) - 1
-    max_water = 0
-    
-    while left < right:
-        width = right - left
-        h = min(height[left], height[right])
-        max_water = max(max_water, width * h)
+                language: "cpp",
+                code: `class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int left = 0;
+        int right = height.size() - 1;
+        int maxWater = 0;
         
-        if height[left] < height[right]:
-            left += 1
-        else:
-            right -= 1
-    
-    return max_water`
+        while (left < right) {
+            int width = right - left;
+            int h = min(height[left], height[right]);
+            maxWater = max(maxWater, width * h);
+            
+            if (height[left] < height[right]) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+        
+        return maxWater;
+    }
+};`
             }
         ],
         timeComplexity: "O(n)",
@@ -1208,65 +1299,73 @@ function inorderTraversalIterative(root) {
         approach: "Sort array. For each element, use two pointers to find pairs that sum to -element. Skip duplicates.",
         solutions: [
             {
-                language: "javascript",
-                code: `function threeSum(nums) {
-  nums.sort((a, b) => a - b);
-  const result = [];
-  
-  for (let i = 0; i < nums.length - 2; i++) {
-    if (i > 0 && nums[i] === nums[i-1]) continue;
-    
-    let left = i + 1, right = nums.length - 1;
-    
-    while (left < right) {
-      const sum = nums[i] + nums[left] + nums[right];
-      
-      if (sum === 0) {
-        result.push([nums[i], nums[left], nums[right]]);
-        while (left < right && nums[left] === nums[left+1]) left++;
-        while (left < right && nums[right] === nums[right-1]) right--;
-        left++;
-        right--;
-      } else if (sum < 0) {
-        left++;
-      } else {
-        right--;
-      }
+                language: "java",
+                code: `class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+        
+        for (int i = 0; i < nums.length - 2; i++) {
+            if (i > 0 && nums[i] == nums[i-1]) continue;
+            
+            int left = i + 1;
+            int right = nums.length - 1;
+            
+            while (left < right) {
+                int sum = nums[i] + nums[left] + nums[right];
+                
+                if (sum == 0) {
+                    result.add(Arrays.asList(nums[i], nums[left], nums[right]));
+                    while (left < right && nums[left] == nums[left+1]) left++;
+                    while (left < right && nums[right] == nums[right-1]) right--;
+                    left++;
+                    right--;
+                } else if (sum < 0) {
+                    left++;
+                } else {
+                    right--;
+                }
+            }
+        }
+        
+        return result;
     }
-  }
-  
-  return result;
 }`
             },
             {
-                language: "python",
-                code: `def threeSum(nums):
-    nums.sort()
-    result = []
-    
-    for i in range(len(nums) - 2):
-        if i > 0 and nums[i] == nums[i-1]:
-            continue
+                language: "cpp",
+                code: `class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> result;
         
-        left, right = i + 1, len(nums) - 1
-        
-        while left < right:
-            total = nums[i] + nums[left] + nums[right]
+        for (int i = 0; i < nums.size() - 2; i++) {
+            if (i > 0 && nums[i] == nums[i-1]) continue;
             
-            if total == 0:
-                result.append([nums[i], nums[left], nums[right]])
-                while left < right and nums[left] == nums[left+1]:
-                    left += 1
-                while left < right and nums[right] == nums[right-1]:
-                    right -= 1
-                left += 1
-                right -= 1
-            elif total < 0:
-                left += 1
-            else:
-                right -= 1
-    
-    return result`
+            int left = i + 1;
+            int right = nums.size() - 1;
+            
+            while (left < right) {
+                int sum = nums[i] + nums[left] + nums[right];
+                
+                if (sum == 0) {
+                    result.push_back({nums[i], nums[left], nums[right]});
+                    while (left < right && nums[left] == nums[left+1]) left++;
+                    while (left < right && nums[right] == nums[right-1]) right--;
+                    left++;
+                    right--;
+                } else if (sum < 0) {
+                    left++;
+                } else {
+                    right--;
+                }
+            }
+        }
+        
+        return result;
+    }
+};`
             }
         ],
         timeComplexity: "O(n²)",
@@ -1295,62 +1394,69 @@ function inorderTraversalIterative(root) {
         approach: "Use a hash map + doubly linked list. Hash map for O(1) lookup, linked list for O(1) removal and insertion at ends.",
         solutions: [
             {
-                language: "javascript",
+                language: "java",
                 code: `class LRUCache {
-  constructor(capacity) {
-    this.capacity = capacity;
-    this.cache = new Map();
-  }
-  
-  get(key) {
-    if (!this.cache.has(key)) return -1;
-    
-    // Move to end (most recently used)
-    const value = this.cache.get(key);
-    this.cache.delete(key);
-    this.cache.set(key, value);
-    
-    return value;
-  }
-  
-  put(key, value) {
-    if (this.cache.has(key)) {
-      this.cache.delete(key);
-    } else if (this.cache.size >= this.capacity) {
-      // Delete oldest (first item)
-      const firstKey = this.cache.keys().next().value;
-      this.cache.delete(firstKey);
+    private int capacity;
+    private final LinkedHashMap<Integer, Integer> cache;
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        this.cache = new LinkedHashMap<Integer, Integer>(capacity, 0.75f, true) {
+            protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
+                return size() > LRUCache.this.capacity;
+            }
+        };
     }
     
-    this.cache.set(key, value);
-  }
+    public int get(int key) {
+        return cache.getOrDefault(key, -1);
+    }
+    
+    public void put(int key, int value) {
+        cache.put(key, value);
+    }
 }`
             },
             {
-                language: "python",
-                code: `from collections import OrderedDict
+                language: "cpp",
+                code: `class LRUCache {
+private:
+    int capacity;
+    list<pair<int, int>> lruList; // doubly linked list of key-value pairs
+    unordered_map<int, list<pair<int, int>>::iterator> cache;
 
-class LRUCache:
-    def __init__(self, capacity: int):
-        self.capacity = capacity
-        self.cache = OrderedDict()
+public:
+    LRUCache(int capacity) {
+        this->capacity = capacity;
+    }
     
-    def get(self, key: int) -> int:
-        if key not in self.cache:
-            return -1
+    int get(int key) {
+        if (cache.find(key) == cache.end()) return -1;
         
-        # Move to end (most recently used)
-        self.cache.move_to_end(key)
-        return self.cache[key]
+        // Move to front (most recently used)
+        lruList.splice(lruList.begin(), lruList, cache[key]);
+        return cache[key]->second;
+    }
     
-    def put(self, key: int, value: int) -> None:
-        if key in self.cache:
-            self.cache.move_to_end(key)
+    void put(int key, int value) {
+        if (cache.find(key) != cache.end()) {
+            // Update value and move to front
+            cache[key]->second = value;
+            lruList.splice(lruList.begin(), lruList, cache[key]);
+            return;
+        }
         
-        self.cache[key] = value
+        if (cache.size() == capacity) {
+            // Remove least recently used (back)
+            int keyToRemove = lruList.back().first;
+            lruList.pop_back();
+            cache.erase(keyToRemove);
+        }
         
-        if len(self.cache) > self.capacity:
-            self.cache.popitem(last=False)`
+        lruList.push_front({key, value});
+        cache[key] = lruList.begin();
+    }
+};`
             }
         ],
         timeComplexity: "O(1) for both get and put",
@@ -1377,55 +1483,65 @@ class LRUCache:
         approach: "Two pointers: Water at position = min(maxLeft, maxRight) - height. Move pointer with smaller max.",
         solutions: [
             {
-                language: "javascript",
-                code: `function trap(height) {
-  let left = 0, right = height.length - 1;
-  let leftMax = 0, rightMax = 0;
-  let water = 0;
-  
-  while (left < right) {
-    if (height[left] < height[right]) {
-      if (height[left] >= leftMax) {
-        leftMax = height[left];
-      } else {
-        water += leftMax - height[left];
-      }
-      left++;
-    } else {
-      if (height[right] >= rightMax) {
-        rightMax = height[right];
-      } else {
-        water += rightMax - height[right];
-      }
-      right--;
+                language: "java",
+                code: `class Solution {
+    public int trap(int[] height) {
+        int left = 0, right = height.length - 1;
+        int leftMax = 0, rightMax = 0;
+        int water = 0;
+        
+        while (left < right) {
+            if (height[left] < height[right]) {
+                if (height[left] >= leftMax) {
+                    leftMax = height[left];
+                } else {
+                    water += leftMax - height[left];
+                }
+                left++;
+            } else {
+                if (height[right] >= rightMax) {
+                    rightMax = height[right];
+                } else {
+                    water += rightMax - height[right];
+                }
+                right--;
+            }
+        }
+        
+        return water;
     }
-  }
-  
-  return water;
 }`
             },
             {
-                language: "python",
-                code: `def trap(height):
-    left, right = 0, len(height) - 1
-    left_max, right_max = 0, 0
-    water = 0
-    
-    while left < right:
-        if height[left] < height[right]:
-            if height[left] >= left_max:
-                left_max = height[left]
-            else:
-                water += left_max - height[left]
-            left += 1
-        else:
-            if height[right] >= right_max:
-                right_max = height[right]
-            else:
-                water += right_max - height[right]
-            right -= 1
-    
-    return water`
+                language: "cpp",
+                code: `class Solution {
+public:
+    int trap(vector<int>& height) {
+        int left = 0, right = height.size() - 1;
+        int leftMax = 0, rightMax = 0;
+        int water = 0;
+        
+        while (left < right) {
+            if (height[left] < height[right]) {
+                if (height[left] >= leftMax) {
+                    leftMax = height[left];
+                } else {
+                    water += leftMax - height[left];
+                }
+                left++;
+            } else {
+                if (height[right] >= rightMax) {
+                    rightMax = height[right];
+                } else {
+                    water += rightMax - height[right];
+                }
+                right--;
+            }
+        }
+        
+        return water;
+    }
+};`
             }
         ],
         timeComplexity: "O(n)",

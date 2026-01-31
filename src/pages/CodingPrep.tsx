@@ -53,7 +53,7 @@ const CodingPrep = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedDifficulty, setSelectedDifficulty] = useState<string>("all");
     const [selectedCategory, setSelectedCategory] = useState<string>("all");
-    const [selectedLanguage, setSelectedLanguage] = useState<string>("javascript");
+    const [selectedLanguage, setSelectedLanguage] = useState<string>("java");
     const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
     const [completedProblems, setCompletedProblems] = useState<Set<string>>(new Set());
 
