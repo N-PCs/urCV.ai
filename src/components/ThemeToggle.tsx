@@ -48,4 +48,3 @@ const ThemeToggle = ({ className = "" }: ThemeToggleProps) => {
 };
 
 export default ThemeToggle;
-

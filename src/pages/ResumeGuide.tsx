@@ -20,7 +20,7 @@ import {
   Eye,
   Trophy,
   AlertTriangle,
-  Info
+  Info,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -49,24 +49,27 @@ const comparisonData: ComparisonItem[] = [
     icon: <Mail className="w-5 h-5" />,
     description: "Your first impression starts here. Make it count.",
     bad: {
-      content: "coolgamer2000@yahoo.com | 555-1234 | Lives in California somewhere",
+      content:
+        "coolgamer2000@yahoo.com | 555-1234 | Lives in California somewhere",
       issues: [
         "Unprofessional email address",
         "Incomplete phone number format",
         "Vague location—city matters for local roles",
-        "Missing LinkedIn or portfolio links"
-      ]
+        "Missing LinkedIn or portfolio links",
+      ],
     },
     good: {
-      content: "alex.johnson@email.com | (555) 123-4567 | San Francisco, CA | linkedin.com/in/alexjohnson | alexj.dev",
+      content:
+        "alex.johnson@email.com | (555) 123-4567 | San Francisco, CA | linkedin.com/in/alexjohnson | alexj.dev",
       benefits: [
         "Professional firstname.lastname email",
         "Properly formatted phone with area code",
         "City + State format for location",
-        "Relevant professional links included"
-      ]
+        "Relevant professional links included",
+      ],
     },
-    proTip: "Create a professional email if needed—it takes 2 minutes and makes a lasting impression."
+    proTip:
+      "Create a professional email if needed—it takes 2 minutes and makes a lasting impression.",
   },
   {
     id: "summary",
@@ -74,24 +77,27 @@ const comparisonData: ComparisonItem[] = [
     icon: <User className="w-5 h-5" />,
     description: "Your elevator pitch in 2-3 sentences. Hook them fast.",
     bad: {
-      content: "I am a hardworking individual looking for an opportunity to grow and learn. I have done many things in my career and am looking for a new challenge. I work well with others and am a team player.",
+      content:
+        "I am a hardworking individual looking for an opportunity to grow and learn. I have done many things in my career and am looking for a new challenge. I work well with others and am a team player.",
       issues: [
         "Self-focused rather than value-focused",
         "Generic phrases that apply to anyone",
         "No specific skills or achievements mentioned",
-        "Doesn't indicate industry or expertise level"
-      ]
+        "Doesn't indicate industry or expertise level",
+      ],
     },
     good: {
-      content: "Results-oriented Full-Stack Developer with 5+ years specializing in React and Node.js. Delivered 15+ production applications serving 2M+ users. Proven track record of reducing load times by 40% and mentoring junior developers. Seeking to leverage expertise in scalable architecture at a growth-stage startup.",
+      content:
+        "Results-oriented Full-Stack Developer with 5+ years specializing in React and Node.js. Delivered 15+ production applications serving 2M+ users. Proven track record of reducing load times by 40% and mentoring junior developers. Seeking to leverage expertise in scalable architecture at a growth-stage startup.",
       benefits: [
         "Specific role and years of experience",
         "Quantified achievements with metrics",
         "Technical skills clearly stated",
-        "Clear value proposition and career goal"
-      ]
+        "Clear value proposition and career goal",
+      ],
     },
-    proTip: "Write your summary last—after completing other sections, you'll have better material to summarize."
+    proTip:
+      "Write your summary last—after completing other sections, you'll have better material to summarize.",
   },
   {
     id: "experience",
@@ -103,30 +109,31 @@ const comparisonData: ComparisonItem[] = [
         "Responsible for managing the team",
         "Helped with various projects",
         "Did customer service duties",
-        "Attended meetings and wrote reports"
+        "Attended meetings and wrote reports",
       ],
       issues: [
         "Passive voice ('responsible for')",
         "No quantifiable results",
         "Vague descriptions without context",
-        "Reads like a job description, not achievements"
-      ]
+        "Reads like a job description, not achievements",
+      ],
     },
     good: {
       content: [
         "Led 8-person engineering team, delivering 12 features ahead of schedule",
         "Architected microservices migration reducing server costs by $50K/year",
         "Increased customer satisfaction scores from 72% to 94% in 6 months",
-        "Presented quarterly analytics to C-suite, influencing $2M budget allocation"
+        "Presented quarterly analytics to C-suite, influencing $2M budget allocation",
       ],
       benefits: [
         "Strong action verbs at the start",
         "Specific numbers and percentages",
         "Clear cause and effect relationship",
-        "Demonstrates leadership and business impact"
-      ]
+        "Demonstrates leadership and business impact",
+      ],
     },
-    proTip: "Use the XYZ formula: Accomplished [X] as measured by [Y], by doing [Z]."
+    proTip:
+      "Use the XYZ formula: Accomplished [X] as measured by [Y], by doing [Z].",
   },
   {
     id: "education",
@@ -134,24 +141,27 @@ const comparisonData: ComparisonItem[] = [
     icon: <GraduationCap className="w-5 h-5" />,
     description: "Highlight relevant achievements, not just degrees.",
     bad: {
-      content: "Went to State University, got a degree in Computer Science. GPA was okay. Took some classes.",
+      content:
+        "Went to State University, got a degree in Computer Science. GPA was okay. Took some classes.",
       issues: [
         "Informal, unprofessional tone",
         "Missing graduation date",
         "No relevant coursework or projects",
-        "Vague about academic performance"
-      ]
+        "Vague about academic performance",
+      ],
     },
     good: {
-      content: "B.S. Computer Science, State University — May 2022 | GPA: 3.7/4.0\n• Dean's List (6 semesters) | Relevant: Data Structures, Machine Learning, Cloud Computing\n• Capstone: Built real-time analytics dashboard used by 3 campus departments",
+      content:
+        "B.S. Computer Science, State University — May 2022 | GPA: 3.7/4.0\n• Dean's List (6 semesters) | Relevant: Data Structures, Machine Learning, Cloud Computing\n• Capstone: Built real-time analytics dashboard used by 3 campus departments",
       benefits: [
         "Clear degree, institution, and date",
         "GPA included (when favorable)",
         "Relevant coursework listed",
-        "Projects demonstrating practical skills"
-      ]
+        "Projects demonstrating practical skills",
+      ],
     },
-    proTip: "Recent graduates: Lead with education. Experienced professionals: Keep it brief at the bottom."
+    proTip:
+      "Recent graduates: Lead with education. Experienced professionals: Keep it brief at the bottom.",
   },
   {
     id: "skills",
@@ -159,31 +169,46 @@ const comparisonData: ComparisonItem[] = [
     icon: <Code className="w-5 h-5" />,
     description: "Be specific and honest. Generic skills waste space.",
     bad: {
-      content: "Microsoft Office, Communication, Leadership, Problem-solving, Teamwork, Fast learner, Detail-oriented",
+      content:
+        "Microsoft Office, Communication, Leadership, Problem-solving, Teamwork, Fast learner, Detail-oriented",
       issues: [
         "Expected skills that don't differentiate",
         "Soft skills without evidence",
         "No technical depth or specificity",
-        "No skill levels or context"
-      ]
+        "No skill levels or context",
+      ],
     },
     good: {
-      content: "Languages: Python (Expert), JavaScript/TypeScript (Advanced), SQL (Advanced)\nFrameworks: React, Django, FastAPI | Cloud: AWS (Certified), Docker, Kubernetes\nTools: Git, Jira, Figma | Data: Pandas, PostgreSQL, Redis",
+      content:
+        "Languages: Python (Expert), JavaScript/TypeScript (Advanced), SQL (Advanced)\nFrameworks: React, Django, FastAPI | Cloud: AWS (Certified), Docker, Kubernetes\nTools: Git, Jira, Figma | Data: Pandas, PostgreSQL, Redis",
       benefits: [
         "Organized by category",
         "Skill levels indicated",
         "Industry-relevant technologies",
-        "Certifications highlighted"
-      ]
+        "Certifications highlighted",
+      ],
     },
-    proTip: "Tailor skills to each job—mirror the exact technologies mentioned in the job description."
-  }
+    proTip:
+      "Tailor skills to each job—mirror the exact technologies mentioned in the job description.",
+  },
 ];
 
 const statsData = [
-  { label: "Average time recruiters spend on a resume", value: "6-7 sec", icon: <Eye className="w-5 h-5" /> },
-  { label: "Resumes rejected by ATS before human review", value: "75%", icon: <AlertTriangle className="w-5 h-5" /> },
-  { label: "Increase in callbacks with optimized resume", value: "40%", icon: <Trophy className="w-5 h-5" /> },
+  {
+    label: "Average time recruiters spend on a resume",
+    value: "6-7 sec",
+    icon: <Eye className="w-5 h-5" />,
+  },
+  {
+    label: "Resumes rejected by ATS before human review",
+    value: "75%",
+    icon: <AlertTriangle className="w-5 h-5" />,
+  },
+  {
+    label: "Increase in callbacks with optimized resume",
+    value: "40%",
+    icon: <Trophy className="w-5 h-5" />,
+  },
 ];
 
 export default function ResumeGuide() {
@@ -195,7 +220,10 @@ export default function ResumeGuide() {
       <nav className="border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <Link
+              to="/"
+              className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+            >
               <ArrowLeft className="w-5 h-5" />
               <span className="font-medium">Back to Home</span>
             </Link>
@@ -203,7 +231,9 @@ export default function ResumeGuide() {
               <ThemeToggle />
               <div className="flex items-center gap-2">
                 <img src="/websitelogo.png" alt="urCV.ai" className="w-8 h-8" />
-                <span className="font-bold text-gray-900 dark:text-white">urCV.ai</span>
+                <span className="font-bold text-gray-900 dark:text-white">
+                  urCV.ai
+                </span>
               </div>
             </div>
           </div>
@@ -213,7 +243,6 @@ export default function ResumeGuide() {
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 text-white py-24">
         <div className="container mx-auto px-4 text-center">
-
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Transform Your Resume from
             <span className="text-yellow-300"> Ignored </span>
@@ -221,7 +250,8 @@ export default function ResumeGuide() {
             <span className="text-green-300"> Interviewed</span>
           </h1>
           <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
-            Side-by-side comparisons showing exactly what hiring managers want to see—and what makes them hit delete.
+            Side-by-side comparisons showing exactly what hiring managers want
+            to see—and what makes them hit delete.
           </p>
 
           {/* Stats */}
@@ -249,7 +279,11 @@ export default function ResumeGuide() {
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
           {/* Section Tabs */}
-          <Tabs value={activeSection} onValueChange={setActiveSection} className="w-full">
+          <Tabs
+            value={activeSection}
+            onValueChange={setActiveSection}
+            className="w-full"
+          >
             <TabsList className="grid grid-cols-5 gap-2 mb-8 h-auto p-2 bg-white dark:bg-gray-900 rounded-xl shadow-lg">
               {comparisonData.map((item) => (
                 <TabsTrigger
@@ -275,7 +309,9 @@ export default function ResumeGuide() {
                     <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                       {section.title}
                     </h2>
-                    <p className="text-gray-600 dark:text-gray-400">{section.description}</p>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      {section.description}
+                    </p>
                   </div>
 
                   {/* Comparison Cards */}
@@ -288,8 +324,12 @@ export default function ResumeGuide() {
                             <XCircle className="w-6 h-6 text-white" />
                           </div>
                           <div>
-                            <h3 className="font-bold text-red-700 dark:text-red-400">What NOT to Do</h3>
-                            <p className="text-sm text-red-600 dark:text-red-300">Common mistakes to avoid</p>
+                            <h3 className="font-bold text-red-700 dark:text-red-400">
+                              What NOT to Do
+                            </h3>
+                            <p className="text-sm text-red-600 dark:text-red-300">
+                              Common mistakes to avoid
+                            </p>
                           </div>
                         </div>
                         <ThumbsDown className="w-6 h-6 text-red-400" />
@@ -322,7 +362,10 @@ export default function ResumeGuide() {
                           </div>
                           <ul className="space-y-2">
                             {section.bad.issues.map((issue, i) => (
-                              <li key={i} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
+                              <li
+                                key={i}
+                                className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400"
+                              >
                                 <XCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
                                 {issue}
                               </li>
@@ -340,8 +383,12 @@ export default function ResumeGuide() {
                             <CheckCircle2 className="w-6 h-6 text-white" />
                           </div>
                           <div>
-                            <h3 className="font-bold text-green-700 dark:text-green-400">The Professional Way</h3>
-                            <p className="text-sm text-green-600 dark:text-green-300">What gets interviews</p>
+                            <h3 className="font-bold text-green-700 dark:text-green-400">
+                              The Professional Way
+                            </h3>
+                            <p className="text-sm text-green-600 dark:text-green-300">
+                              What gets interviews
+                            </p>
                           </div>
                         </div>
                         <ThumbsUp className="w-6 h-6 text-green-400" />
@@ -374,7 +421,10 @@ export default function ResumeGuide() {
                           </div>
                           <ul className="space-y-2">
                             {section.good.benefits.map((benefit, i) => (
-                              <li key={i} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
+                              <li
+                                key={i}
+                                className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400"
+                              >
                                 <CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
                                 {benefit}
                               </li>
@@ -397,8 +447,12 @@ export default function ResumeGuide() {
                         <Info className="w-5 h-5 text-white" />
                       </div>
                       <div>
-                        <h4 className="font-bold text-gray-900 dark:text-white mb-1">💡 Pro Tip</h4>
-                        <p className="text-gray-600 dark:text-gray-300">{section.proTip}</p>
+                        <h4 className="font-bold text-gray-900 dark:text-white mb-1">
+                          💡 Pro Tip
+                        </h4>
+                        <p className="text-gray-600 dark:text-gray-300">
+                          {section.proTip}
+                        </p>
                       </div>
                     </div>
                   </motion.div>
@@ -414,17 +468,25 @@ export default function ResumeGuide() {
             viewport={{ once: true }}
             className="mt-20 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 rounded-2xl p-10 text-center text-white"
           >
-            <h2 className="text-3xl font-bold mb-4">Ready to Apply These Tips?</h2>
+            <h2 className="text-3xl font-bold mb-4">
+              Ready to Apply These Tips?
+            </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Our AI-powered builder automatically implements these best practices. Create a professional resume in minutes, not hours.
+              Our AI-powered builder automatically implements these best
+              practices. Create a professional resume in minutes, not hours.
             </p>
             <Link to="/builder">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-6 text-lg font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
+              <Button
+                size="lg"
+                className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-6 text-lg font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+              >
                 Start Building Your CV
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
-            <p className="text-sm text-blue-200 mt-4">Free to use • No signup required</p>
+            <p className="text-sm text-blue-200 mt-4">
+              Free to use • No signup required
+            </p>
           </motion.div>
         </div>
       </div>
@@ -433,4 +495,3 @@ export default function ResumeGuide() {
     </div>
   );
 }
-
