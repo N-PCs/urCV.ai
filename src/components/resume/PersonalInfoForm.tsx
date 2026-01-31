@@ -19,7 +19,7 @@ const PersonalInfoForm = ({ data, updateData }: PersonalInfoFormProps) => {
   return (
     <div className="space-y-6">
       <div className="grid md:grid-cols-2 gap-4">
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="fullName">Full Name</Label>
           <Input
             id="fullName"
@@ -29,7 +29,7 @@ const PersonalInfoForm = ({ data, updateData }: PersonalInfoFormProps) => {
             className="mt-1"
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="email">Email Address</Label>
           <Input
             id="email"
@@ -43,7 +43,7 @@ const PersonalInfoForm = ({ data, updateData }: PersonalInfoFormProps) => {
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="phone">Phone Number</Label>
           <Input
             id="phone"
@@ -53,7 +53,7 @@ const PersonalInfoForm = ({ data, updateData }: PersonalInfoFormProps) => {
             className="mt-1"
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="location">Location</Label>
           <Input
             id="location"
@@ -88,7 +88,7 @@ const PersonalInfoForm = ({ data, updateData }: PersonalInfoFormProps) => {
         </div>
       </div>
 
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="summary">Professional Summary</Label>
         <Textarea
           id="summary"
