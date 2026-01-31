@@ -1,47 +1,153 @@
+// src/components/FloatingChatBot.tsx
+import React, { useState, useRef, useEffect } from 'react';
+import { sendMessageToBot } from '../../services/chatService'; 
+// Ensure you have lucide-react installed: npm install lucide-react
+// If not, remove imports and use text/emoji instead
+import { MessageCircle, X, Send, Loader2 } from 'lucide-react'; 
 
-import { useState } from 'react';
-import { MessageCircle, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import ChatBot from '@/components/resume/ChatBot';
+interface Message {
+  id: string;
+  text: string;
+  sender: 'user' | 'bot';
+}
 
-const FloatingChatBot = () => {
+const FloatingChatBot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([
+    { id: '1', text: "Hi there! 👋 How can I help you build your perfect CV today?", sender: 'bot' }
+  ]);
+  const [inputValue, setInputValue] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isOpen]);
+
+  const handleSendMessage = async () => {
+    if (!inputValue.trim()) return;
+
+    const userMsg: Message = {
+      id: Date.now().toString(),
+      text: inputValue,
+      sender: 'user'
+    };
+
+    setMessages(prev => [...prev, userMsg]);
+    setInputValue("");
+    setIsTyping(true);
+
+    try {
+      // Get reply from our service
+      const botReply = await sendMessageToBot(userMsg.text);
+      
+      const botMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        text: botReply,
+        sender: 'bot'
+      };
+      setMessages(prev => [...prev, botMsg]);
+    } catch (error) {
+      console.error("Chat Error:", error);
+      const errorMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "Sorry, I'm having trouble connecting right now. 😓",
+        sender: 'bot'
+      };
+      setMessages(prev => [...prev, errorMsg]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') handleSendMessage();
+  };
 
   return (
-    <>
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+      
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-20 right-4 w-96 h-[500px] z-50 shadow-2xl animate-scale-in">
-          <Card className="h-full transform transition-all duration-300 hover:shadow-3xl bg-white dark:bg-gray-800">
-            <div className="flex items-center justify-between p-3 border-b bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100">AI Assistant</h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsOpen(false)}
-                className="h-6 w-6 p-0 transition-all duration-200 hover:scale-110 hover:bg-red-100 dark:hover:bg-red-900/20"
+        <div className="mb-4 w-80 md:w-96 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col h-[500px] transition-all duration-300 animate-in fade-in slide-in-from-bottom-10">
+          
+          {/* Header */}
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 flex justify-between items-center text-white">
+            <div className="flex items-center gap-2">
+              <div className="bg-white/20 p-1.5 rounded-full">
+                <MessageCircle size={20} />
+              </div>
+              <span className="font-semibold">urCV Assistant</span>
+            </div>
+            <button 
+              onClick={() => setIsOpen(false)} 
+              className="hover:bg-white/20 p-1 rounded-full transition-colors"
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          {/* Messages Area */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-800/50">
+            {messages.map((msg) => (
+              <div 
+                key={msg.id} 
+                className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <X className="h-4 w-4" />
-              </Button>
+                <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${
+                  msg.sender === 'user' 
+                    ? 'bg-blue-600 text-white rounded-br-none' 
+                    : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 shadow-sm border border-gray-100 dark:border-gray-600 rounded-bl-none'
+                }`}>
+                  {msg.text}
+                </div>
+              </div>
+            ))}
+            
+            {/* Typing Indicator */}
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="bg-white dark:bg-gray-700 p-3 rounded-2xl rounded-bl-none shadow-sm border border-gray-100 dark:border-gray-600">
+                  <Loader2 size={16} className="animate-spin text-blue-600" />
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input Area */}
+          <div className="p-3 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700">
+            <div className="flex gap-2 items-center">
+              <input 
+                type="text" 
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyPress}
+                placeholder="Ask something..."
+                className="flex-1 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button 
+                onClick={handleSendMessage}
+                disabled={!inputValue.trim() || isTyping}
+                className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white p-2 rounded-full transition-all shadow-md"
+              >
+                <Send size={18} />
+              </button>
             </div>
-            <div className="h-[calc(100%-60px)]">
-              <ChatBot />
-            </div>
-          </Card>
+          </div>
         </div>
       )}
 
-      {/* Floating Button */}
-      <Button
+      {/* Toggle Button */}
+      <button 
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-4 right-4 w-14 h-14 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl z-40 flex items-center justify-center transition-all duration-300 transform hover:scale-110 ${
-          isOpen ? 'rotate-180' : 'hover:rotate-12'
-        }`}
+        className={`${isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'} transition-all duration-300 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl flex items-center justify-center`}
       >
-        <MessageCircle className="w-6 h-6 text-white" />
-      </Button>
-    </>
+        <MessageCircle size={28} />
+      </button>
+
+    </div>
   );
 };
 
