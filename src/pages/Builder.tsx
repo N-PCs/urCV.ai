@@ -78,68 +78,105 @@ export interface ResumeData {
   };
 }
 
-const Builder = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [resumeData, setResumeData] = useState<ResumeData>({
-    personalInfo: {
-      fullName: "Alex Morgan",
-      email: "alex.morgan@example.com",
-      phone: "+1 (555) 012-3456",
+const RESUME_DATA_KEY = "urcv-resume-data";
+const CURRENT_STEP_KEY = "urcv-current-step";
+const TEMPLATE_NAME_KEY = "urcv-template-name";
+
+const DEFAULT_RESUME_DATA: ResumeData = {
+  personalInfo: {
+    fullName: "Alex Morgan",
+    email: "alex.morgan@example.com",
+    phone: "+1 (555) 012-3456",
+    location: "San Francisco, CA",
+    linkedin: "linkedin.com/in/alexmorgan",
+    portfolio: "alexmorgan.com",
+    summary:
+      "Innovative and results-oriented professional with a strong background in technology and design. Skilled in project management, team leadership, and creative problem-solving. Committed to delivering high-quality solutions and driving business growth.",
+    photoUrl: "",
+  },
+  education: [
+    {
+      id: "1",
+      degree: "Bachelor of Science in Computer Science",
+      school: "University of Technology",
       location: "San Francisco, CA",
-      linkedin: "linkedin.com/in/alexmorgan",
-      portfolio: "alexmorgan.com",
-      summary:
-        "Innovative and results-oriented professional with a strong background in technology and design. Skilled in project management, team leadership, and creative problem-solving. Committed to delivering high-quality solutions and driving business growth.",
-      photoUrl: "",
+      graduationDate: "May 2022",
+      gpa: "3.8",
     },
-    education: [
-      {
-        id: "1",
-        degree: "Bachelor of Science in Computer Science",
-        school: "University of Technology",
-        location: "San Francisco, CA",
-        graduationDate: "May 2022",
-        gpa: "3.8",
-      },
-    ],
-    experience: [
-      {
-        id: "1",
-        title: "Senior Developer",
-        company: "Tech Solutions Inc.",
-        location: "San Francisco, CA",
-        startDate: "Jun 2022",
-        endDate: "Present",
-        current: true,
-        description:
-          "Led a team of developers in building scalable web applications. Implemented new features and optimized existing code for better performance.",
-      },
-    ],
-    skills: {
-      technical: ["React", "TypeScript", "Node.js", "AWS"],
-      languages: ["English (Native)", "Spanish (Intermediate)"],
-      certifications: ["AWS Certified Solutions Architect"],
+  ],
+  experience: [
+    {
+      id: "1",
+      title: "Senior Developer",
+      company: "Tech Solutions Inc.",
+      location: "San Francisco, CA",
+      startDate: "Jun 2022",
+      endDate: "Present",
+      current: true,
+      description:
+        "Led a team of developers in building scalable web applications. Implemented new features and optimized existing code for better performance.",
     },
-    hobbies: [],
-    codingProfiles: {
-      github: "",
-      leetcode: "",
-      hackerrank: "",
-      codeforces: "",
-      kaggle: "",
-      codechef: "",
-    },
+  ],
+  skills: {
+    technical: ["React", "TypeScript", "Node.js", "AWS"],
+    languages: ["English (Native)", "Spanish (Intermediate)"],
+    certifications: ["AWS Certified Solutions Architect"],
+  },
+  hobbies: [],
+  codingProfiles: {
+    github: "",
+    leetcode: "",
+    hackerrank: "",
+    codeforces: "",
+    kaggle: "",
+    codechef: "",
+  },
+};
+
+const Builder = () => {
+  const [currentStep, setCurrentStep] = useState<number>(() => {
+    const savedStep = localStorage.getItem(CURRENT_STEP_KEY);
+    return savedStep ? parseInt(savedStep, 10) : 0;
+  });
+
+  const [resumeData, setResumeData] = useState<ResumeData>(() => {
+    const savedData = localStorage.getItem(RESUME_DATA_KEY);
+    if (savedData) {
+      try {
+        return JSON.parse(savedData);
+      } catch (e) {
+        console.error("Failed to parse resume data from localStorage", e);
+      }
+    }
+    return DEFAULT_RESUME_DATA;
   });
 
   const [templateName, setTemplateName] = useState<
     "default" | "modern" | "professional" | "creative" | "minimalist" | "bold"
-  >("default");
+  >(() => {
+    const savedTemplate = localStorage.getItem(TEMPLATE_NAME_KEY);
+    return (savedTemplate as any) || "default";
+  });
+
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [showFullPreview, setShowFullPreview] = useState(false);
 
   // Mobile state for preview visibility
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+
+  // Persist data to localStorage
+  useEffect(() => {
+    localStorage.setItem(RESUME_DATA_KEY, JSON.stringify(resumeData));
+  }, [resumeData]);
+
+  useEffect(() => {
+    localStorage.setItem(CURRENT_STEP_KEY, currentStep.toString());
+  }, [currentStep]);
+
+  useEffect(() => {
+    localStorage.setItem(TEMPLATE_NAME_KEY, templateName);
+  }, [templateName]);
 
   // Check if mobile on mount and resize
   useEffect(() => {
