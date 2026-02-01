@@ -217,48 +217,35 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Section with GridScan Background */}
-      <div className="relative min-h-[85vh] bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 transition-colors duration-300 overflow-hidden ">
+      {/* Hero Section */}
+      <div className="relative min-h-[85vh] bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 transition-colors duration-300 overflow-hidden">
+        
         {/* GridScan Background */}
         <div className="absolute inset-0 z-0 flex items-center justify-center">
-          <div className="w-full h-full max-w-[1400px] mx-auto">
+          
+          {/* Light Mode GridScan - UPDATED WITH "COOL EFFECTS" */}
+          <div className="w-full h-full max-w-[1400px] mx-auto dark:hidden">
             <GridScan
               sensitivity={0.55}
               lineThickness={0}
-              linesColor="rgba(0, 0, 0, 0.15)"
+              linesColor="rgba(0, 0, 0, 0.05)" // Super subtle lines
               gridScale={0.08}
               scanColor="#87CEEB"
-              scanOpacity={1}
+              scanOpacity={20}       // GLOW EFFECT (Matched to Dark Mode)
               enablePost
               bloomIntensity={1}
-              chromaticAberration={0.001}
+              chromaticAberration={0.003} // LENS EFFECT (Matched to Dark Mode)
               noiseIntensity={1}
+              enableGyro={true}      // MOTION EFFECT (Matched to Dark Mode)
             />
           </div>
 
-          {/* Dark mode GridScan overlay */}
-          <div className="absolute inset-0">
+          {/* Dark Mode GridScan - (Original "Cool" Settings) */}
+          <div className="w-full h-full max-w-[1400px] mx-auto hidden dark:block">
             <GridScan
               sensitivity={0.55}
               lineThickness={0}
-              linesColor="rgba(0, 0, 0, 0.15)"
-              gridScale={0.08}
-              scanColor="#87CEEB"
-              scanOpacity={1}
-              enablePost
-              bloomIntensity={1}
-              chromaticAberration={0.001}
-              noiseIntensity={1}
-              enableGyro={true}
-            />
-          </div>
-
-          {/* Light mode GridScan overlay */}
-          <div className="absolute inset-0 hidden dark:block">
-            <GridScan
-              sensitivity={0.55}
-              lineThickness={0}
-              linesColor="rgba(0, 0, 0, 0.15)"
+              linesColor="rgba(255, 255, 255, 0.1)"
               gridScale={0.08}
               scanColor="#87CEEB"
               scanOpacity={20}
@@ -269,20 +256,18 @@ const Index = () => {
               enableGyro={true}
             />
           </div>
-
-          {/* Overlay gradients for better text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-50/90 via-transparent to-gray-50/80 dark:from-gray-900/95 dark:via-gray-900/90 dark:to-gray-900/95" />
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 via-transparent to-purple-50/30 dark:from-blue-900/20 dark:via-transparent dark:to-purple-900/20" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-transparent to-gray-50/90 dark:to-gray-900/95" />
         </div>
 
+        {/* Glass Overlay - Keeps the "Smooth" look the owner liked */}
+        <div className="absolute inset-0 z-0 backdrop-blur-[1px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-200/40 via-white/80 to-white/95 dark:from-blue-950/30 dark:via-transparent dark:to-transparent pointer-events-none" />
+
         {/* Hero Content */}
-        <div className="relative z-10 container mx-auto px-4 py-24 flex items-center min-h-[85vh] ">
+        <div className="relative z-10 container mx-auto px-4 py-24 flex items-center min-h-[85vh]">
           <div className="text-center max-w-4xl mx-auto w-full">
             <div className="inline-block px-4 py-2 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full text-sm font-semibold mb-6 animate-fade-in backdrop-blur-sm border border-blue-200/50 dark:border-blue-800/50">
               New: AI-Powered Resume Analysis
             </div>
-            <h1 className="text-4xl md:text-6xl font-extrabold text-gray-1100 dark:text-white mb-6 leading-tight animate-fade-in">
+            <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight animate-fade-in">
               Build Your
               <span className="text-blue-600 dark:text-blue-400">
                 {" "}
