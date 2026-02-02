@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { FileText, User, Edit, MessageSquare, Menu, X, Code } from "lucide-react";
+import { FileText, User, Users, Edit, MessageSquare, Menu, X, Code } from "lucide-react";
 import { Link } from "react-router-dom";
 import ThemeToggle from "@/components/ThemeToggle";
 import Footer from "@/components/layout/Footer";
@@ -145,6 +145,12 @@ const Index = () => {
                   Interview Prep
                 </Button>
               </Link>
+              <Link to="/soft-skills">
+                <Button variant="outline" className="border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-blue-600 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 px-4 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md font-medium">
+                  <Users className="w-4 h-4 mr-2" />
+                  Soft Skills
+                </Button>
+              </Link>
               <Link to="/builder">
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md font-medium">
                   Create Resume
@@ -202,6 +208,15 @@ const Index = () => {
                     Interview Prep
                   </Button>
                 </Link>
+                <Link to="/soft-skills" onClick={() => setMobileMenuOpen(false)}>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-blue-600 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 px-4 py-3 rounded-lg transition-all duration-300 font-medium"
+                  >
+                    <Users className="w-5 h-5 mr-3" />
+                    Soft Skills
+                  </Button>
+                </Link>
                 <Link to="/coding-prep" onClick={() => setMobileMenuOpen(false)}>
                   <Button
                     variant="outline"
@@ -236,49 +251,49 @@ const Index = () => {
             />
           </div>
 
-{/* Dark mode GridScan overlay - only shows in dark mode */}
-<div className="absolute inset-0 hidden dark:block">
-  <GridScan
-    sensitivity={0.55}
-    lineThickness={0}
-    linesColor="rgba(0, 0, 0, 0.15)"
-    gridScale={0.08}
-    scanColor="#87CEEB"
-    scanOpacity={1}
-    enablePost
-    bloomIntensity={1}
-    chromaticAberration={0.001}
-    noiseIntensity={1}
-    enableGyro={true}
-  />
-</div>
+          {/* Dark mode GridScan overlay - only shows in dark mode */}
+          <div className="absolute inset-0 hidden dark:block">
+            <GridScan
+              sensitivity={0.55}
+              lineThickness={0}
+              linesColor="rgba(0, 0, 0, 0.15)"
+              gridScale={0.08}
+              scanColor="#87CEEB"
+              scanOpacity={1}
+              enablePost
+              bloomIntensity={1}
+              chromaticAberration={0.001}
+              noiseIntensity={1}
+              enableGyro={true}
+            />
+          </div>
 
-{/* Light mode GridScan overlay - only shows in light mode */}
-<div className="absolute inset-0 dark:hidden">
-  <GridScan
-    sensitivity={0.55}
-    lineThickness={0}
-    linesColor="rgba(0, 0, 0, 0.25)"  
-    gridScale={0.08}
-    scanColor="#00A5A3" 
-    scanOpacity={1} // Changed from 100 to 1 (opacity typically ranges 0-1)
-    enablePost
-    bloomIntensity={1}
-    chromaticAberration={1}
-    noiseIntensity={1}
-    enableGyro={true}
-  />
-</div>
+          {/* Light mode GridScan overlay - only shows in light mode */}
+          <div className="absolute inset-0 dark:hidden">
+            <GridScan
+              sensitivity={0.55}
+              lineThickness={0}
+              linesColor="rgba(0, 0, 0, 0.25)"
+              gridScale={0.08}
+              scanColor="#00A5A3"
+              scanOpacity={1} // Changed from 100 to 1 (opacity typically ranges 0-1)
+              enablePost
+              bloomIntensity={1}
+              chromaticAberration={1}
+              noiseIntensity={1}
+              enableGyro={true}
+            />
+          </div>
           {/* Overlay gradients for better text readability */}
           {/* Your original gradients - works in both modes */}
-<div className="absolute inset-0 bg-gradient-to-t from-gray-50/90 via-transparent to-gray-50/80 dark:from-gray-900/95 dark:via-gray-900/90 dark:to-gray-900/95" />
-<div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 via-transparent to-purple-50/30 dark:from-blue-900/20 dark:via-transparent dark:to-purple-900/20" />
-<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-transparent to-gray-50/90 dark:to-gray-900/95" />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-50/90 via-transparent to-gray-50/80 dark:from-gray-900/95 dark:via-gray-900/90 dark:to-gray-900/95" />
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 via-transparent to-purple-50/30 dark:from-blue-900/20 dark:via-transparent dark:to-purple-900/20" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-transparent to-gray-50/90 dark:to-gray-900/95" />
 
-{/* Additional light mode gradients only (with more gray) */}
-<div className="absolute inset-0 dark:hidden bg-gradient-to-t from-gray-100/80 via-gray-50/60 to-gray-200/90" />
-<div className="absolute inset-0 dark:hidden bg-gradient-to-r from-gray-200/40 via-gray-100/30 to-gray-200/40" />
-<div className="absolute inset-0 dark:hidden bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-50/50 via-transparent to-gray-100/80" />
+          {/* Additional light mode gradients only (with more gray) */}
+          <div className="absolute inset-0 dark:hidden bg-gradient-to-t from-gray-100/80 via-gray-50/60 to-gray-200/90" />
+          <div className="absolute inset-0 dark:hidden bg-gradient-to-r from-gray-200/40 via-gray-100/30 to-gray-200/40" />
+          <div className="absolute inset-0 dark:hidden bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-50/50 via-transparent to-gray-100/80" />
         </div>
 
         {/* Hero Content */}
