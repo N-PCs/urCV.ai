@@ -4,9 +4,19 @@ import Groq from "groq-sdk";
 const groq = new Groq({
   apiKey: import.meta.env.VITE_GROQ_API_KEY || "",
   dangerouslyAllowBrowser: true,
-  maxRetries: 3, // Retry failed requests up to 3 times
-  timeout: 30000, // 30 second timeout
+  maxRetries: 1, // Reduced retries to prevent long waits
+  timeout: 15000, // Reduced to 15 seconds
 });
+
+// Timeout helper function
+const withTimeout = <T>(promise: PromiseLike<T>, timeoutMs: number, operationName: string): Promise<T> => {
+  return Promise.race([
+    Promise.resolve(promise),
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error(`${operationName} timed out after ${timeoutMs / 1000}s`)), timeoutMs)
+    ),
+  ]);
+};
 
 export interface ResumeAnalysis {
   score: number;
@@ -113,22 +123,26 @@ Focus on:
 3. Improvements: Areas that need work (3-5 points)
 4. Suggestions: Specific actionable advice (3-5 points)`;
 
-    const completion = await groq.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are an expert resume analyst. Provide feedback in valid JSON format only, with no markdown formatting or explanatory text.",
-        },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      model: "llama3-8b-8192",
-      temperature: 0.5,
-      max_tokens: 1000,
-    });
+    const completion: any = await withTimeout(
+      groq.chat.completions.create({
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are an expert resume analyst. Provide feedback in valid JSON format only, with no markdown formatting or explanatory text.",
+          },
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        model: "llama3-8b-8192",
+        temperature: 0.5,
+        max_tokens: 1000,
+      }),
+      20000,
+      "Resume analysis"
+    );
 
     const response = completion.choices[0]?.message?.content;
     if (!response) {
@@ -168,7 +182,8 @@ Focus on:
     }
   } catch (error) {
     console.error("Error analyzing resume:", error);
-    throw error;
+    // Graceful fallback on API error/timeout
+    return generateFallbackAnalysis(resumeData);
   }
 };
 
@@ -277,25 +292,29 @@ Return the enhanced resume in the EXACT same JSON structure. Focus on:
 
 Return ONLY valid JSON, no markdown or explanatory text.`;
 
-    const completion = await groq.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a professional resume writer. Return enhanced resume data in valid JSON format only.",
-        },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      model: "llama-3.3-70b-versatile", // Upgraded for better enhancement quality
-      temperature: 0.7,
-      max_tokens: 3000, // Increased for longer resumes
-      top_p: 0.9,
-      frequency_penalty: 0.3,
-      presence_penalty: 0.2,
-    });
+    const completion: any = await withTimeout(
+      groq.chat.completions.create({
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a professional resume writer. Return enhanced resume data in valid JSON format only.",
+          },
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        model: "llama-3.3-70b-versatile", // Upgraded for better enhancement quality
+        temperature: 0.7,
+        max_tokens: 3000, // Increased for longer resumes
+        top_p: 0.9,
+        frequency_penalty: 0.3,
+        presence_penalty: 0.2,
+      }),
+      25000, // Slightly longer for enhancement
+      "Resume enhancement"
+    );
 
     const response = completion.choices[0]?.message?.content;
     if (!response) {
@@ -328,7 +347,8 @@ Return ONLY valid JSON, no markdown or explanatory text.`;
     }
   } catch (error) {
     console.error("Error enhancing resume:", error);
-    throw error;
+    // Return original data on failure so user doesn't lose anything
+    return resumeData;
   }
 };
 
@@ -399,25 +419,29 @@ Extract the information into this EXACT JSON structure:
 
 Generate unique IDs for each experience and education entry. Return ONLY valid JSON, no markdown or explanatory text.`;
 
-    const completion = await groq.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a resume data extraction expert. Return extracted data in valid JSON format only.",
-        },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      model: "llama-3.3-70b-versatile", // Better extraction accuracy
-      temperature: 0.2, // Lower temperature for more accurate extraction
-      max_tokens: 3000,
-      top_p: 0.9,
-      frequency_penalty: 0.1, // Minimal repetition for data extraction
-      presence_penalty: 0.1,
-    });
+    const completion: any = await withTimeout(
+      groq.chat.completions.create({
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a resume data extraction expert. Return extracted data in valid JSON format only.",
+          },
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        model: "llama-3.3-70b-versatile", // Better extraction accuracy
+        temperature: 0.2, // Lower temperature for more accurate extraction
+        max_tokens: 3000,
+        top_p: 0.9,
+        frequency_penalty: 0.1, // Minimal repetition for data extraction
+        presence_penalty: 0.1,
+      }),
+      25000,
+      "Resume data extraction"
+    );
 
     const response = completion.choices[0]?.message?.content;
     if (!response) {
@@ -470,19 +494,23 @@ export const chatWithAI = async (
       ? `You are a professional resume and career advisor AI assistant. Help users improve their resumes and advance their careers.\n\nContext about the user's resume:\n${context}`
       : "You are a professional resume and career advisor AI assistant. Help users with resume building, career advice, and job search tips. Be concise, helpful, and actionable.";
 
-    const completion = await groq.chat.completions.create({
-      messages: [
-        { role: "system", content: systemMessage },
-        { role: "user", content: message },
-      ],
-      model: "llama-3.3-70b-versatile", // Best model for conversational responses
-      temperature: 0.7,
-      max_tokens: 800, // Increased for more detailed chat responses
-      top_p: 0.9,
-      frequency_penalty: 0.4, // Reduce repetitive responses
-      presence_penalty: 0.3, // Encourage diverse conversation
-      stream: false, // Set to true if you want streaming responses
-    });
+    const completion: any = await withTimeout(
+      groq.chat.completions.create({
+        messages: [
+          { role: "system", content: systemMessage },
+          { role: "user", content: message },
+        ],
+        model: "llama-3.3-70b-versatile", // Best model for conversational responses
+        temperature: 0.7,
+        max_tokens: 800, // Increased for more detailed chat responses
+        top_p: 0.9,
+        frequency_penalty: 0.4, // Reduce repetitive responses
+        presence_penalty: 0.3, // Encourage diverse conversation
+        stream: false, // Set to true if you want streaming responses
+      }),
+      15000,
+      "Chat response"
+    );
 
     return (
       completion.choices[0]?.message?.content ||
@@ -490,6 +518,6 @@ export const chatWithAI = async (
     );
   } catch (error) {
     console.error("Error in chat:", error);
-    throw error;
+    return "I apologize, but I'm encountering temporary connection issues. Please try again in a moment.";
   }
 };

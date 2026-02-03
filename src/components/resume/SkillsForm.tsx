@@ -26,11 +26,11 @@ const SkillsForm = ({ data, updateData, setIsValid }: SkillsFormProps) => {
         ...data.skills,
         [type]: [...data.skills[type], value.trim()],
       };
-      updateData("skills", updatedSkills);
+      updateData('skills', updatedSkills);
 
-      if (type === "technical") setNewSkill("");
-      if (type === "languages") setNewLanguage("");
-      if (type === "certifications") setNewCertification("");
+      if (type === 'technical') setNewSkill("");
+      if (type === 'languages') setNewLanguage("");
+      if (type === 'certifications') setNewCertification("");
     }
   };
 
