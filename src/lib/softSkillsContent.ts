@@ -59,6 +59,137 @@ export type SkillCategory =
     | "emotional-intelligence"
     | "professional-conduct";
 
+// ============= PHASE 2: NEW TYPE DEFINITIONS =============
+
+// Scenario Simulations with branching narratives
+export interface ScenarioBranch {
+    id: string;
+    prompt: string;
+    options: {
+        id: string;
+        text: string;
+        feedback: string;
+        xpReward: number;
+        nextBranchId?: string;
+        isOptimal: boolean;
+    }[];
+}
+
+export interface Scenario {
+    id: string;
+    title: string;
+    category: SkillCategory;
+    subcategory: string;
+    context: string;
+    initialSituation: string;
+    branches: ScenarioBranch[];
+    totalXP: number;
+}
+
+// Writing Prompts
+export interface WritingPrompt {
+    id: string;
+    title: string;
+    category: SkillCategory;
+    subcategory: string;
+    type: "email" | "message" | "report" | "feedback";
+    scenario: string;
+    guidelines: string[];
+    sampleResponse: string;
+    evaluationCriteria: string[];
+    xpReward: number;
+}
+
+// Daily Challenges
+export interface DailyChallenge {
+    id: string;
+    type: "scenario" | "quiz" | "writing" | "reflection";
+    title: string;
+    description: string;
+    xpReward: number;
+    category: SkillCategory;
+    contentId?: string; // Reference to scenario/quiz/writing prompt
+}
+
+// Gamification - User Progress
+export interface UserProgressV2 {
+    // Existing Phase 1 fields
+    quizResults: {
+        [categoryId: string]: {
+            score: number;
+            answers: { questionId: string; optionId: string }[];
+            completedAt: number;
+        };
+    };
+    completedModules: string[];
+    earnedBadges: string[];
+    progressHistory: {
+        date: string;
+        scores: { [categoryId: string]: number };
+    }[];
+
+    // New Phase 2 gamification fields
+    totalXP: number;
+    level: number;
+    currentStreak: number;
+    longestStreak: number;
+    lastActivityDate: string;
+
+    // Activity tracking
+    completedScenarios: { id: string; score: number; xpEarned: number; date: string }[];
+    completedWritingPrompts: { id: string; date: string }[];
+    dailyChallengesCompleted: { id: string; date: string }[];
+
+    // Analytics
+    activityLog: { date: string; type: string; xpEarned: number; description: string }[];
+}
+
+// XP Constants
+export const XP_REWARDS = {
+    QUIZ_COMPLETE: 50,
+    SCENARIO_OPTIMAL: 100,
+    SCENARIO_SUBOPTIMAL: 50,
+    WRITING_EXERCISE: 75,
+    DAILY_CHALLENGE: 30,
+    MODULE_COMPLETE: 40,
+    STREAK_BONUS_PER_DAY: 10,
+};
+
+// Level thresholds
+export const LEVEL_THRESHOLDS = [
+    0,      // Level 1
+    100,    // Level 2
+    250,    // Level 3
+    500,    // Level 4
+    1000,   // Level 5
+    2000,   // Level 6
+    3500,   // Level 7
+    5500,   // Level 8
+    8000,   // Level 9
+    11000,  // Level 10
+];
+
+export const calculateLevel = (xp: number): number => {
+    for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+        if (xp >= LEVEL_THRESHOLDS[i]) {
+            return i + 1;
+        }
+    }
+    return 1;
+};
+
+export const getXPForNextLevel = (currentXP: number): { current: number; required: number; progress: number } => {
+    const level = calculateLevel(currentXP);
+    const currentThreshold = LEVEL_THRESHOLDS[level - 1] || 0;
+    const nextThreshold = LEVEL_THRESHOLDS[level] || LEVEL_THRESHOLDS[LEVEL_THRESHOLDS.length - 1] + 5000;
+
+    return {
+        current: currentXP - currentThreshold,
+        required: nextThreshold - currentThreshold,
+        progress: ((currentXP - currentThreshold) / (nextThreshold - currentThreshold)) * 100,
+    };
+};
+
 // ============= SKILL CATEGORIES =============
 
 export const skillCategories: SkillCategoryData[] = [
@@ -959,3 +1090,610 @@ export const getCategoryColor = (category: SkillCategory): string => {
     const categoryData = skillCategories.find((c) => c.id === category);
     return categoryData?.color || "gray";
 };
+
+// ============= PHASE 2: SCENARIOS =============
+
+export const scenarios: Scenario[] = [
+    // Communication Scenarios
+    {
+        id: "scenario-comm-1",
+        title: "The Difficult Client Call",
+        category: "communication",
+        subcategory: "Verbal Communication",
+        context: "You're a project manager at a software company. A key client has called, clearly frustrated about a feature delay.",
+        initialSituation: "The client begins the call by saying: 'I'm extremely disappointed. We were promised this feature by Friday and now I'm hearing it might be delayed. Our CEO is asking questions and I look bad!'",
+        totalXP: 150,
+        branches: [
+            {
+                id: "branch-1",
+                prompt: "The client is clearly upset. How do you respond?",
+                options: [
+                    {
+                        id: "a",
+                        text: "I understand your frustration. Let me explain the technical issues we encountered.",
+                        feedback: "Jumping to explanations can feel dismissive. Acknowledgment should come first.",
+                        xpReward: 25,
+                        nextBranchId: "branch-2",
+                        isOptimal: false,
+                    },
+                    {
+                        id: "b",
+                        text: "I completely understand how frustrating this is, especially with your CEO involved. Let me first say I'm sorry for putting you in this position.",
+                        feedback: "Excellent! You acknowledged both the emotion and the business impact before anything else.",
+                        xpReward: 50,
+                        nextBranchId: "branch-2",
+                        isOptimal: true,
+                    },
+                    {
+                        id: "c",
+                        text: "The delay isn't that long. It's just a few more days.",
+                        feedback: "Minimizing their concern damages trust. Always validate feelings first.",
+                        xpReward: 10,
+                        nextBranchId: "branch-2",
+                        isOptimal: false,
+                    },
+                ],
+            },
+            {
+                id: "branch-2",
+                prompt: "The client asks: 'So what exactly happened? Why weren't we told sooner?'",
+                options: [
+                    {
+                        id: "a",
+                        text: "We found a critical security issue that we have to fix before release. I should have communicated this earlier, and I take responsibility for that.",
+                        feedback: "Perfect. Honest, takes responsibility, and provides context without excessive excuses.",
+                        xpReward: 50,
+                        nextBranchId: "branch-3",
+                        isOptimal: true,
+                    },
+                    {
+                        id: "b",
+                        text: "The development team ran into some issues. These things happen in software.",
+                        feedback: "Too vague and dismissive. Clients deserve clear explanations.",
+                        xpReward: 15,
+                        nextBranchId: "branch-3",
+                        isOptimal: false,
+                    },
+                    {
+                        id: "c",
+                        text: "Let me check with the team and get back to you with details.",
+                        feedback: "Delays resolution. If you don't know, be upfront but commit to a follow-up time.",
+                        xpReward: 25,
+                        nextBranchId: "branch-3",
+                        isOptimal: false,
+                    },
+                ],
+            },
+            {
+                id: "branch-3",
+                prompt: "The client sighs and says: 'Okay, so when can we actually expect this? I need to update my CEO.'",
+                options: [
+                    {
+                        id: "a",
+                        text: "We're targeting Wednesday, but I'll pad that to Friday to be safe. I'll also send you daily status updates so you're never surprised again.",
+                        feedback: "Excellent! Realistic timeline with buffer, plus proactive communication going forward.",
+                        xpReward: 50,
+                        isOptimal: true,
+                    },
+                    {
+                        id: "b",
+                        text: "Definitely by next week. I'll confirm the exact day tomorrow.",
+                        feedback: "Vague timing doesn't help them update their CEO. Be more specific.",
+                        xpReward: 20,
+                        isOptimal: false,
+                    },
+                    {
+                        id: "c",
+                        text: "Wednesday at the latest.",
+                        feedback: "No buffer for unexpected issues. Under-promise and over-deliver.",
+                        xpReward: 25,
+                        isOptimal: false,
+                    },
+                ],
+            },
+        ],
+    },
+    // Leadership Scenario
+    {
+        id: "scenario-lead-1",
+        title: "The Team Conflict",
+        category: "leadership",
+        subcategory: "Conflict Resolution",
+        context: "You're a tech lead. Two senior developers on your team, Alex and Jordan, have been in conflict for weeks. It's affecting team morale.",
+        initialSituation: "You've noticed tense exchanges in meetings, and other team members have privately mentioned the uncomfortable atmosphere. Today, Alex comes to you saying: 'I can't work with Jordan anymore. Their code reviews are personal attacks and they constantly undermine my ideas.'",
+        totalXP: 150,
+        branches: [
+            {
+                id: "branch-1",
+                prompt: "Alex has just told you they can't work with Jordan. How do you respond?",
+                options: [
+                    {
+                        id: "a",
+                        text: "Tell me more about specific instances where you felt attacked. I want to understand the full picture.",
+                        feedback: "Great approach. Gathering specifics helps you understand the situation objectively.",
+                        xpReward: 50,
+                        nextBranchId: "branch-2",
+                        isOptimal: true,
+                    },
+                    {
+                        id: "b",
+                        text: "Jordan can be direct, but I'm sure they don't mean it personally.",
+                        feedback: "Dismissing Alex's concerns will make them feel unheard and damage trust.",
+                        xpReward: 10,
+                        nextBranchId: "branch-2",
+                        isOptimal: false,
+                    },
+                    {
+                        id: "c",
+                        text: "I'll talk to Jordan about being nicer in code reviews.",
+                        feedback: "Acting on one side of the story can backfire. Get the full picture first.",
+                        xpReward: 20,
+                        nextBranchId: "branch-2",
+                        isOptimal: false,
+                    },
+                ],
+            },
+            {
+                id: "branch-2",
+                prompt: "After hearing Alex out, you meet with Jordan. Jordan says: 'Alex takes everything personally. I give honest feedback on code quality and they get defensive. It's not professional.'",
+                options: [
+                    {
+                        id: "a",
+                        text: "I appreciate your perspective. Can you help me understand what you mean by 'honest feedback'? Walk me through a recent example.",
+                        feedback: "Perfect. Non-judgmental inquiry helps understand both perspectives.",
+                        xpReward: 50,
+                        nextBranchId: "branch-3",
+                        isOptimal: true,
+                    },
+                    {
+                        id: "b",
+                        text: "Alex mentioned feeling attacked. You need to soften your approach.",
+                        feedback: "Taking sides without full understanding can escalate conflict.",
+                        xpReward: 15,
+                        nextBranchId: "branch-3",
+                        isOptimal: false,
+                    },
+                    {
+                        id: "c",
+                        text: "You both need to be more professional. This is affecting the whole team.",
+                        feedback: "True but not helpful. They need specific guidance, not general criticism.",
+                        xpReward: 25,
+                        nextBranchId: "branch-3",
+                        isOptimal: false,
+                    },
+                ],
+            },
+            {
+                id: "branch-3",
+                prompt: "You understand both perspectives now. How do you proceed?",
+                options: [
+                    {
+                        id: "a",
+                        text: "Bring them together for a facilitated conversation focused on shared goals and establishing team norms for feedback.",
+                        feedback: "Excellent! A structured conversation with clear focus helps rebuild the relationship.",
+                        xpReward: 50,
+                        isOptimal: true,
+                    },
+                    {
+                        id: "b",
+                        text: "Keep them on separate projects to avoid conflict.",
+                        feedback: "Avoidance doesn't solve the problem and limits team flexibility.",
+                        xpReward: 15,
+                        isOptimal: false,
+                    },
+                    {
+                        id: "c",
+                        text: "Send an email to the team about code review best practices.",
+                        feedback: "Passive approach. Direct intervention is needed for this level of conflict.",
+                        xpReward: 20,
+                        isOptimal: false,
+                    },
+                ],
+            },
+        ],
+    },
+    // Problem-Solving Scenario
+    {
+        id: "scenario-prob-1",
+        title: "The Production Crisis",
+        category: "problem-solving",
+        subcategory: "Decision Making",
+        context: "You're the on-call engineer. At 2 AM, you get an alert: the main database is showing critical errors and user requests are failing.",
+        initialSituation: "Monitoring shows 50% of user requests failing. The error logs show 'connection pool exhausted'. You have two senior engineers you could wake up, but it's the middle of the night.",
+        totalXP: 150,
+        branches: [
+            {
+                id: "branch-1",
+                prompt: "The production system is failing. What's your first action?",
+                options: [
+                    {
+                        id: "a",
+                        text: "Check when this started and look for recent deployments or changes that correlate with the timing.",
+                        feedback: "Smart approach. Correlation with changes is often the fastest path to root cause.",
+                        xpReward: 50,
+                        nextBranchId: "branch-2",
+                        isOptimal: true,
+                    },
+                    {
+                        id: "b",
+                        text: "Immediately restart the database servers to clear the connection pool.",
+                        feedback: "This might help short-term but you won't understand why it happened.",
+                        xpReward: 25,
+                        nextBranchId: "branch-2",
+                        isOptimal: false,
+                    },
+                    {
+                        id: "c",
+                        text: "Wake up the senior engineers right away.",
+                        feedback: "Consider investigating first. You may be able to solve it or at least gather info.",
+                        xpReward: 20,
+                        nextBranchId: "branch-2",
+                        isOptimal: false,
+                    },
+                ],
+            },
+            {
+                id: "branch-2",
+                prompt: "You find that a code deploy happened 30 minutes before the alerts. The change looks minor—a new analytics feature. What do you do?",
+                options: [
+                    {
+                        id: "a",
+                        text: "Roll back the deployment and verify if systems recover. Document everything.",
+                        feedback: "Correct. When correlation is clear, rollback is the fastest path to recovery.",
+                        xpReward: 50,
+                        nextBranchId: "branch-3",
+                        isOptimal: true,
+                    },
+                    {
+                        id: "b",
+                        text: "Dig into the analytics code to understand exactly what's wrong.",
+                        feedback: "Deep debugging during an outage extends user impact. Recover first, investigate later.",
+                        xpReward: 20,
+                        nextBranchId: "branch-3",
+                        isOptimal: false,
+                    },
+                    {
+                        id: "c",
+                        text: "The change looks minor, so it's probably not related. Keep investigating other causes.",
+                        feedback: "Never assume. Changes close to incident start time are prime suspects.",
+                        xpReward: 15,
+                        nextBranchId: "branch-3",
+                        isOptimal: false,
+                    },
+                ],
+            },
+            {
+                id: "branch-3",
+                prompt: "After rollback, systems recovered. It's 3 AM. What's your next step?",
+                options: [
+                    {
+                        id: "a",
+                        text: "Write a brief incident summary, notify the team via Slack, and schedule a post-mortem for tomorrow. Then get some sleep.",
+                        feedback: "Perfect balance. Communicate what happened, but detailed analysis can wait for business hours.",
+                        xpReward: 50,
+                        isOptimal: true,
+                    },
+                    {
+                        id: "b",
+                        text: "Go to sleep. You can explain tomorrow.",
+                        feedback: "The team should know what happened before they wake up and redeploy.",
+                        xpReward: 15,
+                        isOptimal: false,
+                    },
+                    {
+                        id: "c",
+                        text: "Stay up and do a full root cause analysis right now.",
+                        feedback: "Fatigue leads to mistakes. Basic documentation now, deep analysis later.",
+                        xpReward: 25,
+                        isOptimal: false,
+                    },
+                ],
+            },
+        ],
+    },
+];
+
+// ============= PHASE 2: WRITING PROMPTS =============
+
+export const writingPrompts: WritingPrompt[] = [
+    {
+        id: "writing-comm-1",
+        title: "Delivering Project Delay News",
+        category: "communication",
+        subcategory: "Written Communication",
+        type: "email",
+        scenario: "Your project will be delayed by 2 weeks due to unforeseen technical complexity. You need to email your stakeholders including the VP of Product.",
+        guidelines: [
+            "Lead with the key information (the delay)",
+            "Take responsibility without excessive excuses",
+            "Provide specific new timeline with buffer",
+            "Propose mitigation or value-add where possible",
+            "End with clear next steps",
+        ],
+        sampleResponse: `Subject: Project Alpha - Revised Timeline (2-Week Extension)
+
+Hi Team,
+
+I'm writing to inform you that Project Alpha will require an additional 2 weeks, with our new target completion date of March 15th.
+
+**What happened:**
+During integration testing, we discovered that the third-party API we're using has performance limitations that require us to implement a caching layer we hadn't originally scoped. This is essential for meeting our reliability requirements.
+
+**Impact & Mitigation:**
+- New completion date: March 15th (previously March 1st)
+- The caching work actually improves our system and will reduce future infrastructure costs
+- I've added buffer to this estimate to avoid further surprises
+
+**Next Steps:**
+1. I'll send daily progress updates starting Monday
+2. A revised project plan will be shared by EOD tomorrow
+3. Happy to schedule a call if you'd like to discuss further
+
+I take responsibility for not catching this earlier in our planning. I'm committed to delivering a solid product on this revised timeline.
+
+Best,
+[Your name]`,
+        evaluationCriteria: [
+            "Did you lead with the key information?",
+            "Did you take ownership without excessive blame-shifting?",
+            "Is the new timeline specific and realistic?",
+            "Did you identify any silver linings or value-adds?",
+            "Are next steps clear and actionable?",
+        ],
+        xpReward: 75,
+    },
+    {
+        id: "writing-lead-1",
+        title: "Giving Constructive Feedback",
+        category: "leadership",
+        subcategory: "Motivation",
+        type: "feedback",
+        scenario: "A team member, Sam, has been consistently missing deadlines and their work quality has declined. You need to write feedback for a 1:1 discussion.",
+        guidelines: [
+            "Be specific with examples, not generalizations",
+            "Focus on behavior, not personality",
+            "Express impact of the behavior",
+            "Show genuine care for their success",
+            "Invite dialogue, don't just lecture",
+        ],
+        sampleResponse: `Sam,
+
+I wanted to share some observations and concerns ahead of our 1:1.
+
+**What I've observed:**
+Over the past month, I've noticed a shift in your work:
+- The API documentation was delivered 4 days late
+- The code review for the authentication module had 3 critical issues that were caught in QA rather than review
+- You've seemed less engaged in team meetings
+
+**Why this matters:**
+I'm bringing this up because I know this isn't your normal standard. You've consistently delivered excellent work, which is why this change stands out. It's also affecting the team—others are having to pick up slack and it's creating uncertainty.
+
+**What I want to understand:**
+I'm not here to lecture you. I genuinely want to understand:
+- Is something going on that I should know about?
+- Are there obstacles in your way that I can help remove?
+- What support do you need from me?
+
+I believe in your abilities and want to help you get back on track. Let's talk through this together.
+
+[Your name]`,
+        evaluationCriteria: [
+            "Did you provide specific examples?",
+            "Did you focus on behavior, not personality?",
+            "Did you express genuine care?",
+            "Did you invite dialogue vs. lecturing?",
+            "Is the tone supportive yet honest?",
+        ],
+        xpReward: 75,
+    },
+    {
+        id: "writing-prof-1",
+        title: "The Networking Follow-Up",
+        category: "professional-conduct",
+        subcategory: "Networking",
+        type: "email",
+        scenario: "You met a senior engineering manager at a conference yesterday. You had a great 10-minute conversation about microservices architecture. Send a follow-up email.",
+        guidelines: [
+            "Send within 24-48 hours while fresh",
+            "Reference something specific from your conversation",
+            "Offer value, don't just ask for something",
+            "Keep it brief and respectful of their time",
+            "Make the next step easy if you want to continue",
+        ],
+        sampleResponse: `Subject: Great meeting you at TechConf - Microservices discussion
+
+Hi [Name],
+
+It was great meeting you at TechConf yesterday. I really enjoyed our conversation about the challenges of migrating monoliths to microservices—especially your insight about starting with the bounded contexts that change most frequently.
+
+I came across this article on service mesh patterns that reminded me of what you mentioned about your team's current challenges: [link]. Thought it might be useful.
+
+If you're ever up for a coffee chat to continue the conversation, I'd love to hear how your migration project progresses. No pressure either way—I know you're busy.
+
+Best,
+[Your name]
+[LinkedIn URL]`,
+        evaluationCriteria: [
+            "Did you send within appropriate timeframe?",
+            "Did you reference something specific from the conversation?",
+            "Did you offer value (article, insight, etc.)?",
+            "Is it brief and respectful of their time?",
+            "Is the next step optional/easy?",
+        ],
+        xpReward: 75,
+    },
+    {
+        id: "writing-ei-1",
+        title: "Apologizing for a Mistake",
+        category: "emotional-intelligence",
+        subcategory: "Self-Awareness",
+        type: "message",
+        scenario: "In a team Slack channel, you made a sarcastic comment about a colleague's pull request that came across as mean-spirited. Others reacted with 😬 emojis. Write a message to make it right.",
+        guidelines: [
+            "Acknowledge the specific mistake",
+            "Take full responsibility (no 'but' or 'if')",
+            "Express understanding of impact",
+            "Commit to different behavior",
+            "Keep it genuine, not performative",
+        ],
+        sampleResponse: `Hey team,
+
+I owe everyone, especially @[colleague], an apology.
+
+My earlier comment about the PR was out of line. I was trying to be funny but it came across as dismissive and unkind. That's not okay, and it's the opposite of the supportive team culture we want.
+
+@[colleague] - I'm sorry. Your code and contributions matter, and you deserved constructive feedback, not sarcasm.
+
+I'll do better. Code reviews should be supportive, not snarky. Thanks for the reality check, and I appreciate everyone's patience with me.
+
+— [Your name]`,
+        evaluationCriteria: [
+            "Did you acknowledge the specific mistake?",
+            "Did you take full responsibility without excuses?",
+            "Did you address the person you hurt directly?",
+            "Did you commit to changed behavior?",
+            "Does it feel genuine, not performative?",
+        ],
+        xpReward: 75,
+    },
+];
+
+// ============= PHASE 2: DAILY CHALLENGES =============
+
+export const dailyChallenges: DailyChallenge[] = [
+    {
+        id: "dc-1",
+        type: "reflection",
+        title: "Active Listening Challenge",
+        description: "In your next meeting, focus entirely on listening. Take notes on what others say before forming your response. Reflect on what you learned.",
+        xpReward: 30,
+        category: "communication",
+    },
+    {
+        id: "dc-2",
+        type: "scenario",
+        title: "Difficult Conversation Practice",
+        description: "Complete the 'Difficult Client Call' scenario simulation.",
+        xpReward: 30,
+        category: "communication",
+        contentId: "scenario-comm-1",
+    },
+    {
+        id: "dc-3",
+        type: "writing",
+        title: "Write a Thank You Note",
+        description: "Write a brief thank you message to someone who helped you recently. Be specific about what they did.",
+        xpReward: 30,
+        category: "professional-conduct",
+    },
+    {
+        id: "dc-4",
+        type: "reflection",
+        title: "Identify Your Triggers",
+        description: "Reflect on a moment this week when you felt frustrated at work. What triggered it? How did you respond? What would you do differently?",
+        xpReward: 30,
+        category: "emotional-intelligence",
+    },
+    {
+        id: "dc-5",
+        type: "quiz",
+        title: "Quick Communication Check",
+        description: "Take the Communication Skills assessment to benchmark your skills.",
+        xpReward: 30,
+        category: "communication",
+    },
+    {
+        id: "dc-6",
+        type: "reflection",
+        title: "Time Audit",
+        description: "Track how you spend your time today. At the end of the day, categorize activities as: Deep Work, Meetings, Admin, Distractions. What surprised you?",
+        xpReward: 30,
+        category: "time-management",
+    },
+    {
+        id: "dc-7",
+        type: "writing",
+        title: "Feedback Practice",
+        description: "Write constructive feedback for a hypothetical team member who is talented but often late to meetings.",
+        xpReward: 30,
+        category: "leadership",
+    },
+    {
+        id: "dc-8",
+        type: "scenario",
+        title: "Team Conflict Resolution",
+        description: "Complete the 'Team Conflict' scenario simulation.",
+        xpReward: 30,
+        category: "leadership",
+        contentId: "scenario-lead-1",
+    },
+    {
+        id: "dc-9",
+        type: "reflection",
+        title: "5 Whys Exercise",
+        description: "Think of a recent problem you solved. Apply the '5 Whys' technique to explore if you found the root cause.",
+        xpReward: 30,
+        category: "problem-solving",
+    },
+    {
+        id: "dc-10",
+        type: "reflection",
+        title: "Gratitude Practice",
+        description: "Write down 3 things that went well at work this week and why. Share one with a colleague who contributed.",
+        xpReward: 30,
+        category: "emotional-intelligence",
+    },
+];
+
+// ============= PHASE 2: HELPER FUNCTIONS =============
+
+export const getScenariosByCategory = (category: SkillCategory): Scenario[] => {
+    return scenarios.filter((s) => s.category === category);
+};
+
+export const getWritingPromptsByCategory = (category: SkillCategory): WritingPrompt[] => {
+    return writingPrompts.filter((w) => w.category === category);
+};
+
+export const getTodaysChallenge = (date: Date = new Date()): DailyChallenge => {
+    // Use date to consistently select a challenge for each day
+    const dayOfYear = Math.floor((date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+    const index = dayOfYear % dailyChallenges.length;
+    return dailyChallenges[index];
+};
+
+export const checkStreak = (lastActivityDate: string, currentDate: Date = new Date()): { maintained: boolean; newStreak: number; oldStreak: number } => {
+    if (!lastActivityDate) {
+        return { maintained: true, newStreak: 1, oldStreak: 0 };
+    }
+
+    const last = new Date(lastActivityDate);
+    const diffTime = currentDate.getTime() - last.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) {
+        // Same day, no change
+        return { maintained: true, newStreak: 0, oldStreak: 0 }; // Streak stays the same
+    } else if (diffDays === 1) {
+        // Next day, streak continues
+        return { maintained: true, newStreak: 1, oldStreak: 0 };
+    } else {
+        // Gap > 1 day, streak resets
+        return { maintained: false, newStreak: 1, oldStreak: 0 };
+    }
+};
+
+// Mock leaderboard data for demonstration
+export const mockLeaderboard = [
+    { rank: 1, name: "Alex Chen", xp: 12500, level: 10, badge: "🏆" },
+    { rank: 2, name: "Sarah Kim", xp: 11200, level: 9, badge: "🥈" },
+    { rank: 3, name: "Mike Johnson", xp: 9800, level: 8, badge: "🥉" },
+    { rank: 4, name: "Emily Davis", xp: 8500, level: 8, badge: "" },
+    { rank: 5, name: "Chris Lee", xp: 7200, level: 7, badge: "" },
+    { rank: 6, name: "Jordan Taylor", xp: 6100, level: 6, badge: "" },
+    { rank: 7, name: "Casey Morgan", xp: 5500, level: 6, badge: "" },
+    { rank: 8, name: "Riley Anderson", xp: 4800, level: 5, badge: "" },
+    { rank: 9, name: "Drew Williams", xp: 4200, level: 5, badge: "" },
+    { rank: 10, name: "Jamie Brown", xp: 3900, level: 4, badge: "" },
+];

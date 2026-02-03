@@ -27,6 +27,9 @@ import {
     RotateCcw,
     Lock,
     Check,
+    Flame,
+    PenLine,
+    Sparkles,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -41,7 +44,25 @@ import {
     type QuizQuestion,
     type LearningModule,
     type Achievement,
+    // Phase 2 imports
+    type Scenario,
+    type WritingPrompt,
+    type DailyChallenge,
+    scenarios,
+    writingPrompts,
+    getTodaysChallenge,
+    XP_REWARDS,
+    calculateLevel,
+    getXPForNextLevel,
+    checkStreak,
 } from "@/lib/softSkillsContent";
+
+// Phase 2 Components
+import ScenarioSimulator from "@/components/soft-skills/ScenarioSimulator";
+import WritingExercise from "@/components/soft-skills/WritingExercise";
+import DailyChallenges from "@/components/soft-skills/DailyChallenges";
+import Leaderboard from "@/components/soft-skills/Leaderboard";
+import XPProgressBar from "@/components/soft-skills/XPProgressBar";
 
 // Icon mapping for skill categories
 const categoryIcons: Record<string, React.ElementType> = {
@@ -93,7 +114,7 @@ const categoryColorClasses: Record<string, { bg: string; text: string; border: s
     },
 };
 
-// Progress storage interface
+// Progress storage interface (Phase 2 enhanced)
 interface SoftSkillsProgress {
     quizResults: {
         [categoryId: string]: {
@@ -108,6 +129,16 @@ interface SoftSkillsProgress {
         date: string;
         scores: { [categoryId: string]: number };
     }[];
+    // Phase 2 fields
+    totalXP: number;
+    level: number;
+    currentStreak: number;
+    longestStreak: number;
+    lastActivityDate: string;
+    completedScenarios: { id: string; score: number; xpEarned: number; date: string }[];
+    completedWritingPrompts: { id: string; date: string }[];
+    dailyChallengesCompleted: { id: string; date: string }[];
+    activityLog: { date: string; type: string; xpEarned: number; description: string }[];
 }
 
 const STORAGE_KEY = "softSkillsProgress";
@@ -117,6 +148,16 @@ const getInitialProgress = (): SoftSkillsProgress => ({
     completedModules: [],
     earnedBadges: [],
     progressHistory: [],
+    // Phase 2
+    totalXP: 0,
+    level: 1,
+    currentStreak: 0,
+    longestStreak: 0,
+    lastActivityDate: "",
+    completedScenarios: [],
+    completedWritingPrompts: [],
+    dailyChallengesCompleted: [],
+    activityLog: [],
 });
 
 const SoftSkills = () => {
@@ -129,14 +170,37 @@ const SoftSkills = () => {
     const [expandedModule, setExpandedModule] = useState<string | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<SkillCategory | "all">("all");
 
+    // Phase 2 state
+    const [activeScenario, setActiveScenario] = useState<Scenario | null>(null);
+    const [activeWritingPrompt, setActiveWritingPrompt] = useState<WritingPrompt | null>(null);
+    const [recentXP, setRecentXP] = useState(0);
+    const [activeTab, setActiveTab] = useState("dashboard");
+
     // Load progress from localStorage
     useEffect(() => {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
             try {
-                setProgress(JSON.parse(saved));
+                const parsed = JSON.parse(saved);
+                // Merge with initial to ensure new fields exist
+                setProgress({ ...getInitialProgress(), ...parsed });
             } catch (e) {
                 console.error("Error loading progress:", e);
+            }
+        }
+    }, []);
+
+    // Check and update streak on load
+    useEffect(() => {
+        if (progress.lastActivityDate) {
+            const { maintained } = checkStreak(progress.lastActivityDate);
+            if (!maintained && progress.currentStreak > 0) {
+                // Streak was broken
+                const newProgress = {
+                    ...progress,
+                    currentStreak: 0,
+                };
+                saveProgress(newProgress);
             }
         }
     }, []);
@@ -145,6 +209,44 @@ const SoftSkills = () => {
     const saveProgress = (newProgress: SoftSkillsProgress) => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newProgress));
         setProgress(newProgress);
+    };
+
+    // XP awarding function
+    const awardXP = (amount: number, description: string): SoftSkillsProgress => {
+        const today = new Date().toISOString().split("T")[0];
+        const streakInfo = checkStreak(progress.lastActivityDate);
+
+        let newStreak = progress.currentStreak;
+        let streakBonus = 0;
+
+        if (streakInfo.maintained && streakInfo.newStreak > 0) {
+            newStreak = progress.currentStreak + 1;
+            streakBonus = newStreak * XP_REWARDS.STREAK_BONUS_PER_DAY;
+        } else if (!streakInfo.maintained) {
+            newStreak = 1;
+        }
+
+        const totalAmount = amount + streakBonus;
+        const newTotalXP = progress.totalXP + totalAmount;
+        const newLevel = calculateLevel(newTotalXP);
+
+        const newProgress = {
+            ...progress,
+            totalXP: newTotalXP,
+            level: newLevel,
+            currentStreak: newStreak,
+            longestStreak: Math.max(progress.longestStreak, newStreak),
+            lastActivityDate: today,
+            activityLog: [
+                { date: today, type: "xp", xpEarned: totalAmount, description },
+                ...progress.activityLog,
+            ].slice(0, 100), // Keep last 100 entries
+        };
+
+        setRecentXP(totalAmount);
+        setTimeout(() => setRecentXP(0), 3000);
+
+        return newProgress;
     };
 
     // Calculate overall progress
@@ -230,7 +332,6 @@ const SoftSkills = () => {
         if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex((prev) => prev + 1);
         } else {
-            // Quiz complete
             finishQuiz();
         }
     };
@@ -245,8 +346,12 @@ const SoftSkills = () => {
         if (!activeQuiz) return;
 
         const score = calculateCategoryScore(quizAnswers);
-        const newProgress = {
-            ...progress,
+        const category = skillCategories.find(c => c.id === activeQuiz)!;
+
+        let newProgress = awardXP(XP_REWARDS.QUIZ_COMPLETE, `Completed ${category.name} assessment`);
+
+        newProgress = {
+            ...newProgress,
             quizResults: {
                 ...progress.quizResults,
                 [activeQuiz]: {
@@ -294,12 +399,20 @@ const SoftSkills = () => {
 
     // Module functions
     const toggleModuleComplete = (moduleId: string) => {
-        const newCompletedModules = progress.completedModules.includes(moduleId)
-            ? progress.completedModules.filter((id) => id !== moduleId)
-            : [...progress.completedModules, moduleId];
+        const isCompleting = !progress.completedModules.includes(moduleId);
+        const newCompletedModules = isCompleting
+            ? [...progress.completedModules, moduleId]
+            : progress.completedModules.filter((id) => id !== moduleId);
 
-        const newProgress = {
-            ...progress,
+        let newProgress = progress;
+
+        if (isCompleting) {
+            const module = learningModules.find(m => m.id === moduleId);
+            newProgress = awardXP(XP_REWARDS.MODULE_COMPLETE, `Completed module: ${module?.title || moduleId}`);
+        }
+
+        newProgress = {
+            ...newProgress,
             completedModules: newCompletedModules,
         };
 
@@ -311,6 +424,82 @@ const SoftSkills = () => {
 
         saveProgress(newProgress);
     };
+
+    // Phase 2: Scenario completion handler
+    const handleScenarioComplete = (xpEarned: number, optimalPath: boolean) => {
+        if (!activeScenario) return;
+
+        const today = new Date().toISOString().split("T")[0];
+        let newProgress = awardXP(
+            xpEarned,
+            `Completed scenario: ${activeScenario.title}${optimalPath ? " (Perfect!)" : ""}`
+        );
+
+        newProgress = {
+            ...newProgress,
+            completedScenarios: [
+                ...progress.completedScenarios,
+                { id: activeScenario.id, score: xpEarned, xpEarned, date: today },
+            ],
+        };
+
+        saveProgress(newProgress);
+        setActiveScenario(null);
+    };
+
+    // Phase 2: Writing prompt completion handler
+    const handleWritingComplete = (xpEarned: number) => {
+        if (!activeWritingPrompt) return;
+
+        const today = new Date().toISOString().split("T")[0];
+        let newProgress = awardXP(xpEarned, `Completed writing exercise: ${activeWritingPrompt.title}`);
+
+        newProgress = {
+            ...newProgress,
+            completedWritingPrompts: [
+                ...progress.completedWritingPrompts,
+                { id: activeWritingPrompt.id, date: today },
+            ],
+        };
+
+        saveProgress(newProgress);
+        setActiveWritingPrompt(null);
+    };
+
+    // Phase 2: Daily challenge handlers
+    const handleDailyChallengeStart = (challenge: DailyChallenge) => {
+        if (challenge.type === "scenario" && challenge.contentId) {
+            const scenario = scenarios.find(s => s.id === challenge.contentId);
+            if (scenario) setActiveScenario(scenario);
+        } else if (challenge.type === "quiz") {
+            setActiveTab("dashboard");
+        } else if (challenge.type === "writing") {
+            setActiveTab("practice");
+        }
+    };
+
+    const handleDailyChallengeReflection = (challengeId: string) => {
+        const today = new Date().toISOString().split("T")[0];
+        const challenge = getTodaysChallenge();
+
+        let newProgress = awardXP(XP_REWARDS.DAILY_CHALLENGE, `Completed daily challenge: ${challenge.title}`);
+
+        newProgress = {
+            ...newProgress,
+            dailyChallengesCompleted: [
+                ...progress.dailyChallengesCompleted,
+                { id: challengeId, date: today },
+            ],
+        };
+
+        saveProgress(newProgress);
+    };
+
+    // Check if today's challenge is completed
+    const isTodayChallengeCompleted = useMemo(() => {
+        const today = new Date().toISOString().split("T")[0];
+        return progress.dailyChallengesCompleted.some(c => c.date === today);
+    }, [progress.dailyChallengesCompleted]);
 
     // Render functions
     const renderCategoryIcon = (iconName: string, className: string = "w-5 h-5") => {
@@ -346,7 +535,6 @@ const SoftSkills = () => {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{category.name}</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{category.description}</p>
 
-                    {/* Progress bar */}
                     {quizResult ? (
                         <div className="mb-4">
                             <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
@@ -361,7 +549,6 @@ const SoftSkills = () => {
                         </div>
                     )}
 
-                    {/* Subcategories */}
                     <div className="flex flex-wrap gap-1 mb-4">
                         {category.subcategories.slice(0, 3).map((sub) => (
                             <span
@@ -378,7 +565,6 @@ const SoftSkills = () => {
                         )}
                     </div>
 
-                    {/* Module progress */}
                     <div className="text-xs text-gray-500 dark:text-gray-400 mb-4">
                         {completedCategoryModules}/{categoryModules.length} modules completed
                     </div>
@@ -425,9 +611,14 @@ const SoftSkills = () => {
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                             Assessment Complete!
                         </h2>
-                        <p className="text-gray-600 dark:text-gray-400 mb-6">
+                        <p className="text-gray-600 dark:text-gray-400 mb-4">
                             You've completed the {category.name} assessment
                         </p>
+
+                        <div className="flex items-center justify-center gap-2 mb-6">
+                            <Sparkles className="w-5 h-5 text-yellow-500" />
+                            <span className="text-lg font-bold text-yellow-600 dark:text-yellow-400">+{XP_REWARDS.QUIZ_COMPLETE} XP</span>
+                        </div>
 
                         <div className={`inline-block px-8 py-4 rounded-lg ${colors.bg} mb-6`}>
                             <div className="text-4xl font-bold text-gray-900 dark:text-white">{score}</div>
@@ -462,7 +653,6 @@ const SoftSkills = () => {
 
         return (
             <div className="max-w-3xl mx-auto">
-                {/* Quiz header */}
                 <div className="flex items-center justify-between mb-6">
                     <Button variant="ghost" onClick={closeQuiz}>
                         <ArrowLeft className="w-4 h-4 mr-2" />
@@ -471,18 +661,14 @@ const SoftSkills = () => {
                     <Badge className={`${colors.bg} ${colors.text}`}>{category.name}</Badge>
                 </div>
 
-                {/* Progress */}
                 <div className="mb-6">
                     <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-2">
-                        <span>
-                            Question {currentQuestionIndex + 1} of {questions.length}
-                        </span>
+                        <span>Question {currentQuestionIndex + 1} of {questions.length}</span>
                         <span>{Math.round(((currentQuestionIndex + 1) / questions.length) * 100)}%</span>
                     </div>
                     <Progress value={((currentQuestionIndex + 1) / questions.length) * 100} className="h-2" />
                 </div>
 
-                {/* Question card */}
                 <Card className="p-6 mb-6">
                     {currentQuestion.scenario && (
                         <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg mb-4 text-sm text-gray-600 dark:text-gray-400">
@@ -504,15 +690,15 @@ const SoftSkills = () => {
                                 key={option.id}
                                 onClick={() => handleAnswerSelect(currentQuestion.id, option.id)}
                                 className={`w-full p-4 rounded-lg border-2 text-left transition-all duration-200 ${selectedAnswer === option.id
-                                        ? `${colors.border} ${colors.bg}`
-                                        : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+                                    ? `${colors.border} ${colors.bg}`
+                                    : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
                                     }`}
                             >
                                 <div className="flex items-start gap-3">
                                     <div
                                         className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 ${selectedAnswer === option.id
-                                                ? `${colors.border} ${colors.bg}`
-                                                : "border-gray-300 dark:border-gray-600"
+                                            ? `${colors.border} ${colors.bg}`
+                                            : "border-gray-300 dark:border-gray-600"
                                             }`}
                                     >
                                         {selectedAnswer === option.id && (
@@ -526,15 +712,11 @@ const SoftSkills = () => {
                     </div>
                 </Card>
 
-                {/* Navigation */}
                 <div className="flex justify-between">
                     <Button variant="outline" onClick={prevQuestion} disabled={currentQuestionIndex === 0}>
                         Previous
                     </Button>
-                    <Button
-                        onClick={nextQuestion}
-                        disabled={!selectedAnswer}
-                    >
+                    <Button onClick={nextQuestion} disabled={!selectedAnswer}>
                         {currentQuestionIndex === questions.length - 1 ? "Finish" : "Next"}
                         <ChevronRight className="w-4 h-4 ml-2" />
                     </Button>
@@ -596,14 +778,12 @@ const SoftSkills = () => {
 
                     {isExpanded && (
                         <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-6">
-                            {/* Content */}
                             <div className="prose prose-sm dark:prose-invert max-w-none">
                                 <div className="whitespace-pre-line text-gray-700 dark:text-gray-300">
                                     {module.content}
                                 </div>
                             </div>
 
-                            {/* Key Takeaways */}
                             <div>
                                 <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
                                     <Star className="w-4 h-4 mr-2 text-yellow-500" />
@@ -619,7 +799,6 @@ const SoftSkills = () => {
                                 </ul>
                             </div>
 
-                            {/* Practical Exercises */}
                             <div>
                                 <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
                                     <Target className="w-4 h-4 mr-2 text-blue-500" />
@@ -635,7 +814,6 @@ const SoftSkills = () => {
                                 </ul>
                             </div>
 
-                            {/* Mark Complete Button */}
                             <Button
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -652,7 +830,7 @@ const SoftSkills = () => {
                                 ) : (
                                     <>
                                         <Circle className="w-4 h-4 mr-2" />
-                                        Mark as Complete
+                                        Mark as Complete (+{XP_REWARDS.MODULE_COMPLETE} XP)
                                     </>
                                 )}
                             </Button>
@@ -670,8 +848,8 @@ const SoftSkills = () => {
             <Card
                 key={achievement.id}
                 className={`p-4 text-center transition-all duration-300 ${isEarned
-                        ? "border-yellow-300 dark:border-yellow-700 bg-yellow-50/50 dark:bg-yellow-900/10"
-                        : "border-gray-200 dark:border-gray-700 opacity-60"
+                    ? "border-yellow-300 dark:border-yellow-700 bg-yellow-50/50 dark:bg-yellow-900/10"
+                    : "border-gray-200 dark:border-gray-700 opacity-60"
                     }`}
             >
                 <div
@@ -691,14 +869,61 @@ const SoftSkills = () => {
         );
     };
 
+    // Render scenario if active
+    if (activeScenario) {
+        return (
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+                <nav className="border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md sticky top-0 z-50">
+                    <div className="container mx-auto px-4 py-4">
+                        <div className="flex items-center justify-between">
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Scenario Simulation</h1>
+                            <XPProgressBar totalXP={progress.totalXP} compact recentXP={recentXP} />
+                        </div>
+                    </div>
+                </nav>
+                <div className="container mx-auto px-4 py-8">
+                    <ScenarioSimulator
+                        scenario={activeScenario}
+                        onComplete={handleScenarioComplete}
+                        onExit={() => setActiveScenario(null)}
+                    />
+                </div>
+            </div>
+        );
+    }
+
+    // Render writing exercise if active
+    if (activeWritingPrompt) {
+        return (
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+                <nav className="border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md sticky top-0 z-50">
+                    <div className="container mx-auto px-4 py-4">
+                        <div className="flex items-center justify-between">
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Writing Exercise</h1>
+                            <XPProgressBar totalXP={progress.totalXP} compact recentXP={recentXP} />
+                        </div>
+                    </div>
+                </nav>
+                <div className="container mx-auto px-4 py-8">
+                    <WritingExercise
+                        prompt={activeWritingPrompt}
+                        onComplete={handleWritingComplete}
+                        onExit={() => setActiveWritingPrompt(null)}
+                    />
+                </div>
+            </div>
+        );
+    }
+
     // Render quiz if active
     if (activeQuiz) {
         return (
             <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
                 <nav className="border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md sticky top-0 z-50">
                     <div className="container mx-auto px-4 py-4">
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center justify-between">
                             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Skill Assessment</h1>
+                            <XPProgressBar totalXP={progress.totalXP} compact recentXP={recentXP} />
                         </div>
                     </div>
                 </nav>
@@ -728,25 +953,21 @@ const SoftSkills = () => {
                             </Link>
                             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Soft Skills Practice</h1>
                         </div>
+                        <XPProgressBar totalXP={progress.totalXP} compact recentXP={recentXP} />
                     </div>
                 </div>
             </nav>
 
             <div className="container mx-auto px-4 py-8">
-                {/* Header */}
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                        Develop Your Soft Skills
-                    </h2>
-                    <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                        Assess, learn, and grow your professional soft skills through interactive quizzes and comprehensive learning modules
-                    </p>
+                {/* Header with XP */}
+                <div className="max-w-4xl mx-auto mb-8">
+                    <XPProgressBar totalXP={progress.totalXP} recentXP={recentXP} />
                 </div>
 
                 {/* Overall Progress Card */}
                 <div className="max-w-4xl mx-auto mb-8">
                     <Card className="p-6 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border-purple-200 dark:border-purple-800">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
                             <div className="text-center">
                                 <div className="text-3xl font-bold text-gray-900 dark:text-white">
                                     {overallProgress.completedQuizzes}/{overallProgress.totalCategories}
@@ -766,6 +987,13 @@ const SoftSkills = () => {
                                 <div className="text-sm text-gray-600 dark:text-gray-400">Modules</div>
                             </div>
                             <div className="text-center">
+                                <div className="text-3xl font-bold text-gray-900 dark:text-white flex items-center justify-center gap-1">
+                                    <Flame className="w-6 h-6 text-orange-500" />
+                                    {progress.currentStreak}
+                                </div>
+                                <div className="text-sm text-gray-600 dark:text-gray-400">Day Streak</div>
+                            </div>
+                            <div className="text-center">
                                 <div className="text-3xl font-bold text-gray-900 dark:text-white">
                                     {overallProgress.earnedBadges}/{overallProgress.totalBadges}
                                 </div>
@@ -776,23 +1004,31 @@ const SoftSkills = () => {
                 </div>
 
                 {/* Tabs */}
-                <Tabs defaultValue="dashboard" className="max-w-6xl mx-auto">
-                    <TabsList className="grid w-full grid-cols-4 mb-8">
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="max-w-6xl mx-auto">
+                    <TabsList className="grid w-full grid-cols-6 mb-8">
                         <TabsTrigger value="dashboard" className="flex items-center gap-2">
                             <BarChart3 className="w-4 h-4" />
                             <span className="hidden sm:inline">Dashboard</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="practice" className="flex items-center gap-2">
+                            <Play className="w-4 h-4" />
+                            <span className="hidden sm:inline">Practice</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="challenges" className="flex items-center gap-2">
+                            <Flame className="w-4 h-4" />
+                            <span className="hidden sm:inline">Challenges</span>
                         </TabsTrigger>
                         <TabsTrigger value="learning" className="flex items-center gap-2">
                             <BookOpen className="w-4 h-4" />
                             <span className="hidden sm:inline">Learning</span>
                         </TabsTrigger>
-                        <TabsTrigger value="progress" className="flex items-center gap-2">
-                            <Target className="w-4 h-4" />
-                            <span className="hidden sm:inline">Progress</span>
+                        <TabsTrigger value="leaderboard" className="flex items-center gap-2">
+                            <Trophy className="w-4 h-4" />
+                            <span className="hidden sm:inline">Leaderboard</span>
                         </TabsTrigger>
                         <TabsTrigger value="achievements" className="flex items-center gap-2">
                             <Award className="w-4 h-4" />
-                            <span className="hidden sm:inline">Achievements</span>
+                            <span className="hidden sm:inline">Badges</span>
                         </TabsTrigger>
                     </TabsList>
 
@@ -803,9 +1039,104 @@ const SoftSkills = () => {
                         </div>
                     </TabsContent>
 
+                    {/* Practice Tab (NEW) */}
+                    <TabsContent value="practice" className="space-y-8">
+                        {/* Scenarios Section */}
+                        <div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                                <Play className="w-5 h-5 text-blue-500" />
+                                Scenario Simulations
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-400 mb-6">
+                                Practice real-world situations with branching narratives. Make decisions and get instant feedback.
+                            </p>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {scenarios.map((scenario) => {
+                                    const category = skillCategories.find(c => c.id === scenario.category)!;
+                                    const colors = categoryColorClasses[category.color];
+                                    const isCompleted = progress.completedScenarios.some(s => s.id === scenario.id);
+
+                                    return (
+                                        <Card key={scenario.id} className={`p-6 ${colors.border} hover:shadow-lg transition-shadow`}>
+                                            <div className="flex items-center justify-between mb-3">
+                                                <Badge className={`${colors.bg} ${colors.text}`}>{category.name}</Badge>
+                                                {isCompleted && <CheckCircle className="w-5 h-5 text-green-500" />}
+                                            </div>
+                                            <h4 className="font-semibold text-gray-900 dark:text-white mb-2">{scenario.title}</h4>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">{scenario.context}</p>
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-1 text-sm text-yellow-600 dark:text-yellow-400">
+                                                    <Sparkles className="w-4 h-4" />
+                                                    Up to {scenario.totalXP} XP
+                                                </div>
+                                                <Button size="sm" onClick={() => setActiveScenario(scenario)}>
+                                                    <Play className="w-4 h-4 mr-1" />
+                                                    Start
+                                                </Button>
+                                            </div>
+                                        </Card>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Writing Prompts Section */}
+                        <div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                                <PenLine className="w-5 h-5 text-purple-500" />
+                                Writing Exercises
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-400 mb-6">
+                                Practice professional writing skills with guided exercises and self-evaluation.
+                            </p>
+                            <div className="grid md:grid-cols-2 gap-4">
+                                {writingPrompts.map((prompt) => {
+                                    const category = skillCategories.find(c => c.id === prompt.category)!;
+                                    const colors = categoryColorClasses[category.color];
+                                    const isCompleted = progress.completedWritingPrompts.some(w => w.id === prompt.id);
+
+                                    return (
+                                        <Card key={prompt.id} className={`p-6 ${colors.border} hover:shadow-lg transition-shadow`}>
+                                            <div className="flex items-center justify-between mb-3">
+                                                <div className="flex items-center gap-2">
+                                                    <Badge className={`${colors.bg} ${colors.text}`}>{category.name}</Badge>
+                                                    <Badge variant="outline">{prompt.type}</Badge>
+                                                </div>
+                                                {isCompleted && <CheckCircle className="w-5 h-5 text-green-500" />}
+                                            </div>
+                                            <h4 className="font-semibold text-gray-900 dark:text-white mb-2">{prompt.title}</h4>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">{prompt.scenario}</p>
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-1 text-sm text-yellow-600 dark:text-yellow-400">
+                                                    <Sparkles className="w-4 h-4" />
+                                                    {prompt.xpReward} XP
+                                                </div>
+                                                <Button size="sm" onClick={() => setActiveWritingPrompt(prompt)}>
+                                                    <PenLine className="w-4 h-4 mr-1" />
+                                                    Start
+                                                </Button>
+                                            </div>
+                                        </Card>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </TabsContent>
+
+                    {/* Challenges Tab (NEW) */}
+                    <TabsContent value="challenges" className="space-y-6">
+                        <DailyChallenges
+                            currentStreak={progress.currentStreak}
+                            longestStreak={progress.longestStreak}
+                            completedToday={isTodayChallengeCompleted}
+                            completedChallenges={progress.dailyChallengesCompleted}
+                            onStartChallenge={handleDailyChallengeStart}
+                            onCompleteReflection={handleDailyChallengeReflection}
+                        />
+                    </TabsContent>
+
                     {/* Learning Tab */}
                     <TabsContent value="learning" className="space-y-6">
-                        {/* Category filter */}
                         <div className="flex flex-wrap gap-2 mb-6">
                             <Button
                                 variant={selectedCategory === "all" ? "default" : "outline"}
@@ -829,78 +1160,9 @@ const SoftSkills = () => {
                         <div className="space-y-4">{filteredModules.map(renderModuleCard)}</div>
                     </TabsContent>
 
-                    {/* Progress Tab */}
-                    <TabsContent value="progress" className="space-y-6">
-                        <Card className="p-6">
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-                                Skill Scores Overview
-                            </h3>
-                            <div className="space-y-4">
-                                {skillCategories.map((category) => {
-                                    const result = progress.quizResults[category.id];
-                                    const colors = categoryColorClasses[category.color];
-                                    return (
-                                        <div key={category.id}>
-                                            <div className="flex justify-between items-center mb-2">
-                                                <div className="flex items-center gap-2">
-                                                    {renderCategoryIcon(category.icon, `w-4 h-4 ${colors.text}`)}
-                                                    <span className="font-medium text-gray-700 dark:text-gray-300">
-                                                        {category.name}
-                                                    </span>
-                                                </div>
-                                                <span className={`font-semibold ${result ? colors.text : "text-gray-400"}`}>
-                                                    {result ? `${result.score}/10` : "Not assessed"}
-                                                </span>
-                                            </div>
-                                            <Progress
-                                                value={result ? result.score * 10 : 0}
-                                                className="h-3"
-                                            />
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </Card>
-
-                        {/* History */}
-                        {progress.progressHistory.length > 0 && (
-                            <Card className="p-6">
-                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                                    Assessment History
-                                </h3>
-                                <div className="space-y-3">
-                                    {progress.progressHistory
-                                        .slice(-10)
-                                        .reverse()
-                                        .map((entry, index) => (
-                                            <div
-                                                key={index}
-                                                className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-800 last:border-0"
-                                            >
-                                                <span className="text-sm text-gray-600 dark:text-gray-400">
-                                                    {new Date(entry.date).toLocaleDateString()}
-                                                </span>
-                                                <div className="flex gap-2">
-                                                    {Object.entries(entry.scores).map(([catId, score]) => {
-                                                        const cat = skillCategories.find((c) => c.id === catId);
-                                                        const colors = cat
-                                                            ? categoryColorClasses[cat.color]
-                                                            : categoryColorClasses.blue;
-                                                        return (
-                                                            <Badge
-                                                                key={catId}
-                                                                className={`${colors.bg} ${colors.text} text-xs`}
-                                                            >
-                                                                {cat?.name.split(" ")[0]}: {score}
-                                                            </Badge>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </div>
-                                        ))}
-                                </div>
-                            </Card>
-                        )}
+                    {/* Leaderboard Tab (NEW) */}
+                    <TabsContent value="leaderboard" className="space-y-6">
+                        <Leaderboard userXP={progress.totalXP} />
                     </TabsContent>
 
                     {/* Achievements Tab */}
