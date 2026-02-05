@@ -32,6 +32,8 @@ Project maintainers are responsible for:
 - Reviewing issues, pull requests, and discussions respectfully
 - Taking appropriate action when unacceptable behavior occurs
 - Ensuring that community interactions remain constructive and welcoming
+- Clean commits and code changes are a must in this project
+- Make sure your PR is clean and is up to date
 
 Maintainers reserve the right to remove, edit, or reject contributions that violate this Code of Conduct.
 
