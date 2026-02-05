@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FileText, User, Users, Edit, MessageSquare, Menu, X, Code } from "lucide-react";
 import { Link } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import ThemeToggle from "@/components/ThemeToggle";
 import Footer from "@/components/layout/Footer";
 import LogoLoop from "@/components/LogoLoop";
@@ -105,14 +106,14 @@ import ReviewForm from "@/components/ReviewForm";
 
 const Index = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleReviewSubmitted = () => {
     setRefreshTrigger((prev) => prev + 1);
   };
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
   };
 
   return (
@@ -130,54 +131,66 @@ const Index = () => {
               </span>
             </div>
 
-            {/* Desktop Navigation Buttons - Hidden on mobile */}
-            <div className="hidden md:flex items-center space-x-4">
-              <ThemeToggle />
-              <Link to="/coding-prep">
-                <Button variant="outline" className="border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-purple-600 dark:hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 px-4 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md font-medium">
-                  <Code className="w-4 h-4 mr-2" />
-                  Coding Prep
-                </Button>
-              </Link>
-              <Link to="/interview-questions">
-                <Button variant="outline" className="border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-green-600 dark:hover:border-green-400 hover:text-green-600 dark:hover:text-green-400 px-4 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md font-medium">
-                  <MessageSquare className="w-4 h-4 mr-2" />
-                  Interview Prep
-                </Button>
-              </Link>
-              <Link to="/soft-skills">
-                <Button variant="outline" className="border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-blue-600 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 px-4 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md font-medium">
-                  <Users className="w-4 h-4 mr-2" />
-                  Soft Skills
-                </Button>
-              </Link>
-              <Link to="/builder">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md font-medium">
-                  Create Resume
-                </Button>
-              </Link>
-            </div>
+            {/* Combined Navigation Actions */}
+            <div className="flex items-center gap-4">
+              {/* Desktop Menu Items - Horizontal Slide In */}
+              <div className="hidden md:flex items-center">
+                <AnimatePresence>
+                  {isMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 20 }}
+                      transition={{ duration: 0.2 }}
+                      className="flex items-center space-x-4 mr-4"
+                    >
+                      <Link to="/coding-prep">
+                        <Button variant="outline" className="border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-purple-600 dark:hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 px-4 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md font-medium">
+                          <Code className="w-4 h-4 mr-2" />
+                          Coding Prep
+                        </Button>
+                      </Link>
+                      <Link to="/interview-questions">
+                        <Button variant="outline" className="border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-green-600 dark:hover:border-green-400 hover:text-green-600 dark:hover:text-green-400 px-4 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md font-medium">
+                          <MessageSquare className="w-4 h-4 mr-2" />
+                          Interview Prep
+                        </Button>
+                      </Link>
+                      <Link to="/soft-skills">
+                        <Button variant="outline" className="border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-blue-600 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 px-4 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md font-medium">
+                          <Users className="w-4 h-4 mr-2" />
+                          Soft Skills
+                        </Button>
+                      </Link>
+                      <Link to="/builder">
+                        <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md font-medium">
+                          Create Resume
+                        </Button>
+                      </Link>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
-            {/* Mobile Menu Button - Visible only on mobile */}
-            <div className="flex items-center space-x-4 md:hidden">
               <ThemeToggle />
+
+              {/* Hamburger Button - Visible on both Desktop and Mobile */}
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={toggleMobileMenu}
+                onClick={toggleMenu}
                 className="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 relative w-10 h-10 rounded-lg transition-all duration-300"
-                aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               >
-                {/* Menu Icon with rotation */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Menu
-                    className={`w-6 h-6 transition-all duration-300 ease-out ${mobileMenuOpen
+                    className={`w-6 h-6 transition-all duration-300 ease-out ${isMenuOpen
                       ? 'opacity-0 rotate-90 scale-0'
                       : 'opacity-100 rotate-0 scale-100'
                       }`}
                   />
                   <X
-                    className={`w-6 h-6 absolute transition-all duration-300 ease-out ${mobileMenuOpen
+                    className={`w-6 h-6 absolute transition-all duration-300 ease-out ${isMenuOpen
                       ? 'opacity-100 rotate-0 scale-100'
                       : 'opacity-0 -rotate-90 scale-0'
                       }`}
@@ -187,48 +200,57 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Mobile Menu Dropdown - Only visible when mobileMenuOpen is true */}
-          {mobileMenuOpen && (
-            <div className="md:hidden mt-4 pb-4 animate-fade-in">
-              <div className="flex flex-col space-y-3">
-                <Link to="/builder" onClick={() => setMobileMenuOpen(false)}>
-                  <Button
-                    className="w-full justify-start bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg transition-all duration-300 font-medium"
-                  >
-                    <FileText className="w-5 h-5 mr-3" />
-                    Create Resume
-                  </Button>
-                </Link>
-                <Link to="/interview-questions" onClick={() => setMobileMenuOpen(false)}>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-green-600 dark:hover:border-green-400 hover:text-green-600 dark:hover:text-green-400 px-4 py-3 rounded-lg transition-all duration-300 font-medium"
-                  >
-                    <MessageSquare className="w-5 h-5 mr-3" />
-                    Interview Prep
-                  </Button>
-                </Link>
-                <Link to="/soft-skills" onClick={() => setMobileMenuOpen(false)}>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-blue-600 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 px-4 py-3 rounded-lg transition-all duration-300 font-medium"
-                  >
-                    <Users className="w-5 h-5 mr-3" />
-                    Soft Skills
-                  </Button>
-                </Link>
-                <Link to="/coding-prep" onClick={() => setMobileMenuOpen(false)}>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-purple-600 dark:hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 px-4 py-3 rounded-lg transition-all duration-300 font-medium"
-                  >
-                    <Code className="w-5 h-5 mr-3" />
-                    Coding Prep
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          )}
+          {/* Mobile Menu Dropdown - Vertical list for mobile only */}
+          <AnimatePresence>
+            {isMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="md:hidden overflow-hidden"
+              >
+                <div className="mt-4 pb-4">
+                  <div className="flex flex-col space-y-3">
+                    <Link to="/builder" onClick={() => setIsMenuOpen(false)}>
+                      <Button
+                        className="w-full justify-start bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg transition-all duration-300 font-medium"
+                      >
+                        <FileText className="w-5 h-5 mr-3" />
+                        Create Resume
+                      </Button>
+                    </Link>
+                    <Link to="/interview-questions" onClick={() => setIsMenuOpen(false)}>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-green-600 dark:hover:border-green-400 hover:text-green-600 dark:hover:text-green-400 px-4 py-3 rounded-lg transition-all duration-300 font-medium"
+                      >
+                        <MessageSquare className="w-5 h-5 mr-3" />
+                        Interview Prep
+                      </Button>
+                    </Link>
+                    <Link to="/soft-skills" onClick={() => setIsMenuOpen(false)}>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-blue-600 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 px-4 py-3 rounded-lg transition-all duration-300 font-medium"
+                      >
+                        <Users className="w-5 h-5 mr-3" />
+                        Soft Skills
+                      </Button>
+                    </Link>
+                    <Link to="/coding-prep" onClick={() => setIsMenuOpen(false)}>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-purple-600 dark:hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 px-4 py-3 rounded-lg transition-all duration-300 font-medium"
+                      >
+                        <Code className="w-5 h-5 mr-3" />
+                        Coding Prep
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </nav>
 
