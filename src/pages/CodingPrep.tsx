@@ -52,21 +52,11 @@ import {
 } from "@/lib/platformStatsService";
 import { useCallback } from "react";
 
-const difficultyColors = {
-    easy: "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800",
-    medium: "bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800",
-    hard: "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800",
-};
+import ProblemCard from "@/components/coding-prep/ProblemCard";
+import FundamentalCard from "@/components/coding-prep/FundamentalCard";
+import PatternCard from "@/components/coding-prep/PatternCard";
+import LanguageCard from "@/components/coding-prep/LanguageCard";
 
-const categoryColors = {
-    "Arrays": "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300",
-    "Linked Lists": "bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300",
-    "Stacks": "bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-300",
-    "Trees": "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300",
-    "Graphs": "bg-pink-100 text-pink-800 dark:bg-pink-900/50 dark:text-pink-300",
-    "Dynamic Programming": "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300",
-    "Design": "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/50 dark:text-cyan-300",
-};
 
 const CodingPrep = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -180,295 +170,7 @@ const CodingPrep = () => {
     // Calculate progress
     const progressPercentage = (completedProblems.size / codingProblems.length) * 100;
 
-    const renderCodeBlock = (code: string, language: string) => (
-        <pre className="bg-gray-900 dark:bg-gray-950 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm font-mono">
-            <code>{code}</code>
-        </pre>
-    );
 
-    const renderProblemCard = (problem: CodingProblem) => {
-        const isExpanded = expandedItems.has(problem.id);
-        const isCompleted = completedProblems.has(problem.id);
-        const solution = problem.solutions.find((s) => s.language === selectedLanguage) || problem.solutions[0];
-
-        return (
-            <Card
-                key={problem.id}
-                className={`overflow-hidden transition-all duration-300 border-gray-200 dark:border-gray-700 ${isCompleted ? "border-green-300 dark:border-green-700 bg-green-50/50 dark:bg-green-900/10" : ""
-                    }`}
-            >
-                <div
-                    className="p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
-                    onClick={() => toggleExpand(problem.id)}
-                >
-                    <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                            <div className="flex items-center space-x-3 mb-3">
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        toggleProblemComplete(problem.id);
-                                    }}
-                                    className="transition-transform hover:scale-110"
-                                >
-                                    {isCompleted ? (
-                                        <CheckCircle className="w-5 h-5 text-green-500" />
-                                    ) : (
-                                        <Circle className="w-5 h-5 text-gray-400 hover:text-green-500" />
-                                    )}
-                                </button>
-                                <Badge className={categoryColors[problem.category as keyof typeof categoryColors] || "bg-gray-100"}>
-                                    {problem.category}
-                                </Badge>
-                                <Badge variant="outline" className={difficultyColors[problem.difficulty]}>
-                                    {problem.difficulty}
-                                </Badge>
-                            </div>
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                                {problem.title}
-                            </h3>
-                            <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">
-                                {problem.description}
-                            </p>
-                            <div className="flex flex-wrap gap-2 mt-3">
-                                {problem.topics.map((topic) => (
-                                    <span
-                                        key={topic}
-                                        className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded"
-                                    >
-                                        {topic}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                        <Button variant="ghost" size="sm">
-                            {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                        </Button>
-                    </div>
-
-                    {isExpanded && (
-                        <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-6">
-                            {/* Constraints */}
-                            <div>
-                                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Constraints</h4>
-                                <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                                    {problem.constraints.map((c, i) => (
-                                        <li key={i}>{c}</li>
-                                    ))}
-                                </ul>
-                            </div>
-
-                            {/* Examples */}
-                            <div>
-                                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Examples</h4>
-                                <div className="space-y-3">
-                                    {problem.examples.map((ex, i) => (
-                                        <div key={i} className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg text-sm">
-                                            <div className="font-mono">
-                                                <span className="text-gray-500">Input:</span> {ex.input}
-                                            </div>
-                                            <div className="font-mono">
-                                                <span className="text-gray-500">Output:</span> {ex.output}
-                                            </div>
-                                            {ex.explanation && (
-                                                <div className="text-gray-600 dark:text-gray-400 mt-1">
-                                                    <span className="text-gray-500">Explanation:</span> {ex.explanation}
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Approach */}
-                            <div>
-                                <h4 className="font-semibold text-gray-900 dark:text-white mb-2 flex items-center">
-                                    <Zap className="w-4 h-4 mr-2 text-yellow-500" />
-                                    Approach
-                                </h4>
-                                <p className="text-gray-700 dark:text-gray-300 text-sm">{problem.approach}</p>
-                            </div>
-
-                            {/* Solution */}
-                            <div>
-                                <div className="flex items-center justify-between mb-3">
-                                    <h4 className="font-semibold text-gray-900 dark:text-white">Solution</h4>
-                                    <div className="flex gap-2">
-                                        {problem.solutions.map((sol) => (
-                                            <Button
-                                                key={sol.language}
-                                                variant={selectedLanguage === sol.language ? "default" : "outline"}
-                                                size="sm"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setSelectedLanguage(sol.language);
-                                                }}
-                                            >
-                                                {sol.language}
-                                            </Button>
-                                        ))}
-                                    </div>
-                                </div>
-                                {renderCodeBlock(solution.code, solution.language)}
-                            </div>
-
-                            {/* Complexity */}
-                            <div className="flex gap-6">
-                                <div className="flex items-center text-sm">
-                                    <Clock className="w-4 h-4 mr-2 text-blue-500" />
-                                    <span className="text-gray-600 dark:text-gray-400">Time: </span>
-                                    <span className="ml-1 font-mono text-gray-900 dark:text-white">{problem.timeComplexity}</span>
-                                </div>
-                                <div className="flex items-center text-sm">
-                                    <Layers className="w-4 h-4 mr-2 text-purple-500" />
-                                    <span className="text-gray-600 dark:text-gray-400">Space: </span>
-                                    <span className="ml-1 font-mono text-gray-900 dark:text-white">{problem.spaceComplexity}</span>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </Card>
-        );
-    };
-
-    const renderFundamentalCard = (topic: FundamentalTopic) => {
-        const isExpanded = expandedItems.has(topic.id);
-
-        return (
-            <Card key={topic.id} className="overflow-hidden transition-all duration-300 border-gray-200 dark:border-gray-700">
-                <div
-                    className="p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
-                    onClick={() => toggleExpand(topic.id)}
-                >
-                    <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{topic.title}</h3>
-                            <p className="text-gray-600 dark:text-gray-400 text-sm">{topic.description}</p>
-                        </div>
-                        <Button variant="ghost" size="sm">
-                            {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                        </Button>
-                    </div>
-
-                    {isExpanded && (
-                        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4">
-                            <div>
-                                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Key Points</h4>
-                                <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                                    {topic.keyPoints.map((point, i) => (
-                                        <li key={i}>{point}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                            {topic.codeExample && (
-                                <div>
-                                    <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Code Example</h4>
-                                    {renderCodeBlock(topic.codeExample.code, topic.codeExample.language)}
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-            </Card>
-        );
-    };
-
-    const renderPatternCard = (pattern: CodingPattern) => {
-        const isExpanded = expandedItems.has(pattern.id);
-
-        return (
-            <Card key={pattern.id} className="overflow-hidden transition-all duration-300 border-gray-200 dark:border-gray-700">
-                <div
-                    className="p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
-                    onClick={() => toggleExpand(pattern.id)}
-                >
-                    <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{pattern.title}</h3>
-                            <p className="text-gray-600 dark:text-gray-400 text-sm">{pattern.description}</p>
-                        </div>
-                        <Button variant="ghost" size="sm">
-                            {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                        </Button>
-                    </div>
-
-                    {isExpanded && (
-                        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4">
-                            <div>
-                                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">When to Use</h4>
-                                <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                                    {pattern.whenToUse.map((use, i) => (
-                                        <li key={i}>{use}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                            <div>
-                                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Template</h4>
-                                {renderCodeBlock(pattern.codeTemplate.code, pattern.codeTemplate.language)}
-                            </div>
-                            <div>
-                                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Related Problems</h4>
-                                <div className="flex flex-wrap gap-2">
-                                    {pattern.problems.map((problemId) => {
-                                        const problem = codingProblems.find((p) => p.id === problemId);
-                                        return problem ? (
-                                            <Badge key={problemId} variant="outline" className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
-                                                {problem.title}
-                                            </Badge>
-                                        ) : null;
-                                    })}
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </Card>
-        );
-    };
-
-    const renderLanguageCard = (topic: LanguageTopic) => {
-        const isExpanded = expandedItems.has(topic.id);
-
-        return (
-            <Card key={topic.id} className="overflow-hidden transition-all duration-300 border-gray-200 dark:border-gray-700">
-                <div
-                    className="p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
-                    onClick={() => toggleExpand(topic.id)}
-                >
-                    <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                            <div className="flex items-center space-x-2 mb-2">
-                                <Badge variant="outline">{topic.language}</Badge>
-                            </div>
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{topic.title}</h3>
-                            <p className="text-gray-600 dark:text-gray-400 text-sm">{topic.description}</p>
-                        </div>
-                        <Button variant="ghost" size="sm">
-                            {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                        </Button>
-                    </div>
-
-                    {isExpanded && (
-                        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4">
-                            <div>
-                                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Key Points</h4>
-                                <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                                    {topic.keyPoints.map((point, i) => (
-                                        <li key={i}>{point}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                            <div>
-                                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Example</h4>
-                                {renderCodeBlock(topic.codeExample, topic.language)}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </Card>
-        );
-    };
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
@@ -603,7 +305,18 @@ const CodingPrep = () => {
                                     <p className="text-gray-500 dark:text-gray-400">No problems found matching your criteria.</p>
                                 </div>
                             ) : (
-                                filteredProblems.map(renderProblemCard)
+                                filteredProblems.map((problem) => (
+                                    <ProblemCard
+                                        key={problem.id}
+                                        problem={problem}
+                                        isExpanded={expandedItems.has(problem.id)}
+                                        isCompleted={completedProblems.has(problem.id)}
+                                        selectedLanguage={selectedLanguage}
+                                        onToggleExpand={toggleExpand}
+                                        onToggleComplete={toggleProblemComplete}
+                                        onSelectLanguage={setSelectedLanguage}
+                                    />
+                                ))
                             )}
                         </div>
                     </TabsContent>
@@ -611,21 +324,42 @@ const CodingPrep = () => {
                     {/* Fundamentals Tab */}
                     <TabsContent value="fundamentals" className="space-y-4">
                         <div className="grid gap-4">
-                            {fundamentals.map(renderFundamentalCard)}
+                            {fundamentals.map((topic) => (
+                                <FundamentalCard
+                                    key={topic.id}
+                                    topic={topic}
+                                    isExpanded={expandedItems.has(topic.id)}
+                                    onToggleExpand={toggleExpand}
+                                />
+                            ))}
                         </div>
                     </TabsContent>
 
                     {/* Patterns Tab */}
                     <TabsContent value="patterns" className="space-y-4">
                         <div className="grid gap-4">
-                            {codingPatterns.map(renderPatternCard)}
+                            {codingPatterns.map((pattern) => (
+                                <PatternCard
+                                    key={pattern.id}
+                                    pattern={pattern}
+                                    isExpanded={expandedItems.has(pattern.id)}
+                                    onToggleExpand={toggleExpand}
+                                />
+                            ))}
                         </div>
                     </TabsContent>
 
                     {/* Languages Tab */}
                     <TabsContent value="languages" className="space-y-4">
                         <div className="grid gap-4">
-                            {languageTopics.map(renderLanguageCard)}
+                            {languageTopics.map((topic) => (
+                                <LanguageCard
+                                    key={topic.id}
+                                    topic={topic}
+                                    isExpanded={expandedItems.has(topic.id)}
+                                    onToggleExpand={toggleExpand}
+                                />
+                            ))}
                         </div>
                     </TabsContent>
 
