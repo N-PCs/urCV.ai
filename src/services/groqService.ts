@@ -32,9 +32,9 @@ export interface EnhancedResumeData {
     phone: string;
     location: string;
     linkedin: string;
-    portfolio?: string;
+    portfolio: string;
     summary: string;
-    photoUrl?: string;
+    photoUrl: string;
   };
   experience: Array<{
     id: string;
@@ -60,7 +60,7 @@ export interface EnhancedResumeData {
     certifications: string[];
   };
   hobbies?: string[];
-  codingProfiles?: {
+  codingProfiles: {
     github?: string;
     leetcode?: string;
     hackerrank?: string;
@@ -472,7 +472,37 @@ Generate unique IDs for each experience and education entry. Return ONLY valid J
       );
     }
 
-    return parsedData;
+    return {
+      ...parsedData,
+      codingProfiles: parsedData.codingProfiles || {
+        github: "",
+        leetcode: "",
+        hackerrank: "",
+        codeforces: "",
+        kaggle: "",
+        codechef: "",
+      },
+      personalInfo: {
+        ...parsedData.personalInfo,
+        portfolio: parsedData.personalInfo.portfolio || "",
+        photoUrl: parsedData.personalInfo.photoUrl || "",
+        fullName: parsedData.personalInfo.fullName || "",
+        email: parsedData.personalInfo.email || "",
+        phone: parsedData.personalInfo.phone || "",
+        location: parsedData.personalInfo.location || "",
+        linkedin: parsedData.personalInfo.linkedin || "",
+        summary: parsedData.personalInfo.summary || "",
+      },
+      skills: {
+        ...parsedData.skills,
+        technical: parsedData.skills?.technical || [],
+        languages: parsedData.skills?.languages || [],
+        certifications: parsedData.skills?.certifications || [],
+      },
+      experience: parsedData.experience || [],
+      education: parsedData.education || [],
+      hobbies: parsedData.hobbies || [],
+    };
   } catch (error) {
     console.error("Error extracting resume data:", error);
     throw error;
