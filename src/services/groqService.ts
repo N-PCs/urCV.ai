@@ -70,7 +70,7 @@ export interface EnhancedResumeData {
   };
 }
 
-const cleanJsonResponse = (response: string): string => {
+export const cleanJsonResponse = (response: string): string => {
   let cleaned = response.trim();
 
   // Remove markdown code blocks
@@ -187,7 +187,7 @@ Focus on:
   }
 };
 
-const generateFallbackAnalysis = (resumeData: any): ResumeAnalysis => {
+export const generateFallbackAnalysis = (resumeData: any): ResumeAnalysis => {
   const strengths: string[] = [];
   const improvements: string[] = [];
   const suggestions: string[] = [];
