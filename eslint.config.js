@@ -37,7 +37,7 @@ export default tseslint.config(
       ],
       "@typescript-eslint/no-unused-vars": "off",
       "no-empty": "off",
-      "prefer-const": "warn",
+      "prefer-const": "off",
     },
   },
 );
