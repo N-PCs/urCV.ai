@@ -28,9 +28,3 @@ dist-ssr
 .env.local
 .env.*.local
 .encv
-
-# Testing
-coverage
-
-# Build
-*.tsbuildinfo
