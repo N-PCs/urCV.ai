@@ -23,6 +23,15 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
+      "@typescript-eslint/no-unused-expressions": [
+        "error",
+        {
+          allowShortCircuit: false,
+          allowTernary: false,
+          allowTaggedTemplates: false,
+          enforceForJSX: false,
+        },
+      ],
       "@typescript-eslint/no-unused-vars": "off",
     },
   },
