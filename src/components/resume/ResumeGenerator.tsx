@@ -170,7 +170,7 @@ const ResumeDownloadOptions = ({
         allowTaint: true,
         scale: 2,
         logging: false,
-        ignoreElements: (element: Element) => {
+        ignoreElements: (element) => {
           return false;
         },
       } as any);
