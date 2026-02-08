@@ -78,7 +78,7 @@ export const extractResumeDataFromText = async (
 ): Promise<ParsedResumeData> => {
   // This is a simplified extraction - in production, you'd use more sophisticated NLP
   // For now, we'll return a basic structure
-  const lines = text.split("\n").map(line => line.trim()).filter(line => line);
+  const lines = text.split("\n").filter((line) => line.trim());
 
   return {
     personalInfo: {

@@ -3,12 +3,12 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import {
-  Search,
-  Briefcase,
-  Users,
-  Target,
-  Lightbulb,
+import { 
+  Search, 
+  Briefcase, 
+  Users, 
+  Target, 
+  Lightbulb, 
   CheckCircle,
   ChevronDown,
   ChevronUp,
@@ -193,7 +193,7 @@ const InterviewQuestions = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [expandedQuestions, setExpandedQuestions] = useState(new Set());
 
-  const toggleQuestion = (index: number) => {
+  const toggleQuestion = (index) => {
     const newExpanded = new Set(expandedQuestions);
     if (newExpanded.has(index)) {
       newExpanded.delete(index);
@@ -209,7 +209,7 @@ const InterviewQuestions = () => {
 
   const filteredQuestions = allQuestions.filter(q => {
     const matchesSearch = q.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      q.answer.toLowerCase().includes(searchTerm.toLowerCase());
+                         q.answer.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === "all" || q.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -292,12 +292,12 @@ const InterviewQuestions = () => {
             </div>
           ) : (
             filteredQuestions.map((item, index) => {
-              const Icon = categoryIcons[item.category as keyof typeof categoryIcons];
+              const Icon = categoryIcons[item.category];
               const isExpanded = expandedQuestions.has(index);
-
+              
               return (
                 <Card key={index} className="overflow-hidden hover:shadow-lg transition-all duration-300 border-gray-200 dark:border-gray-700">
-                  <div
+                  <div 
                     className="p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
                     onClick={() => toggleQuestion(index)}
                   >
@@ -305,23 +305,10 @@ const InterviewQuestions = () => {
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-3">
                           <Icon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                          <Badge
-                            className={
-                              categoryColors[
-                              item.category as keyof typeof categoryColors
-                              ] || "bg-gray-500"
-                            }
-                          >
+                          <Badge className={categoryColors[item.category]}>
                             {item.category}
                           </Badge>
-                          <Badge
-                            variant="outline"
-                            className={
-                              difficultyColors[
-                              item.difficulty as keyof typeof difficultyColors
-                              ] || "text-gray-500 border-gray-500"
-                            }
-                          >
+                          <Badge variant="outline" className={difficultyColors[item.difficulty]}>
                             {item.difficulty}
                           </Badge>
                         </div>
@@ -337,7 +324,7 @@ const InterviewQuestions = () => {
                         )}
                       </Button>
                     </div>
-
+                    
                     {isExpanded && (
                       <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4">
                         {/* Tips Section */}
@@ -350,7 +337,7 @@ const InterviewQuestions = () => {
                             </p>
                           </div>
                         </div>
-
+                        
                         {/* Example Response Section */}
                         <div className="flex items-start space-x-2">
                           <MessageSquare className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
