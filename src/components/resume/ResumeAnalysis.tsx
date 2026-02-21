@@ -15,7 +15,7 @@ import {
 import { parseResumeFile } from "@/services/fileParserService";
 import { ResumeData } from "@/pages/Builder";
 import { useToast } from "@/hooks/use-toast";
-import { Bot, Upload, FileText, Type } from "lucide-react";
+import { Bot, Upload, FileText, Type, Copy, Check, X, Sparkles, ClipboardPaste } from "lucide-react";
 
 interface ResumeAnalysisProps {
   data: ResumeData;
@@ -36,8 +36,11 @@ const ResumeAnalysisComponent = ({
   const [resumeText, setResumeText] = useState("");
   const [extractionMethod, setExtractionMethod] =
     useState<"file" | "text">("file");
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // Ref attached to the results section for auto-scroll
+  const resultsRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   /* ---------------- ATS ANALYSIS (RULE-BASED) ---------------- */
@@ -47,6 +50,26 @@ const ResumeAnalysisComponent = ({
     if (score >= 80) return "bg-green-500";
     if (score >= 60) return "bg-yellow-500";
     return "bg-red-500";
+  };
+
+  /* ---------------- COPY TO CLIPBOARD ---------------- */
+  const handleCopy = async (text: string, index: number) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2000);
+    } catch {
+      toast({
+        title: "Copy Failed",
+        description: "Could not copy to clipboard.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  /* ---------------- RESET ANALYSIS ---------------- */
+  const handleReset = () => {
+    setAnalysis(null);
   };
 
   /* ---------------- AI ACTIONS ---------------- */
@@ -60,6 +83,10 @@ const ResumeAnalysisComponent = ({
         title: "Analysis Complete",
         description: "Your resume has been analyzed successfully!",
       });
+      // Auto-scroll to results after state update renders
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
     } catch {
       toast({
         title: "Analysis Failed",
@@ -134,7 +161,14 @@ const ResumeAnalysisComponent = ({
 
     try {
       const extractedData = await extractResumeDataWithAI(resumeText);
-      onExtractedData(extractedData);
+      const normalizedData = {
+        ...extractedData,
+        personalInfo: {
+          ...extractedData.personalInfo,
+          portfolio: extractedData.personalInfo.portfolio || "",
+        },
+      };
+      onExtractedData(normalizedData);
 
       toast({
         title: "Resume Extracted",
@@ -177,8 +211,8 @@ const ResumeAnalysisComponent = ({
           {ats.score >= 80
             ? "Excellent ATS compatibility"
             : ats.score >= 60
-            ? "Good, but can be improved"
-            : "Low ATS score — improvements recommended"}
+              ? "Good, but can be improved"
+              : "Low ATS score — improvements recommended"}
         </p>
 
         <div className="grid grid-cols-2 gap-3 text-sm">
@@ -202,69 +236,88 @@ const ResumeAnalysisComponent = ({
         )}
       </Card>
 
-      {/* Extraction Method Toggle */}
-      <div className="flex space-x-2">
-        <Button
-          variant={extractionMethod === "file" ? "default" : "outline"}
-          onClick={() => setExtractionMethod("file")}
-        >
-          <Upload className="w-4 h-4 mr-1" />
-          Upload File
-        </Button>
-        <Button
-          variant={extractionMethod === "text" ? "default" : "outline"}
-          onClick={() => setExtractionMethod("text")}
-        >
-          <Type className="w-4 h-4 mr-1" />
-          Paste Text
-        </Button>
+      {/* ── POLISHED IMPORT DATA SECTION ── */}
+      <div className="rounded-xl border border-dashed border-blue-200 dark:border-blue-900 bg-blue-50/50 dark:bg-blue-950/20 p-5 space-y-4">
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-blue-500" />
+          <p className="font-semibold text-blue-800 dark:text-blue-300 text-sm">
+            Import Your Existing Resume
+          </p>
+        </div>
+        <p className="text-xs text-gray-500 dark:text-gray-400 -mt-2">
+          Upload a file or paste text — AI will auto-fill all your resume fields instantly.
+        </p>
+
+        {/* Extraction Method Toggle */}
+        <div className="flex space-x-2">
+          <Button
+            variant={extractionMethod === "file" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setExtractionMethod("file")}
+          >
+            <Upload className="w-4 h-4 mr-1" />
+            Upload File
+          </Button>
+          <Button
+            variant={extractionMethod === "text" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setExtractionMethod("text")}
+          >
+            <ClipboardPaste className="w-4 h-4 mr-1" />
+            Paste Text
+          </Button>
+        </div>
+
+        {/* File Upload */}
+        {extractionMethod === "file" && (
+          <div className="p-4 border-2 border-dashed border-blue-200 dark:border-blue-800 rounded-lg text-center bg-white dark:bg-gray-900">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,.doc,.docx,.txt"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
+            <Upload className="w-8 h-8 mx-auto mb-2 text-blue-400" />
+            <p className="text-sm text-gray-500 mb-2">PDF, DOC, DOCX or TXT</p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isExtracting}
+            >
+              {isExtracting ? "Extracting..." : "Choose File"}
+            </Button>
+
+            {uploadedFile && (
+              <div className="flex items-center justify-center mt-2 text-sm text-gray-600">
+                <FileText className="w-4 h-4 mr-1" />
+                {uploadedFile.name}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Text Extraction */}
+        {extractionMethod === "text" && (
+          <div className="space-y-3">
+            <Textarea
+              value={resumeText}
+              onChange={(e) => setResumeText(e.target.value)}
+              placeholder="Paste your full resume text here and we'll extract all your information automatically..."
+              className="min-h-[160px] text-sm bg-white dark:bg-gray-900"
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleTextExtraction}
+              disabled={isExtracting || !resumeText.trim()}
+            >
+              {isExtracting ? "Extracting..." : "Extract Resume Data"}
+            </Button>
+          </div>
+        )}
       </div>
-
-      {/* File Upload */}
-      {extractionMethod === "file" && (
-        <div className="p-4 border-2 border-dashed rounded-lg text-center">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,.doc,.docx,.txt"
-            onChange={handleFileUpload}
-            className="hidden"
-          />
-          <Button
-            variant="outline"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isExtracting}
-          >
-            {isExtracting ? "Extracting..." : "Upload Resume"}
-          </Button>
-
-          {uploadedFile && (
-            <div className="flex items-center justify-center mt-2 text-sm">
-              <FileText className="w-4 h-4 mr-1" />
-              {uploadedFile.name}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Text Extraction */}
-      {extractionMethod === "text" && (
-        <div className="space-y-3">
-          <Textarea
-            value={resumeText}
-            onChange={(e) => setResumeText(e.target.value)}
-            placeholder="Paste your resume text here..."
-            className="min-h-[200px]"
-          />
-          <Button
-            variant="outline"
-            onClick={handleTextExtraction}
-            disabled={isExtracting || !resumeText.trim()}
-          >
-            Extract Resume Data
-          </Button>
-        </div>
-      )}
 
       {/* AI Actions */}
       <div className="flex space-x-4">
@@ -288,7 +341,22 @@ const ResumeAnalysisComponent = ({
 
       {/* AI RESULTS */}
       {analysis && (
-        <div className="space-y-6">
+        <div ref={resultsRef} className="space-y-6 scroll-mt-4">
+
+          {/* Reset Button */}
+          <div className="flex items-center justify-between">
+            <h4 className="font-semibold text-gray-700 dark:text-gray-300">Analysis Results</h4>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleReset}
+              className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950"
+            >
+              <X className="w-4 h-4 mr-1" />
+              Clear Results
+            </Button>
+          </div>
+
           <div>
             <h4 className="font-semibold text-green-700 mb-2">Strengths</h4>
             <div className="flex flex-wrap gap-2">
@@ -305,9 +373,9 @@ const ResumeAnalysisComponent = ({
               Areas for Improvement
             </h4>
             <div className="flex flex-wrap gap-2">
-              {analysis.improvements.map((i, idx) => (
+              {analysis.improvements.map((item, idx) => (
                 <Badge key={idx} className="bg-orange-100 text-orange-800">
-                  {i}
+                  {item}
                 </Badge>
               ))}
             </div>
@@ -317,14 +385,31 @@ const ResumeAnalysisComponent = ({
             <h4 className="font-semibold text-blue-700 mb-2">AI Suggestions</h4>
             <div className="space-y-2">
               {analysis.suggestions.map((s, i) => (
-                <div key={i} className="p-3 bg-blue-50 rounded-lg">
-                  {s}
+                <div
+                  key={i}
+                  className="flex items-start justify-between gap-3 p-3 bg-blue-50 dark:bg-blue-950/30 text-blue-900 dark:text-blue-200 rounded-lg group"
+                >
+                  <span className="text-sm leading-relaxed">{s}</span>
+                  {/* Copy Button */}
+                  <button
+                    onClick={() => handleCopy(s, i)}
+                    title="Copy suggestion"
+                    className="shrink-0 mt-0.5 p-1 rounded hover:bg-blue-200 dark:hover:bg-blue-800 text-blue-400 hover:text-blue-700 dark:hover:text-blue-200 transition-colors opacity-0 group-hover:opacity-100"
+                  >
+                    {copiedIndex === i ? (
+                      <Check className="w-4 h-4 text-green-500" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
+                  </button>
                 </div>
               ))}
             </div>
           </div>
+
         </div>
       )}
+
     </Card>
   );
 };
