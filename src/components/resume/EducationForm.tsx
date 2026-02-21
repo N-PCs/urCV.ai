@@ -1,4 +1,7 @@
+
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,6 +12,7 @@ import { User, Edit2, Trash2, X, Check } from "lucide-react";
 interface EducationFormProps {
   data: ResumeData;
   updateData: (section: keyof ResumeData, data: any) => void;
+  setIsValid?: (isValid: boolean) => void;
 }
 
 const EducationForm = ({ data, updateData }: EducationFormProps) => {
@@ -157,7 +161,7 @@ const EducationForm = ({ data, updateData }: EducationFormProps) => {
           )}
         </div>
 
-        <div className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label 
@@ -173,6 +177,7 @@ const EducationForm = ({ data, updateData }: EducationFormProps) => {
                 placeholder="e.g. B.S. in Computer Science"
                 className="bg-white/50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder:text-gray-500"
               />
+              {errors.degree && <p className="text-xs text-red-500">{errors.degree.message}</p>}
             </div>
             <div className="space-y-1.5">
               <Label 
@@ -188,6 +193,7 @@ const EducationForm = ({ data, updateData }: EducationFormProps) => {
                 placeholder="e.g. Stanford University"
                 className="bg-white/50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder:text-gray-500"
               />
+              {errors.school && <p className="text-xs text-red-500">{errors.school.message}</p>}
             </div>
           </div>
 
@@ -206,6 +212,7 @@ const EducationForm = ({ data, updateData }: EducationFormProps) => {
                 placeholder="e.g. Boston, MA"
                 className="bg-white/50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder:text-gray-500"
               />
+              {errors.location && <p className="text-xs text-red-500">{errors.location.message}</p>}
             </div>
             <div className="space-y-1.5">
               <Label 
@@ -221,6 +228,7 @@ const EducationForm = ({ data, updateData }: EducationFormProps) => {
                 placeholder="e.g. May 2024"
                 className="bg-white/50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder:text-gray-500"
               />
+              {errors.graduationDate && <p className="text-xs text-red-500">{errors.graduationDate.message}</p>}
             </div>
             <div className="space-y-1.5">
               <Label 
@@ -236,6 +244,7 @@ const EducationForm = ({ data, updateData }: EducationFormProps) => {
                 placeholder="e.g. 3.8"
                 className="bg-white/50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder:text-gray-500"
               />
+              {errors.gpa && <p className="text-xs text-red-500">{errors.gpa.message}</p>}
             </div>
           </div>
 
