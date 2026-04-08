@@ -1,4 +1,7 @@
+
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +14,7 @@ import { User, Edit2, Trash2, X, Check } from "lucide-react";
 interface ExperienceFormProps {
   data: ResumeData;
   updateData: (section: keyof ResumeData, data: any) => void;
+  setIsValid?: (isValid: boolean) => void;
 }
 
 const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
@@ -165,7 +169,7 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
           )}
         </div>
 
-        <div className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label 
@@ -181,6 +185,7 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
                 placeholder="e.g. Software Engineer"
                 className="bg-white/50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder:text-gray-500"
               />
+              {errors.title && <p className="text-xs text-red-500">{errors.title.message}</p>}
             </div>
             <div className="space-y-1.5">
               <Label 
@@ -196,6 +201,7 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
                 placeholder="e.g. Google"
                 className="bg-white/50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder:text-gray-500"
               />
+              {errors.company && <p className="text-xs text-red-500">{errors.company.message}</p>}
             </div>
           </div>
 
@@ -213,6 +219,7 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
               placeholder="e.g. San Francisco, CA"
               className="bg-white/50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder:text-gray-500"
             />
+            {errors.location && <p className="text-xs text-red-500">{errors.location.message}</p>}
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
@@ -230,6 +237,7 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
                 placeholder="e.g. Jan 2022"
                 className="bg-white/50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder:text-gray-500"
               />
+              {errors.startDate && <p className="text-xs text-red-500">{errors.startDate.message}</p>}
             </div>
             <div className="space-y-1.5">
               <Label 
@@ -246,6 +254,7 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
                 disabled={newExperience.current}
                 className="bg-white/50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder:text-gray-500 disabled:opacity-50"
               />
+              {errors.endDate && <p className="text-xs text-red-500">{errors.endDate.message}</p>}
             </div>
           </div>
 
@@ -278,6 +287,7 @@ const ExperienceForm = ({ data, updateData }: ExperienceFormProps) => {
               placeholder="Highlight your key achievements and responsibilities..."
               className="min-h-[120px] bg-white/50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder:text-gray-500 resize-none"
             />
+            {errors.description && <p className="text-xs text-red-500">{errors.description.message}</p>}
           </div>
 
           <div className="flex gap-3 pt-2">

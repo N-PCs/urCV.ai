@@ -78,27 +78,14 @@ export interface ResumeData {
   };
 }
 
-const RESUME_DATA_KEY = "urcv-resume-data";
-const CURRENT_STEP_KEY = "urcv-current-step";
-const TEMPLATE_NAME_KEY = "urcv-template-name";
-
-const DEFAULT_RESUME_DATA: ResumeData = {
-  personalInfo: {
-    fullName: "Alex Morgan",
-    email: "alex.morgan@example.com",
-    phone: "+1 (555) 012-3456",
-    location: "San Francisco, CA",
-    linkedin: "linkedin.com/in/alexmorgan",
-    portfolio: "alexmorgan.com",
-    summary:
-      "Innovative and results-oriented professional with a strong background in technology and design. Skilled in project management, team leadership, and creative problem-solving. Committed to delivering high-quality solutions and driving business growth.",
-    photoUrl: "",
-  },
-  education: [
-    {
-      id: "1",
-      degree: "Bachelor of Science in Computer Science",
-      school: "University of Technology",
+const Builder = () => {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isStepValid, setIsStepValid] = useState(true);
+  const [resumeData, setResumeData] = useState<ResumeData>({
+    personalInfo: {
+      fullName: "Alex Morgan",
+      email: "alex.morgan@example.com",
+      phone: "+1 (555) 012-3456",
       location: "San Francisco, CA",
       graduationDate: "May 2022",
       gpa: "3.8",
@@ -228,12 +215,14 @@ const Builder = () => {
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
+      setIsStepValid(true); // Reset to true for next step
     }
   };
 
   const handlePrevious = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
+      setIsStepValid(true); // Reset to true for previous step
     }
   };
 

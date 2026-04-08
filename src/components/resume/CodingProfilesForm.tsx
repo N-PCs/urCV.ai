@@ -8,9 +8,10 @@ import { Card } from "@/components/ui/card";
 interface CodingProfilesFormProps {
   data: ResumeData;
   updateData: (section: keyof ResumeData, data: any) => void;
+  setIsValid?: (isValid: boolean) => void;
 }
 
-const CodingProfilesForm = ({ data, updateData }: CodingProfilesFormProps) => {
+const CodingProfilesForm = ({ data, updateData, setIsValid }: CodingProfilesFormProps) => {
   const handleInputChange = (field: string, value: string) => {
     updateData("codingProfiles", {
       ...data.codingProfiles,
