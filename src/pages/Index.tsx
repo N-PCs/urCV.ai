@@ -6,7 +6,6 @@ import ThemeToggle from "@/components/ThemeToggle";
 import Footer from "@/components/layout/Footer";
 import LogoLoop from "@/components/LogoLoop";
 import ResumeTipsSection from "@/components/resume/ResumeTipsSection";
-import { GridScan } from "@/components/GridScan";
 import {
   SiReact,
   SiNextdotjs,
@@ -219,67 +218,6 @@ const Index = () => {
 
       {/* Hero Section with GridScan Background */}
       <div className="relative min-h-[85vh] bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 transition-colors duration-300 overflow-hidden ">
-        {/* GridScan Background */}
-        <div className="absolute inset-0 z-0 flex items-center justify-center">
-          <div className="w-full h-full max-w-[1400px] mx-auto">
-            <GridScan
-              sensitivity={0.55}
-              lineThickness={0}
-              linesColor="rgba(0, 0, 0, 0.15)"
-              gridScale={0.08}
-              scanColor="#87CEEB"
-              scanOpacity={1}
-              enablePost
-              bloomIntensity={1}
-              chromaticAberration={0.001}
-              noiseIntensity={1}
-            />
-          </div>
-
-{/* Dark mode GridScan overlay - only shows in dark mode */}
-<div className="absolute inset-0 hidden dark:block">
-  <GridScan
-    sensitivity={0.55}
-    lineThickness={0}
-    linesColor="rgba(0, 0, 0, 0.15)"
-    gridScale={0.08}
-    scanColor="#87CEEB"
-    scanOpacity={1}
-    enablePost
-    bloomIntensity={1}
-    chromaticAberration={0.001}
-    noiseIntensity={1}
-    enableGyro={true}
-  />
-</div>
-
-{/* Light mode GridScan overlay - only shows in light mode */}
-<div className="absolute inset-0 dark:hidden">
-  <GridScan
-    sensitivity={0.55}
-    lineThickness={0}
-    linesColor="rgba(0, 0, 0, 0.25)"  
-    gridScale={0.08}
-    scanColor="#00A5A3" 
-    scanOpacity={1} // Changed from 100 to 1 (opacity typically ranges 0-1)
-    enablePost
-    bloomIntensity={1}
-    chromaticAberration={1}
-    noiseIntensity={1}
-    enableGyro={true}
-  />
-</div>
-          {/* Overlay gradients for better text readability */}
-          {/* Your original gradients - works in both modes */}
-<div className="absolute inset-0 bg-gradient-to-t from-gray-50/90 via-transparent to-gray-50/80 dark:from-gray-900/95 dark:via-gray-900/90 dark:to-gray-900/95" />
-<div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 via-transparent to-purple-50/30 dark:from-blue-900/20 dark:via-transparent dark:to-purple-900/20" />
-<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-transparent to-gray-50/90 dark:to-gray-900/95" />
-
-{/* Additional light mode gradients only (with more gray) */}
-<div className="absolute inset-0 dark:hidden bg-gradient-to-t from-gray-100/80 via-gray-50/60 to-gray-200/90" />
-<div className="absolute inset-0 dark:hidden bg-gradient-to-r from-gray-200/40 via-gray-100/30 to-gray-200/40" />
-<div className="absolute inset-0 dark:hidden bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-50/50 via-transparent to-gray-100/80" />
-        </div>
 
         {/* Hero Content */}
         <div className="relative z-10 container mx-auto px-4 py-24 flex items-center min-h-[85vh] ">
