@@ -453,7 +453,7 @@ We extend our gratitude to the following projects and organizations that made ur
 ---
 
 <div align="center">
-  <p>🧠 <strong>Maintained with ❤️ by <a href="https://github.com/N-PCs">Neel Pandey</a></strong></p>
+  <p>🧠 <strong>Maintained with ❤️ by <a href="https://github.com/N-PCs">N-PCs</a></strong></p>
   <p>If you find this project helpful, please consider giving it a ⭐️ on GitHub!</p>
   <p>
     <a href="#-urcvai--intelligent-resume-builder">⬆️ Back to Top</a> •

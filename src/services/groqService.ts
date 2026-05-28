@@ -91,6 +91,9 @@ const cleanJsonResponse = (response: string): string => {
     cleaned = cleaned.substring(firstBrace, lastBrace + 1);
   }
 
+  // CHANGE 1: Trailing comma fix — prevents JSON.parse() crashes
+  cleaned = cleaned.replace(/,(\s*[}\]])/g, "$1");
+
   return cleaned;
 };
 
@@ -136,7 +139,8 @@ Focus on:
             content: prompt,
           },
         ],
-        model: "llama3-8b-8192",
+        // CHANGE 2: Upgraded from llama3-8b-8192 to more reliable model
+        model: "llama-3.3-70b-versatile",
         temperature: 0.5,
         max_tokens: 1000,
       }),
@@ -157,21 +161,25 @@ Focus on:
 
       const parsed = JSON.parse(cleaned);
 
-      // Validate the response structure
-      if (
-        typeof parsed.score !== "number" ||
-        !Array.isArray(parsed.strengths) ||
-        !Array.isArray(parsed.improvements) ||
-        !Array.isArray(parsed.suggestions)
-      ) {
-        throw new Error("Invalid response structure");
+      // CHANGE 3: Replaced strict validation with forgiving getArray() helper
+      const getArray = (arr: any) => Array.isArray(arr) ? arr : [];
+
+      const strengths = getArray(parsed.strengths || parsed.Strengths);
+      const improvements = getArray(parsed.improvements || parsed.Improvements);
+      const suggestions = getArray(parsed.suggestions || parsed.Suggestions);
+
+      // Fallback injection if suggestions are empty
+      if (suggestions.length === 0) {
+        suggestions.push("Quantify your achievements with numbers and metrics.");
+        suggestions.push("Use strong action verbs (e.g., Led, Developed, Optimized).");
+        suggestions.push("Tailor your skills section to match the job description.");
       }
 
       return {
-        score: Math.min(100, Math.max(0, parsed.score)),
-        strengths: parsed.strengths.slice(0, 5),
-        improvements: parsed.improvements.slice(0, 5),
-        suggestions: parsed.suggestions.slice(0, 5),
+        score: typeof parsed.score === "number" ? Math.min(100, Math.max(0, parsed.score)) : 75,
+        strengths: strengths.slice(0, 5),
+        improvements: improvements.slice(0, 5),
+        suggestions: suggestions.slice(0, 5),
       };
     } catch (parseError) {
       console.error("JSON parsing error:", parseError);

@@ -6,13 +6,7 @@ import CurvedLoop from "@/components/CurvedLoop";
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
-  const techStack = [
-    "React",
-    "TypeScript",
-    "Tailwind CSS",
-    "Groq Llama 3",
-    "Gemini 2.5",
-  ];
+
 
   return (
     <footer className="bg-slate-950 text-slate-200 border-t border-slate-800 relative overflow-hidden">
@@ -105,24 +99,7 @@ const Footer = () => {
 
         <Separator className="bg-slate-800 my-6" />
 
-        {/* Tech Stack Tags */}
-        <div className="mb-6">
-          <p className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">
-            Built with
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {techStack.map((tech) => (
-              <span
-                key={tech}
-                className="inline-flex items-center px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-medium border border-slate-700 hover:border-blue-500 hover:text-blue-400 transition-colors"
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-        </div>
 
-        <Separator className="bg-slate-800 my-6" />
 
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row justify-center items-center gap-4 text-center">
