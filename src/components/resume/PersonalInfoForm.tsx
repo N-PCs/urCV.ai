@@ -1,102 +1,126 @@
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ResumeData } from "@/pages/Builder";
+import { personalInfoSchema, PersonalInfoValues } from "@/lib/validations";
 
 interface PersonalInfoFormProps {
   data: ResumeData;
   updateData: (section: keyof ResumeData, data: any) => void;
+  setIsValid?: (isValid: boolean) => void;
 }
 
-const PersonalInfoForm = ({ data, updateData }: PersonalInfoFormProps) => {
-  const handleInputChange = (field: string, value: string) => {
-    updateData("personalInfo", {
-      ...data.personalInfo,
-      [field]: value,
-    });
-  };
+const PersonalInfoForm = ({ data, updateData, setIsValid }: PersonalInfoFormProps) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    watch,
+    trigger,
+  } = useForm<PersonalInfoValues>({
+    resolver: zodResolver(personalInfoSchema),
+    defaultValues: data.personalInfo,
+    mode: "onChange", // Validate on change for immediate feedback
+  });
+
+  // Watch for changes and update the parent state
+  const watchedFields = watch();
+
+  useEffect(() => {
+    updateData('personalInfo', watchedFields);
+  }, [watchedFields, updateData]);
+
+  useEffect(() => {
+    if (setIsValid) {
+      setIsValid(isValid);
+    }
+  }, [isValid, setIsValid]);
 
   return (
     <div className="space-y-6">
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="fullName">Full Name</Label>
+          <Label htmlFor="fullName" className={errors.fullName ? "text-red-500" : ""}>Full Name</Label>
           <Input
             id="fullName"
-            value={data.personalInfo.fullName}
-            onChange={(e) => handleInputChange("fullName", e.target.value)}
+            {...register("fullName")}
             placeholder="Alex Morgan"
-            className="mt-1"
+            className={`mt-1 ${errors.fullName ? "border-red-500 focus-visible:ring-red-500" : ""}`}
           />
+          {errors.fullName && (
+            <p className="text-xs text-red-500 mt-1">{errors.fullName.message}</p>
+          )}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="email">Email Address</Label>
+          <Label htmlFor="email" className={errors.email ? "text-red-500" : ""}>Email Address</Label>
           <Input
             id="email"
             type="email"
-            value={data.personalInfo.email}
-            onChange={(e) => handleInputChange("email", e.target.value)}
+            {...register("email")}
             placeholder="alex.morgan@example.com"
-            className="mt-1"
+            className={`mt-1 ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
           />
+          {errors.email && (
+            <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>
+          )}
         </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="phone">Phone Number</Label>
+          <Label htmlFor="phone" className={errors.phone ? "text-red-500" : ""}>Phone Number</Label>
           <Input
             id="phone"
-            value={data.personalInfo.phone}
-            onChange={(e) => handleInputChange("phone", e.target.value)}
+            {...register("phone")}
             placeholder="+1 (555) 012-3456"
-            className="mt-1"
+            className={`mt-1 ${errors.phone ? "border-red-500 focus-visible:ring-red-500" : ""}`}
           />
+          {errors.phone && (
+            <p className="text-xs text-red-500 mt-1">{errors.phone.message}</p>
+          )}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="location">Location</Label>
+          <Label htmlFor="location" className={errors.location ? "text-red-500" : ""}>Location</Label>
           <Input
             id="location"
-            value={data.personalInfo.location}
-            onChange={(e) => handleInputChange("location", e.target.value)}
+            {...register("location")}
             placeholder="San Francisco, CA"
-            className="mt-1"
+            className={`mt-1 ${errors.location ? "border-red-500 focus-visible:ring-red-500" : ""}`}
           />
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="linkedin">LinkedIn Profile</Label>
-          <Input
-            id="linkedin"
-            value={data.personalInfo.linkedin}
-            onChange={(e) => handleInputChange("linkedin", e.target.value)}
-            placeholder="linkedin.com/in/alexmorgan"
-            className="mt-1"
-          />
-        </div>
-        <div>
-          <Label htmlFor="portfolio">Personal Portfolio</Label>
-          <Input
-            id="portfolio"
-            value={data.personalInfo.portfolio || ""}
-            onChange={(e) => handleInputChange("portfolio", e.target.value)}
-            placeholder="yourportfolio.com"
-            className="mt-1"
-          />
+          {errors.location && (
+            <p className="text-xs text-red-500 mt-1">{errors.location.message}</p>
+          )}
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="summary">Professional Summary</Label>
+        <Label htmlFor="linkedin" className={errors.linkedin ? "text-red-500" : ""}>LinkedIn Profile</Label>
+        <Input
+          id="linkedin"
+          {...register("linkedin")}
+          placeholder="linkedin.com/in/alexmorgan"
+          className={`mt-1 ${errors.linkedin ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+        />
+        {errors.linkedin && (
+          <p className="text-xs text-red-500 mt-1">{errors.linkedin.message}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="summary" className={errors.summary ? "text-red-500" : ""}>Professional Summary</Label>
         <Textarea
           id="summary"
-          value={data.personalInfo.summary}
-          onChange={(e) => handleInputChange("summary", e.target.value)}
+          {...register("summary")}
           placeholder="Write a brief summary of your professional background and career objectives..."
-          className="mt-1 min-h-[120px]"
+          className={`mt-1 min-h-[120px] ${errors.summary ? "border-red-500 focus-visible:ring-red-500" : ""}`}
         />
+        {errors.summary && (
+          <p className="text-xs text-red-500 mt-1">{errors.summary.message}</p>
+        )}
       </div>
     </div>
   );
