@@ -20,6 +20,9 @@
 
 **urCV.ai** is a cutting-edge, AI-powered resume builder designed to revolutionize how job seekers create **professional, ATS-optimized resumes**. Built with modern web technologies and powered by advanced AI models, it delivers an unparalleled resume-building experience that helps you land your dream job.
 
+### Workflow Diagram
+![workflow diagram](docs/images/workflow.jpg)
+
 ### 🧠 Dual-Engine AI Architecture
 
 - ⚡ **Groq (Llama 3)** → Lightning-fast resume analysis, scoring, and keyword optimization
@@ -80,7 +83,6 @@
 - **Print-Ready**: Professional print quality output
 
 ---
-
 ## 📸 Screenshots
 
 ### 🌟 Landing Page
